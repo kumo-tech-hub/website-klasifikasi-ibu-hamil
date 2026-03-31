@@ -3,60 +3,251 @@
 {% block page_title %}Edit Data{% endblock %}
 
 {% block content %}
-<div class="container-sm">
-    <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="btn-back">← Kembali ke Detail</a>
+<div class="form-page-wrapper">
 
-    <div class="card">
-        <h2>Edit Data Pemeriksaan</h2>
-        <p class="card-desc">Perbarui data pemeriksaan ibu hamil</p>
-
-        <form action="#" method="POST">
-            <div class="form-group">
-                <label for="nama">Nama</label>
-                <input type="text" id="nama" name="nama" value="{{ data.nama }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="umur">Umur (tahun)</label>
-                <input type="number" id="umur" name="umur" value="{{ data.umur }}" required>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="bb_awal">Berat Badan Awal (Kg)</label>
-                    <input type="number" id="bb_awal" name="bb_awal" value="{{ data.bb_awal }}" step="0.1" required>
-                </div>
-                <div class="form-group">
-                    <label for="bb_sekarang">Berat Badan Sekarang (Kg)</label>
-                    <input type="number" id="bb_sekarang" name="bb_sekarang" value="{{ data.bb_sekarang }}" step="0.1" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="tinggi_badan">Tinggi Badan (Cm)</label>
-                <input type="number" id="tinggi_badan" name="tinggi_badan" value="{{ data.tinggi_badan }}" step="0.1" required>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="lila">LiLA (Cm)</label>
-                    <input type="number" id="lila" name="lila" value="{{ data.lila }}" step="0.1" required>
-                </div>
-                <div class="form-group">
-                    <label for="trimester">Trimester</label>
-                    <select id="trimester" name="trimester" required>
-                        <option value="1" {% if data.trimester == 1 %}selected{% endif %}>Trimester 1</option>
-                        <option value="2" {% if data.trimester == 2 %}selected{% endif %}>Trimester 2</option>
-                        <option value="3" {% if data.trimester == 3 %}selected{% endif %}>Trimester 3</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="btn btn-outline">Batal</a>
-                <button type="submit" class="btn">Simpan Perubahan</button>
-            </div>
-        </form>
+    <!-- Page Header -->
+    <div class="form-page-header">
+        <div class="form-page-header-icon" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div>
+            <h2 class="form-page-title">Edit Data Pemeriksaan</h2>
+            <p class="form-page-subtitle">Perbarui data pemeriksaan ibu hamil — <strong>{{ data.nama }}</strong></p>
+        </div>
+        <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="pro-btn-cancel" style="margin-left:auto;">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15">
+                <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Kembali
+        </a>
     </div>
+
+    <form action="#" method="POST" class="pro-form" id="editForm">
+
+        <!-- Section 1: Data Identitas -->
+        <div class="pro-form-card">
+            <div class="pro-form-section-header">
+                <div class="pro-form-section-num" style="background:linear-gradient(135deg,#f59e0b,#b45309);">01</div>
+                <div>
+                    <h3 class="pro-form-section-title">Data Identitas</h3>
+                    <p class="pro-form-section-desc">Informasi dasar ibu hamil</p>
+                </div>
+            </div>
+
+            <div class="pro-form-grid-2">
+                <div class="pro-form-field">
+                    <label for="nama">
+                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Nama Lengkap
+                        <span class="pro-form-required">*</span>
+                    </label>
+                    <div class="pro-input-wrap">
+                        <input type="text" id="nama" name="nama" value="{{ data.nama }}" required>
+                    </div>
+                </div>
+
+                <div class="pro-form-field">
+                    <label for="umur">
+                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
+                            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Umur
+                        <span class="pro-form-required">*</span>
+                    </label>
+                    <div class="pro-input-wrap pro-input-suffix">
+                        <input type="number" id="umur" name="umur" value="{{ data.umur }}" min="10" max="60" required>
+                        <span class="pro-suffix">Tahun</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pro-form-field">
+                <label>
+                    <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Usia Kehamilan
+                    <span class="pro-form-required">*</span>
+                </label>
+                <div class="pro-trimester-group">
+                    <label class="pro-radio-card {% if data.trimester == 1 %}checked{% endif %}">
+                        <input type="radio" name="trimester" value="1" {% if data.trimester == 1 %}checked{% endif %} required>
+                        <div class="pro-radio-content">
+                            <span class="pro-radio-title">Trimester 1</span>
+                            <span class="pro-radio-desc">0 – 12 minggu</span>
+                        </div>
+                    </label>
+                    <label class="pro-radio-card {% if data.trimester == 2 %}checked{% endif %}">
+                        <input type="radio" name="trimester" value="2" {% if data.trimester == 2 %}checked{% endif %} required>
+                        <div class="pro-radio-content">
+                            <span class="pro-radio-title">Trimester 2</span>
+                            <span class="pro-radio-desc">13 – 27 minggu</span>
+                        </div>
+                    </label>
+                    <label class="pro-radio-card {% if data.trimester == 3 %}checked{% endif %}">
+                        <input type="radio" name="trimester" value="3" {% if data.trimester == 3 %}checked{% endif %} required>
+                        <div class="pro-radio-content">
+                            <span class="pro-radio-title">Trimester 3</span>
+                            <span class="pro-radio-desc">28 – 40 minggu</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Data Antropometri -->
+        <div class="pro-form-card">
+            <div class="pro-form-section-header">
+                <div class="pro-form-section-num" style="background:linear-gradient(135deg,#f59e0b,#b45309);">02</div>
+                <div>
+                    <h3 class="pro-form-section-title">Data Antropometri</h3>
+                    <p class="pro-form-section-desc">Pengukuran tubuh ibu hamil</p>
+                </div>
+            </div>
+
+            <div class="pro-form-grid-2">
+                <div class="pro-form-field">
+                    <label for="bb_awal">
+                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
+                            <path d="M3 6l3 1m0 0l-3 9a5 5 0 006.027 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5 5 0 006.027 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Berat Badan Awal (Pra-Hamil)
+                        <span class="pro-form-required">*</span>
+                    </label>
+                    <div class="pro-input-wrap pro-input-suffix">
+                        <input type="number" id="bb_awal" name="bb_awal" value="{{ data.bb_awal }}" step="0.1" min="20" required>
+                        <span class="pro-suffix">Kg</span>
+                    </div>
+                </div>
+
+                <div class="pro-form-field">
+                    <label for="bb_sekarang">
+                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
+                            <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Berat Badan Sekarang
+                        <span class="pro-form-required">*</span>
+                    </label>
+                    <div class="pro-input-wrap pro-input-suffix">
+                        <input type="number" id="bb_sekarang" name="bb_sekarang" value="{{ data.bb_sekarang }}" step="0.1" min="20" required>
+                        <span class="pro-suffix">Kg</span>
+                    </div>
+                </div>
+
+                <div class="pro-form-field">
+                    <label for="tinggi_badan">
+                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
+                            <path d="M12 2v20M2 12h4M18 12h4M2 7h2M20 7h2M2 17h2M20 17h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Tinggi Badan
+                        <span class="pro-form-required">*</span>
+                    </label>
+                    <div class="pro-input-wrap pro-input-suffix">
+                        <input type="number" id="tinggi_badan" name="tinggi_badan" value="{{ data.tinggi_badan }}" step="0.1" min="100" max="220" required>
+                        <span class="pro-suffix">Cm</span>
+                    </div>
+                </div>
+
+                <div class="pro-form-field">
+                    <label for="lila">
+                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Lingkar Lengan Atas (LiLA)
+                        <span class="pro-form-required">*</span>
+                    </label>
+                    <div class="pro-input-wrap pro-input-suffix">
+                        <input type="number" id="lila" name="lila" value="{{ data.lila }}" step="0.1" min="10" required>
+                        <span class="pro-suffix">Cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IMT Live Preview -->
+            <div class="pro-imt-preview active" id="imtPreview">
+                <div class="pro-imt-left">
+                    <div class="pro-imt-icon">
+                        <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="pro-imt-label">Indeks Massa Tubuh (Pra-Kehamilan)</p>
+                        <p class="pro-imt-formula">BB Awal ÷ (Tinggi Badan)²</p>
+                    </div>
+                </div>
+                <div class="pro-imt-right">
+                    <span class="pro-imt-value" id="imtValue">{{ data.imt }}</span>
+                    <span class="pro-imt-unit">kg/m²</span>
+                    <span class="pro-imt-badge
+                        {% if data.status == 'Normal' %}imt-badge-normal
+                        {% elif data.status == 'Kurang' %}imt-badge-kurang
+                        {% elif data.status == 'Lebih' %}imt-badge-lebih
+                        {% else %}imt-badge-obesitas{% endif %}" id="imtBadge">{{ data.status }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="pro-form-actions">
+            <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="pro-btn-cancel">
+                <svg viewBox="0 0 24 24" fill="none" width="15" height="15">
+                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Batalkan
+            </a>
+            <button type="submit" class="pro-btn-submit" style="background:linear-gradient(135deg,#f59e0b,#b45309); box-shadow:0 4px 14px rgba(245,158,11,0.35);">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17 21v-8H7v8M7 3v5h8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Simpan Perubahan
+            </button>
+        </div>
+    </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var bbAwal = document.getElementById('bb_awal');
+var tinggi = document.getElementById('tinggi_badan');
+var imtVal = document.getElementById('imtValue');
+var imtBadge = document.getElementById('imtBadge');
+var imtPreview = document.getElementById('imtPreview');
+
+function hitungIMT() {
+    var bb = parseFloat(bbAwal.value);
+    var tb = parseFloat(tinggi.value);
+    if (bb > 0 && tb > 0) {
+        var imt = bb / Math.pow(tb / 100, 2);
+        imtVal.textContent = imt.toFixed(2);
+        imtPreview.classList.add('active');
+        var status = '', cls = '';
+        if (imt < 18.5)       { status = 'Kurang';   cls = 'imt-badge-kurang'; }
+        else if (imt <= 24.9) { status = 'Normal';   cls = 'imt-badge-normal'; }
+        else if (imt <= 29.9) { status = 'Lebih';    cls = 'imt-badge-lebih'; }
+        else                  { status = 'Obesitas'; cls = 'imt-badge-obesitas'; }
+        imtBadge.textContent = status;
+        imtBadge.className = 'pro-imt-badge ' + cls;
+    }
+}
+bbAwal.addEventListener('input', hitungIMT);
+tinggi.addEventListener('input', hitungIMT);
+
+document.querySelectorAll('.pro-radio-card input[type="radio"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        document.querySelectorAll('.pro-radio-card').forEach(function(c) { c.classList.remove('checked'); });
+        this.closest('.pro-radio-card').classList.add('checked');
+    });
+});
+</script>
 {% endblock %}

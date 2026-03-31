@@ -47,11 +47,24 @@
 
         <div class="sidebar-footer">
             <div class="sidebar-user">
-                <div class="sidebar-avatar">AR</div>
-                <div>
-                    <p class="sidebar-user-name">Annisa Auliya R.</p>
-                    <p class="sidebar-user-id">E1E122003</p>
+                <div class="sidebar-avatar">
+                    {% if session.user %}{{ session.user.nama[0] }}{% else %}A{% endif %}
                 </div>
+                <div class="sidebar-user-info">
+                    <p class="sidebar-user-name">
+                        {% if session.user %}{{ session.user.nama }}{% else %}Admin{% endif %}
+                    </p>
+                    <p class="sidebar-user-id">
+                        {% if session.user %}{{ session.user.nim }}{% else %}—{% endif %}
+                    </p>
+                </div>
+                <a href="{{ url_for('logout') }}" class="sidebar-logout" title="Keluar">
+                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="16,17 21,12 16,7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </a>
             </div>
         </div>
     </aside>

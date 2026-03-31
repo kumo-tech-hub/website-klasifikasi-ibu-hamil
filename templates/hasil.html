@@ -16,7 +16,11 @@
         <!-- Status Banner -->
         {% if hasil.status == 'Normal' %}
         <div class="status-banner banner-normal">
-            <div class="status-banner-icon">✅</div>
+            <div class="status-banner-icon">
+                <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <div class="status-banner-text">
                 <div class="label">Hasil Klasifikasi</div>
                 <div class="title">Status Gizi Normal</div>
@@ -25,7 +29,11 @@
         </div>
         {% elif hasil.status == 'Kurang' %}
         <div class="status-banner banner-kurang">
-            <div class="status-banner-icon">⚠️</div>
+            <div class="status-banner-icon">
+                <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+                    <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <div class="status-banner-text">
                 <div class="label">Hasil Klasifikasi</div>
                 <div class="title">Status Gizi Kurang</div>
@@ -34,7 +42,11 @@
         </div>
         {% elif hasil.status == 'Lebih' %}
         <div class="status-banner banner-lebih">
-            <div class="status-banner-icon">📊</div>
+            <div class="status-banner-icon">
+                <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+                    <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <div class="status-banner-text">
                 <div class="label">Hasil Klasifikasi</div>
                 <div class="title">Status Gizi Lebih</div>
@@ -43,7 +55,12 @@
         </div>
         {% elif hasil.status == 'Obesitas' %}
         <div class="status-banner banner-obesitas">
-            <div class="status-banner-icon">🔴</div>
+            <div class="status-banner-icon">
+                <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+                    <circle cx="12" cy="12" r="10" stroke="#dc2626" stroke-width="2"/>
+                    <path d="M12 8v4M12 16h.01" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
             <div class="status-banner-text">
                 <div class="label">Hasil Klasifikasi</div>
                 <div class="title">Status Gizi Obesitas</div>
@@ -109,6 +126,9 @@
         </div>
 
         <button class="btn-tips" onclick="toggleTips(this)">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15" style="display:inline;vertical-align:middle;margin-right:6px;">
+                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             Lihat Tips Edukasi
         </button>
 
@@ -119,7 +139,12 @@
         <!-- Catatan -->
         <div class="catatan">
             <div>
-                <strong>⚠ Catatan Penting</strong>
+                <strong>
+                    <svg viewBox="0 0 24 24" fill="none" width="14" height="14" style="display:inline;vertical-align:middle;margin-right:4px;">
+                        <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Catatan Penting
+                </strong>
                 <p>Hasil klasifikasi ini merupakan indikator awal yang dihasilkan oleh sistem berbasis machine learning. Gunakan sebagai acuan konsultasi dengan tenaga kesehatan (ahli gizi dan bidan), bukan sebagai diagnosis medis.</p>
             </div>
         </div>
@@ -134,7 +159,9 @@ function toggleTips(btn) {
     var box = document.getElementById('tipsBox');
     var visible = box.style.display !== 'none';
     box.style.display = visible ? 'none' : 'block';
-    btn.textContent = visible ? 'Lihat Tips Edukasi' : 'Tutup Tips Edukasi';
+    btn.innerHTML = visible
+        ? '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" style="display:inline;vertical-align:middle;margin-right:6px;"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Lihat Tips Edukasi'
+        : '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" style="display:inline;vertical-align:middle;margin-right:6px;"><path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Tutup Tips Edukasi';
 }
 </script>
 {% endblock %}
