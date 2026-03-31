@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Klasifikasi{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+    <div class="card">
+        <h2>Data Ibu Hamil</h2>
+        <p class="card-desc">Lengkapi semua informasi dibawah ini</p>
+
+        <form action="{{ url_for('klasifikasi') }}" method="POST">
+            <div class="form-group">
+                <label for="nama">Nama</label>
+                <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
+            </div>
+
+            <div class="form-group">
+                <label for="umur">Umur (tahun)</label>
+                <input type="number" id="umur" name="umur" placeholder="contoh: 25" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bb_awal">Berat Badan Awal (Kg)</label>
+                    <input type="number" id="bb_awal" name="bb_awal" placeholder="contoh: 50" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="bb_sekarang">Berat Badan Sekarang (Kg)</label>
+                    <input type="number" id="bb_sekarang" name="bb_sekarang" placeholder="contoh: 56.5" step="0.1" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tinggi_badan">Tinggi Badan (Cm)</label>
+                <input type="number" id="tinggi_badan" name="tinggi_badan" placeholder="contoh: 155" step="0.1" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="lila">LiLA (Cm)</label>
+                    <input type="number" id="lila" name="lila" placeholder="contoh: 25.5" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="trimester">Usia Kehamilan (Trimester)</label>
+                    <select id="trimester" name="trimester" required>
+                        <option value="" disabled selected>Pilih...</option>
+                        <option value="1">Trimester 1 (0-12 minggu)</option>
+                        <option value="2">Trimester 2 (13-27 minggu)</option>
+                        <option value="3">Trimester 3 (28-40 minggu)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="imt-preview" id="imtPreview" style="display:none;">
+                <span>IMT Pra-Kehamilan: </span>
+                <strong id="imtValue">-</strong>
+                <span> kg/m²</span>
+            </div>
+
+            <button type="submit" class="btn" style="width:100%;">Klasifikasi Status Gizi</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var bbAwal = document.getElementById('bb_awal');
+var tinggi = document.getElementById('tinggi_badan');
+
+function hitungIMT() {
+    var bb = parseFloat(bbAwal.value);
+    var tb = parseFloat(tinggi.value);
+    if (bb > 0 && tb > 0) {
+        var imt = bb / Math.pow(tb / 100, 2);
+        document.getElementById('imtValue').textContent = imt.toFixed(2);
+        document.getElementById('imtPreview').style.display = 'block';
+    }
+}
+
+bbAwal.addEventListener('input', hitungIMT);
+tinggi.addEventListener('input', hitungIMT);
+</script>
+{% endblock %}

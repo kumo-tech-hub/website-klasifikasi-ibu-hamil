@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Hasil Klasifikasi{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+    <a href="{{ url_for('input_data') }}" class="btn-back">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+            <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Kembali ke Form
+    </a>
+
+    <div class="card">
+
+        <!-- Status Banner -->
+        {% if hasil.status == 'Normal' %}
+        <div class="status-banner banner-normal">
+            <div class="status-banner-icon">✅</div>
+            <div class="status-banner-text">
+                <div class="label">Hasil Klasifikasi</div>
+                <div class="title">Status Gizi Normal</div>
+                <div class="desc">Pertahankan pola makan dan aktivitas saat ini. Risiko stunting pada janin sangat rendah.</div>
+            </div>
+        </div>
+        {% elif hasil.status == 'Kurang' %}
+        <div class="status-banner banner-kurang">
+            <div class="status-banner-icon">⚠️</div>
+            <div class="status-banner-text">
+                <div class="label">Hasil Klasifikasi</div>
+                <div class="title">Status Gizi Kurang</div>
+                <div class="desc">Perlu perhatian khusus. Kekurangan gizi dapat meningkatkan risiko stunting pada janin.</div>
+            </div>
+        </div>
+        {% elif hasil.status == 'Lebih' %}
+        <div class="status-banner banner-lebih">
+            <div class="status-banner-icon">📊</div>
+            <div class="status-banner-text">
+                <div class="label">Hasil Klasifikasi</div>
+                <div class="title">Status Gizi Lebih</div>
+                <div class="desc">Perlu pengaturan pola makan. Konsultasikan dengan tenaga kesehatan.</div>
+            </div>
+        </div>
+        {% elif hasil.status == 'Obesitas' %}
+        <div class="status-banner banner-obesitas">
+            <div class="status-banner-icon">🔴</div>
+            <div class="status-banner-text">
+                <div class="label">Hasil Klasifikasi</div>
+                <div class="title">Status Gizi Obesitas</div>
+                <div class="desc">Perlu penanganan intensif. Obesitas meningkatkan risiko komplikasi kehamilan.</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Informasi Pasien -->
+        <div class="patient-info">
+            <p><strong>Nama</strong><br>{{ hasil.nama }}</p>
+            <p><strong>Usia Kehamilan</strong><br>Trimester {{ hasil.trimester }}</p>
+        </div>
+
+        <!-- Ringkasan Pengukuran -->
+        <p class="section-title">Ringkasan Pengukuran</p>
+        <div class="detail-measure-grid">
+            <div class="measure-box">
+                <span class="measure-label">Umur</span>
+                <span class="measure-value">{{ hasil.umur|int }} Thn</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">BB Awal</span>
+                <span class="measure-value">{{ hasil.bb_awal }} Kg</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">BB Sekarang</span>
+                <span class="measure-value">{{ hasil.bb_sekarang }} Kg</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">Tinggi Badan</span>
+                <span class="measure-value">{{ hasil.tinggi_badan }} cm</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">IMT</span>
+                <span class="measure-value">{{ hasil.imt }} kg/m²</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">LiLA</span>
+                <span class="measure-value">{{ hasil.lila }} cm</span>
+            </div>
+        </div>
+
+        <!-- Rekomendasi BB -->
+        <div class="rekomendasi-bb">
+            <span>Rekomendasi Penambahan BB selama kehamilan</span>
+            <strong>{{ hasil.rekomendasi_bb }}</strong>
+        </div>
+
+        <!-- Tips Edukasi -->
+        <div class="tips-box" id="tipsBox" style="display:none;">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Tips Edukasi untuk Ibu
+            </h3>
+            <ol>
+                {% for tip in hasil.tips %}
+                <li>{{ tip }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        <button class="btn-tips" onclick="toggleTips(this)">
+            Lihat Tips Edukasi
+        </button>
+
+        <a href="{{ url_for('input_data') }}" class="btn" style="width:100%; margin-top: 4px;">
+            Ulangi Pengujian
+        </a>
+
+        <!-- Catatan -->
+        <div class="catatan">
+            <div>
+                <strong>⚠ Catatan Penting</strong>
+                <p>Hasil klasifikasi ini merupakan indikator awal yang dihasilkan oleh sistem berbasis machine learning. Gunakan sebagai acuan konsultasi dengan tenaga kesehatan (ahli gizi dan bidan), bukan sebagai diagnosis medis.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleTips(btn) {
+    var box = document.getElementById('tipsBox');
+    var visible = box.style.display !== 'none';
+    box.style.display = visible ? 'none' : 'block';
+    btn.textContent = visible ? 'Lihat Tips Edukasi' : 'Tutup Tips Edukasi';
+}
+</script>
+{% endblock %}

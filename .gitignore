@@ -1,0 +1,22 @@
+# Virtual Environment (Wajib karena sudah ada folder venv)
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database (Jika nanti kamu pakai SQLite, filenya jangan diupload)
+*.db
+*.sqlite3
+
+# IDE Settings
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Env files (Jika nanti kamu buat file .env untuk Secret Key)
+.env

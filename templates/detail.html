@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Detail Pemeriksaan{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+    <a href="{{ url_for('dashboard') }}" class="btn-back">← Kembali ke Dashboard</a>
+
+    <div class="card">
+        <div class="detail-header">
+            <h2>Detail Pemeriksaan</h2>
+            <a href="{{ url_for('edit_riwayat', id=data.id) }}" class="btn btn-sm btn-outline">✏️ Edit</a>
+        </div>
+
+        <!-- Info Pasien -->
+        <div class="detail-info-grid">
+            <div class="detail-info-item">
+                <span class="detail-label">Nama Pasien</span>
+                <span class="detail-value">{{ data.nama }}</span>
+            </div>
+            <div class="detail-info-item">
+                <span class="detail-label">Tanggal Pemeriksaan</span>
+                <span class="detail-value">{{ data.tanggal }}</span>
+            </div>
+            <div class="detail-info-item">
+                <span class="detail-label">Trimester</span>
+                <span class="detail-value">{{ data.trimester }}</span>
+            </div>
+            <div class="detail-info-item">
+                <span class="detail-label">Algoritma</span>
+                <span class="algo-tag">{{ data.algoritma }}</span>
+            </div>
+        </div>
+
+        <!-- Status Gizi -->
+        <div class="status-box">
+            <span>Status Gizi:</span>
+            <span class="badge badge-{{ data.status|lower }}">{{ data.status }}</span>
+        </div>
+
+        {% if data.status == 'Normal' %}
+        <div class="status-message msg-normal">
+            <strong>Status Gizi Normal - Pertahankan kondisi saat ini</strong>
+            <p>Ibu hamil memiliki status gizi yang baik dengan risiko stunting pada janin sangat rendah.</p>
+        </div>
+        {% elif data.status == 'Kurang' %}
+        <div class="status-message msg-kurang">
+            <strong>Status Gizi Kurang - Perlu perhatian khusus</strong>
+            <p>Ibu hamil terindikasi kekurangan gizi yang dapat meningkatkan risiko stunting pada janin.</p>
+        </div>
+        {% elif data.status == 'Lebih' %}
+        <div class="status-message msg-lebih">
+            <strong>Status Gizi Lebih - Perlu pengaturan pola makan</strong>
+            <p>Ibu hamil memiliki berat badan berlebih yang perlu dikelola dengan konsultasi tenaga kesehatan.</p>
+        </div>
+        {% elif data.status == 'Obesitas' %}
+        <div class="status-message msg-obesitas">
+            <strong>Status Gizi Obesitas - Perlu penanganan intensif</strong>
+            <p>Ibu hamil mengalami obesitas yang meningkatkan risiko komplikasi kehamilan.</p>
+        </div>
+        {% endif %}
+
+        <!-- Ringkasan Pengukuran -->
+        <h3 class="section-title">Ringkasan Pengukuran</h3>
+        <div class="detail-measure-grid">
+            <div class="measure-box">
+                <span class="measure-label">Umur</span>
+                <span class="measure-value">{{ data.umur }} Tahun</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">BB Awal</span>
+                <span class="measure-value">{{ data.bb_awal }} Kg</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">BB Sekarang</span>
+                <span class="measure-value">{{ data.bb_sekarang }} Kg</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">Tinggi Badan</span>
+                <span class="measure-value">{{ data.tinggi_badan }} cm</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">IMT</span>
+                <span class="measure-value">{{ data.imt }} Kg/m²</span>
+            </div>
+            <div class="measure-box">
+                <span class="measure-label">LiLA</span>
+                <span class="measure-value">{{ data.lila }} cm</span>
+            </div>
+        </div>
+
+        <!-- Rekomendasi -->
+        <div class="rekomendasi-bb">
+            <span>Rekomendasi Penambahan BB selama kehamilan:</span>
+            <strong>{{ data.rekomendasi_bb }}</strong>
+        </div>
+
+        <!-- Tips -->
+        <div class="tips-box">
+            <h3>Tips Untuk Ibu</h3>
+            <ol>
+                {% for tip in data.tips %}
+                <li>{{ tip }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}

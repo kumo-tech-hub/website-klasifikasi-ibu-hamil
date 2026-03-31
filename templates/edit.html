@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Edit Data{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+    <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="btn-back">← Kembali ke Detail</a>
+
+    <div class="card">
+        <h2>Edit Data Pemeriksaan</h2>
+        <p class="card-desc">Perbarui data pemeriksaan ibu hamil</p>
+
+        <form action="#" method="POST">
+            <div class="form-group">
+                <label for="nama">Nama</label>
+                <input type="text" id="nama" name="nama" value="{{ data.nama }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="umur">Umur (tahun)</label>
+                <input type="number" id="umur" name="umur" value="{{ data.umur }}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bb_awal">Berat Badan Awal (Kg)</label>
+                    <input type="number" id="bb_awal" name="bb_awal" value="{{ data.bb_awal }}" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="bb_sekarang">Berat Badan Sekarang (Kg)</label>
+                    <input type="number" id="bb_sekarang" name="bb_sekarang" value="{{ data.bb_sekarang }}" step="0.1" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tinggi_badan">Tinggi Badan (Cm)</label>
+                <input type="number" id="tinggi_badan" name="tinggi_badan" value="{{ data.tinggi_badan }}" step="0.1" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="lila">LiLA (Cm)</label>
+                    <input type="number" id="lila" name="lila" value="{{ data.lila }}" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="trimester">Trimester</label>
+                    <select id="trimester" name="trimester" required>
+                        <option value="1" {% if data.trimester == 1 %}selected{% endif %}>Trimester 1</option>
+                        <option value="2" {% if data.trimester == 2 %}selected{% endif %}>Trimester 2</option>
+                        <option value="3" {% if data.trimester == 3 %}selected{% endif %}>Trimester 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="btn btn-outline">Batal</a>
+                <button type="submit" class="btn">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Ringkasan Card -->
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="summary-icon icon-total">📋</div>
+        <div>
+            <p class="summary-label">Total Pemeriksaan</p>
+            <h3 class="summary-value">{{ ringkasan.total }}</h3>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="summary-icon icon-normal">✅</div>
+        <div>
+            <p class="summary-label">Normal</p>
+            <h3 class="summary-value">{{ ringkasan.normal }}</h3>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="summary-icon icon-kurang">⚠️</div>
+        <div>
+            <p class="summary-label">Kurang</p>
+            <h3 class="summary-value">{{ ringkasan.kurang }}</h3>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="summary-icon icon-lebih">📈</div>
+        <div>
+            <p class="summary-label">Lebih</p>
+            <h3 class="summary-value">{{ ringkasan.lebih }}</h3>
+        </div>
+    </div>
+    <div class="summary-card">
+        <div class="summary-icon icon-obesitas">🔴</div>
+        <div>
+            <p class="summary-label">Obesitas</p>
+            <h3 class="summary-value">{{ ringkasan.obesitas }}</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Perbandingan Algoritma -->
+<div class="card">
+    <h3 class="card-title">Perbandingan Algoritma</h3>
+    <p class="card-desc">Hasil evaluasi model XGBoost vs CatBoost dengan SMOTE</p>
+
+    <div class="algo-table-wrapper">
+        <table class="algo-table">
+            <thead>
+                <tr>
+                    <th>Metrik</th>
+                    <th>XGBoost + SMOTE</th>
+                    <th>CatBoost + SMOTE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Accuracy</td>
+                    <td>{{ perbandingan.XGBoost.accuracy }}%</td>
+                    <td>{{ perbandingan.CatBoost.accuracy }}%</td>
+                </tr>
+                <tr>
+                    <td>Precision</td>
+                    <td>{{ perbandingan.XGBoost.precision }}%</td>
+                    <td>{{ perbandingan.CatBoost.precision }}%</td>
+                </tr>
+                <tr>
+                    <td>Recall</td>
+                    <td>{{ perbandingan.XGBoost.recall }}%</td>
+                    <td>{{ perbandingan.CatBoost.recall }}%</td>
+                </tr>
+                <tr>
+                    <td>F1-Score</td>
+                    <td>{{ perbandingan.XGBoost.f1 }}%</td>
+                    <td>{{ perbandingan.CatBoost.f1 }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="algo-best">
+        <span>🏆</span>
+        <span>Model terbaik: <strong>CatBoost + SMOTE</strong> (F1-Score: {{ perbandingan.CatBoost.f1 }}%)</span>
+    </div>
+</div>
+
+<!-- Riwayat Pemeriksaan -->
+<div class="card">
+    <div class="card-header-row">
+        <div>
+            <h3 class="card-title">Riwayat Pemeriksaan</h3>
+            <p class="card-desc">Data pemeriksaan ibu hamil terbaru</p>
+        </div>
+        <a href="{{ url_for('input_data') }}" class="btn btn-sm">+ Klasifikasi Baru</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="riwayat-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Umur</th>
+                    <th>IMT</th>
+                    <th>Status</th>
+                    <th>Algoritma</th>
+                    <th>Tanggal</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in riwayat %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ r.nama }}</td>
+                    <td>{{ r.umur }} thn</td>
+                    <td>{{ r.imt }}</td>
+                    <td><span class="badge badge-{{ r.status|lower }}">{{ r.status }}</span></td>
+                    <td><span class="algo-tag">{{ r.algoritma }}</span></td>
+                    <td>{{ r.tanggal }}</td>
+                    <td class="aksi-cell">
+                        <a href="{{ url_for('detail_riwayat', id=r.id) }}" class="btn-aksi btn-detail" title="Detail">👁</a>
+                        <a href="{{ url_for('edit_riwayat', id=r.id) }}" class="btn-aksi btn-edit" title="Edit">✏️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}  
