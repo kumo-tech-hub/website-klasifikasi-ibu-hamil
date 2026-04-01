@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container-sm">
-    <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="btn-back">← Kembali ke Detail</a>
+    <a href="{{ url_for('main_routes.detail_riwayat', id=data.id) }}" class="btn-back">← Kembali ke Detail</a>
 
     <div class="card">
         <h2>Edit Data Pemeriksaan</h2>
@@ -53,7 +53,7 @@
             </div>
 
             <div class="form-actions">
-                <a href="{{ url_for('detail_riwayat', id=data.id) }}" class="btn btn-outline">Batal</a>
+                <a href="{{ url_for('main_routes.detail_riwayat', id=data.id) }}" class="btn btn-outline">Batal</a>
                 <button type="submit" class="btn">Simpan Perubahan</button>
             </div>
         </form>

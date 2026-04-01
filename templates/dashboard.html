@@ -94,7 +94,7 @@
             <h3 class="card-title">Riwayat Pemeriksaan</h3>
             <p class="card-desc">Data pemeriksaan ibu hamil terbaru</p>
         </div>
-        <a href="{{ url_for('input_data') }}" class="btn btn-sm">+ Klasifikasi Baru</a>
+        <a href="{{ url_for('main_routes.input_data') }}" class="btn btn-sm">+ Klasifikasi Baru</a>
     </div>
 
     <div class="table-wrapper">
@@ -122,8 +122,8 @@
                     <td><span class="algo-tag">{{ r.algoritma }}</span></td>
                     <td>{{ r.tanggal }}</td>
                     <td class="aksi-cell">
-                        <a href="{{ url_for('detail_riwayat', id=r.id) }}" class="btn-aksi btn-detail" title="Detail">👁</a>
-                        <a href="{{ url_for('edit_riwayat', id=r.id) }}" class="btn-aksi btn-edit" title="Edit">✏️</a>
+                        <a href="{{ url_for('main_routes.detail_riwayat', id=r.id) }}" class="btn-aksi btn-detail" title="Detail">👁</a>
+                        <a href="{{ url_for('main_routes.edit_riwayat', id=r.id) }}" class="btn-aksi btn-edit" title="Edit">✏️</a>
                     </td>
                 </tr>
                 {% endfor %}
