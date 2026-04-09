@@ -3,7 +3,6 @@
 {% block page_title %}Klasifikasi{% endblock %}
 
 {% block content %}
-<div class="container-sm">
     <div class="card">
         <h2>Data Ibu Hamil</h2>
         <p class="card-desc">Lengkapi semua informasi dibawah ini</p>
@@ -12,6 +11,22 @@
             <div class="form-group">
                 <label for="nama">Nama</label>
                 <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nik">NIK</label>
+                <input type="text" id="nik" name="nik" placeholder="16 digit NIK" maxlength="16" pattern="[0-9]{16}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="kecamatan">Kecamatan</label>
+                    <input type="text" id="kecamatan" name="kecamatan" placeholder="contoh: Abeli" required>
+                </div>
+                <div class="form-group">
+                    <label for="kelurahan">Kelurahan</label>
+                    <input type="text" id="kelurahan" name="kelurahan" placeholder="contoh: Abeli 1" required>
+                </div>
             </div>
 
             <div class="form-group">
@@ -57,10 +72,18 @@
                 <span> kg/m²</span>
             </div>
 
-            <button type="submit" class="btn" style="width:100%;">Klasifikasi Status Gizi</button>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="algoritma">Pilih Algoritma Model ML</label>
+                <select id="algoritma" name="algoritma" required>
+                    <option value="" disabled selected>Pilih Model...</option>
+                    <option value="xgboost">XGBoost (SMOTE)</option>
+                    <option value="catboost">CatBoost (SMOTE)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn" style="margin-top: 15px; width:100%;">Klasifikasi Status Gizi</button>
         </form>
     </div>
-</div>
 {% endblock %}
 
 {% block extra_js %}

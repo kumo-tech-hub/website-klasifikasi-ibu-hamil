@@ -3,127 +3,124 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block content %}
-<!-- Ringkasan Card -->
-<div class="summary-grid">
-    <div class="summary-card">
-        <div class="summary-icon icon-total">📋</div>
-        <div>
-            <p class="summary-label">Total Pemeriksaan</p>
-            <h3 class="summary-value">{{ ringkasan.total }}</h3>
+<!-- Page Header -->
+<div class="dash-page-header">
+    <div>
+        <h1 class="dash-title">Dashboard</h1>
+        <p class="dash-subtitle">Monitoring status gizi ibu hamil</p>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="dash-summary-grid">
+    <div class="dash-summary-card">
+        <div class="dash-summary-icon icon-pasien">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="9" cy="7" r="4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="dash-summary-info">
+            <h3 class="dash-summary-value">{{ ringkasan.total }}</h3>
+            <p class="dash-summary-label">Total Pasien</p>
         </div>
     </div>
-    <div class="summary-card">
-        <div class="summary-icon icon-normal">✅</div>
-        <div>
-            <p class="summary-label">Normal</p>
-            <h3 class="summary-value">{{ ringkasan.normal }}</h3>
+
+    <div class="dash-summary-card">
+        <div class="dash-summary-icon icon-normal">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="22 4 12 14.01 9 11.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="dash-summary-info">
+            <h3 class="dash-summary-value">{{ ringkasan.normal }}</h3>
+            <p class="dash-summary-label">Status Normal</p>
         </div>
     </div>
-    <div class="summary-card">
-        <div class="summary-icon icon-kurang">⚠️</div>
-        <div>
-            <p class="summary-label">Kurang</p>
-            <h3 class="summary-value">{{ ringkasan.kurang }}</h3>
+
+    <div class="dash-summary-card">
+        <div class="dash-summary-icon icon-kurang">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="12" y1="9" x2="12" y2="13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="12" y1="17" x2="12.01" y2="17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="dash-summary-info">
+            <h3 class="dash-summary-value">{{ ringkasan.kurang }}</h3>
+            <p class="dash-summary-label">Gizi Kurang</p>
         </div>
     </div>
-    <div class="summary-card">
-        <div class="summary-icon icon-lebih">📈</div>
-        <div>
-            <p class="summary-label">Lebih</p>
-            <h3 class="summary-value">{{ ringkasan.lebih }}</h3>
+
+    <div class="dash-summary-card">
+        <div class="dash-summary-icon icon-wilayah">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="12" cy="10" r="3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </div>
-    </div>
-    <div class="summary-card">
-        <div class="summary-icon icon-obesitas">🔴</div>
-        <div>
-            <p class="summary-label">Obesitas</p>
-            <h3 class="summary-value">{{ ringkasan.obesitas }}</h3>
+        <div class="dash-summary-info">
+            <h3 class="dash-summary-value">{{ ringkasan.wilayah }}</h3>
+            <p class="dash-summary-label">Wilayah</p>
         </div>
     </div>
 </div>
 
-<!-- Perbandingan Algoritma -->
-<div class="card">
-    <h3 class="card-title">Perbandingan Algoritma</h3>
-    <p class="card-desc">Hasil evaluasi model XGBoost vs CatBoost dengan SMOTE</p>
-
-    <div class="algo-table-wrapper">
-        <table class="algo-table">
-            <thead>
-                <tr>
-                    <th>Metrik</th>
-                    <th>XGBoost + SMOTE</th>
-                    <th>CatBoost + SMOTE</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Accuracy</td>
-                    <td>{{ perbandingan.XGBoost.accuracy }}%</td>
-                    <td>{{ perbandingan.CatBoost.accuracy }}%</td>
-                </tr>
-                <tr>
-                    <td>Precision</td>
-                    <td>{{ perbandingan.XGBoost.precision }}%</td>
-                    <td>{{ perbandingan.CatBoost.precision }}%</td>
-                </tr>
-                <tr>
-                    <td>Recall</td>
-                    <td>{{ perbandingan.XGBoost.recall }}%</td>
-                    <td>{{ perbandingan.CatBoost.recall }}%</td>
-                </tr>
-                <tr>
-                    <td>F1-Score</td>
-                    <td>{{ perbandingan.XGBoost.f1 }}%</td>
-                    <td>{{ perbandingan.CatBoost.f1 }}%</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="algo-best">
-        <span>🏆</span>
-        <span>Model terbaik: <strong>CatBoost + SMOTE</strong> (F1-Score: {{ perbandingan.CatBoost.f1 }}%)</span>
-    </div>
-</div>
-
-<!-- Riwayat Pemeriksaan -->
-<div class="card">
-    <div class="card-header-row">
-        <div>
-            <h3 class="card-title">Riwayat Pemeriksaan</h3>
-            <p class="card-desc">Data pemeriksaan ibu hamil terbaru</p>
+<!-- Riwayat Pasien Table -->
+<div class="card dash-card">
+    <div class="dash-table-header">
+        <h3 class="card-title">Riwayat Pasien</h3>
+        <div class="dash-search-wrapper">
+            <svg class="dash-search-icon" viewBox="0 0 24 24" fill="none" width="16" height="16">
+                <circle cx="11" cy="11" r="8" stroke="#9ca3af" stroke-width="2"/>
+                <path d="m21 21-4.35-4.35" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="text" id="searchPasien" class="dash-search-input" placeholder="Cari pasien...">
         </div>
-        <a href="{{ url_for('main_routes.input_data') }}" class="btn btn-sm">+ Klasifikasi Baru</a>
     </div>
 
     <div class="table-wrapper">
-        <table class="riwayat-table">
+        <table class="dash-pasien-table" id="pasienTable">
             <thead>
                 <tr>
-                    <th>No</th>
                     <th>Nama</th>
+                    <th>NIK</th>
                     <th>Umur</th>
-                    <th>IMT</th>
-                    <th>Status</th>
-                    <th>Algoritma</th>
-                    <th>Tanggal</th>
+                    <th>Kelurahan</th>
+                    <th>Status Gizi</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {% for r in riwayat %}
                 <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ r.nama }}</td>
-                    <td>{{ r.umur }} thn</td>
-                    <td>{{ r.imt }}</td>
-                    <td><span class="badge badge-{{ r.status|lower }}">{{ r.status }}</span></td>
-                    <td><span class="algo-tag">{{ r.algoritma }}</span></td>
-                    <td>{{ r.tanggal }}</td>
-                    <td class="aksi-cell">
-                        <a href="{{ url_for('main_routes.detail_riwayat', id=r.id) }}" class="btn-aksi btn-detail" title="Detail">👁</a>
-                        <a href="{{ url_for('main_routes.edit_riwayat', id=r.id) }}" class="btn-aksi btn-edit" title="Edit">✏️</a>
+                    <td class="td-nama">{{ r.nama }}</td>
+                    <td class="td-nik">{{ r.nik }}</td>
+                    <td>{{ r.umur }} th</td>
+                    <td>{{ r.kelurahan }}</td>
+                    <td>
+                        <span class="dash-status-badge dash-badge-{{ r.status|lower }}">{{ r.status }}</span>
+                    </td>
+                    <td class="dash-aksi-cell">
+                        <a href="{{ url_for('main_routes.edit_riwayat', id=r.id) }}" class="dash-btn-icon dash-btn-edit" title="Edit">
+                            <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <form action="{{ url_for('main_routes.hapus_riwayat', id=r.id) }}" method="POST" onsubmit="return confirm('Hapus data pasien ini?');" style="display:inline;">
+                            <button type="submit" class="dash-btn-icon dash-btn-delete" title="Hapus">
+                                <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                                    <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
@@ -131,4 +128,95 @@
         </table>
     </div>
 </div>
-{% endblock %}  
+
+<!-- Segmentasi Wilayah -->
+<div class="card dash-card">
+    <h3 class="card-title" style="margin-bottom: 4px;">Segmentasi Wilayah</h3>
+    <p class="card-desc">Distribusi status gizi berdasarkan kelurahan</p>
+
+    <div class="dash-wilayah-wrapper">
+        <div class="dash-treemap" id="treemapContainer"></div>
+        <div class="dash-treemap-legend">
+            <div class="dash-legend-item">
+                <span class="dash-legend-dot dot-normal"></span>
+                <span>Normal</span>
+            </div>
+            <div class="dash-legend-item">
+                <span class="dash-legend-dot dot-kurang"></span>
+                <span>Kurang</span>
+            </div>
+            <div class="dash-legend-item">
+                <span class="dash-legend-dot dot-lebih"></span>
+                <span>Lebih</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{# Hidden element to pass Jinja2 data to JavaScript without confusing the JS linter #}
+<div id="segmentasi-data" data-json='{{ segmentasi_wilayah | tojson }}' style="display:none;"></div>
+
+{% block extra_js %}
+<script>
+// Search functionality
+document.getElementById('searchPasien').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#pasienTable tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+});
+
+// Delete handler (placeholder)
+function hapusPasien(btn) {
+    const id = btn.dataset.id;
+    if (confirm('Apakah Anda yakin ingin menghapus data pasien ini?')) {
+        alert('Data pasien #' + id + ' dihapus.');
+    }
+}
+
+// Treemap Segmentasi Wilayah
+(function buildTreemap() {
+    const data = JSON.parse(document.getElementById('segmentasi-data').dataset.json);
+    const container = document.getElementById('treemapContainer');
+    if (!data || !container) return;
+
+    const total = data.reduce((s, d) => s + d.jumlah, 0);
+
+    const colorMap = {
+        'Normal':  { bg: '#d1fae5', border: '#a7f3d0', text: '#065f46' },
+        'Kurang':  { bg: '#fee2e2', border: '#fecaca', text: '#991b1b' },
+        'Lebih':   { bg: '#fef9c3', border: '#fde68a', text: '#713f12' },
+        'Obesitas':{ bg: '#fee2e2', border: '#fecaca', text: '#991b1b' },
+    };
+
+    // Squarify-like layout: simple flex wrap approach
+    const containerW = container.offsetWidth || 560;
+    const containerH = 260;
+
+    // Sort descending by jumlah for better layout
+    const sorted = [...data].sort((a, b) => b.jumlah - a.jumlah);
+
+    sorted.forEach(item => {
+        const frac = item.jumlah / total;
+        const col = colorMap[item.dominan] || colorMap['Normal'];
+        const cell = document.createElement('div');
+        cell.className = 'dash-treemap-cell';
+        cell.style.cssText = `
+            background: ${col.bg};
+            border: 2px solid ${col.border};
+            flex: ${item.jumlah};
+            min-width: ${Math.max(80, frac * containerW * 0.95)}px;
+            color: ${col.text};
+        `;
+        cell.innerHTML = `
+            <span class="dash-treemap-label">${item.kelurahan}</span>
+            <span class="dash-treemap-count">${item.jumlah} pasien</span>
+        `;
+        container.appendChild(cell);
+    });
+})();
+</script>
+{% endblock %}

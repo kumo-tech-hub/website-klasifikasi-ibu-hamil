@@ -3,18 +3,23 @@ version: "3.9"
 services:
 
   db:
-    image: postgres:15
+    image: mysql:8.0
     restart: always
     env_file:
       - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-klasifikasi_db}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     ports:
-      - "5432:5432"
+      - "3306:3306"
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
       timeout: 5s
       retries: 5
 
@@ -22,6 +27,8 @@ services:
     build: .
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=mysql+pymysql://${MYSQL_USER:-user}:${MYSQL_PASSWORD:-password}@db:3306/${MYSQL_DATABASE:-klasifikasi_db}
     ports:
       - "5000:5000"
     depends_on:
@@ -31,4 +38,4 @@ services:
       - .:/app
 
 volumes:
-  postgres_data:
+  mysql_data:

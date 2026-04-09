@@ -7,7 +7,7 @@ numpy
 pandas
 joblib
 gunicorn
-psycopg2-binary
+pymysql
 sqlalchemy
 flask-sqlalchemy
 python-dotenv

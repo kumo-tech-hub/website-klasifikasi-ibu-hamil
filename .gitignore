@@ -29,5 +29,3 @@ EXPOSE 5000
 CMD ["gunicorn", "--reload", "-b", "0.0.0.0:5000", "app:app"]
 Thumbs.db
 
-# Env files (Jika nanti kamu buat file .env untuk Secret Key)
-.env
