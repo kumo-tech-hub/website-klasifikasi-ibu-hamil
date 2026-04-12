@@ -1,4 +1,5 @@
 flask
+flask-migrate
 xgboost
 catboost
 scikit-learn
@@ -12,3 +13,4 @@ sqlalchemy
 flask-sqlalchemy
 python-dotenv
 alembic
+cryptography

@@ -1,9 +1,12 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session,current_app
 from database.db import db
 from database.table.riwayat import Riwayat
 from database.table.user import User
 from collections import Counter
 from datetime import datetime
+from database.table.kecamatan import Kecamatan
+from database.table.kelurahan import Kelurahan
+import os
 
 # ─────────────────────────────────────────────
 # LOGIN
@@ -136,12 +139,21 @@ def dashboard():
             'dominan': dominan
         })
 
+    # load file geojson kelurahan
+    folder_path = os.path.join(current_app.root_path,'static','kelurahan_geojson')
+
+    daftar_file_geojson = []
+    if os.path.exists(folder_path):
+        daftar_file_geojson = [f for f in os.listdir(folder_path) if f.endswith('.geojson')]
+
     return render_template(
         'dashboard.html',
         riwayat=riwayat_list,
         ringkasan=ringkasan,
         perbandingan=PERBANDINGAN,
-        segmentasi_wilayah=segmentasi_wilayah
+        segmentasi_wilayah=segmentasi_wilayah,
+        daftar_file_geojson=daftar_file_geojson
+
     )
 
 
@@ -150,7 +162,17 @@ def dashboard():
 # ─────────────────────────────────────────────
 
 def input_data():
-    return render_template('input.html')
+    kecamatans = Kecamatan.query.all()
+
+    data_wilayah = {}
+    for kec in kecamatans:
+        # Asumsi Anda menggunakan db.relationship('Kelurahan') dengan backref='kecamatan'
+        data_wilayah[kec.nama] = [kel.nama for kel in kec.kelurahan_list]
+    return render_template(
+        'input.html',
+        kecamatans=kecamatans, 
+        data_wilayah=data_wilayah
+        )
 
 
 # ─────────────────────────────────────────────

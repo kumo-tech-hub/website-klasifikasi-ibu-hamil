@@ -135,7 +135,10 @@
     <p class="card-desc">Distribusi status gizi berdasarkan kelurahan</p>
 
     <div class="dash-wilayah-wrapper">
-        <div class="dash-treemap" id="treemapContainer"></div>
+        <!-- <div class="dash-treemap" id="treemapContainer"></div> -->
+         <div id="file-geojson-data" data-files='{{ daftar_file_geojson | tojson }}' style="display:none;"></div>
+         <div id="segmentasi-data" data-json='{{ segmentasi_wilayah | tojson }}' style="display:none;"></div>
+        <div id="mapContainer" style="height: 400px; width: 100%; border-radius: 8px; z-index: 1; border: 2px;"></div>
         <div class="dash-treemap-legend">
             <div class="dash-legend-item">
                 <span class="dash-legend-dot dot-normal"></span>
@@ -149,74 +152,166 @@
                 <span class="dash-legend-dot dot-lebih"></span>
                 <span>Lebih</span>
             </div>
+            <div class="dash-legend-item">
+                <span class="dash-legend-dot dot-empty"></span>
+                <span>Tidak ada data</span>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {# Hidden element to pass Jinja2 data to JavaScript without confusing the JS linter #}
-<div id="segmentasi-data" data-json='{{ segmentasi_wilayah | tojson }}' style="display:none;"></div>
+<!-- <div id="segmentasi-data" data-json='{{ segmentasi_wilayah | tojson }}' ></div>style="display:none;" -->
 
 {% block extra_js %}
 <script>
-// Search functionality
-document.getElementById('searchPasien').addEventListener('input', function() {
-    const query = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#pasienTable tbody tr');
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-    });
-});
-
-// Delete handler (placeholder)
-function hapusPasien(btn) {
-    const id = btn.dataset.id;
-    if (confirm('Apakah Anda yakin ingin menghapus data pasien ini?')) {
-        alert('Data pasien #' + id + ' dihapus.');
+    // ==========================================
+    // 1. DATA PARSING (Mengambil data dari Flask/HTML)
+    // ==========================================
+    
+    // Ambil data segmentasi wilayah dari backend
+    const segmentasiElement = document.getElementById('segmentasi-data');
+    let dataSegmentasi = [];
+    if (segmentasiElement && segmentasiElement.dataset.json) {
+        dataSegmentasi = JSON.parse(segmentasiElement.dataset.json);
     }
-}
+    
+    // Fungsi untuk mencari status dominan berdasarkan nama kelurahan
+    function getStatusDominan(namaKelurahan) {
+        // Karena penulisan nama kelurahan di GeoJSON dan Database mungkin berbeda (misal huruf besar/kecil)
+        // Kita bandingkan dengan format huruf kecil semua (lowercase)
+        const target = namaKelurahan.toLowerCase().trim();
+        const hasil = dataSegmentasi.find(item => item.kelurahan.toLowerCase().trim() === target);
+        
+        return hasil ? hasil.dominan : 'Tidak Ada Data'; // Jika tidak ada pasien di kelurahan itu
+    }
 
-// Treemap Segmentasi Wilayah
-(function buildTreemap() {
-    const data = JSON.parse(document.getElementById('segmentasi-data').dataset.json);
-    const container = document.getElementById('treemapContainer');
-    if (!data || !container) return;
-
-    const total = data.reduce((s, d) => s + d.jumlah, 0);
-
+    // Konfigurasi Warna berdasarkan Status Gizi
     const colorMap = {
-        'Normal':  { bg: '#d1fae5', border: '#a7f3d0', text: '#065f46' },
-        'Kurang':  { bg: '#fee2e2', border: '#fecaca', text: '#991b1b' },
-        'Lebih':   { bg: '#fef9c3', border: '#fde68a', text: '#713f12' },
-        'Obesitas':{ bg: '#fee2e2', border: '#fecaca', text: '#991b1b' },
+        'Normal': '#10b981',   // Hijau
+        'Kurang': '#ef4444',   // Merah
+        'Lebih':  '#f59e0b',   // Kuning/Oranye
+        'Tidak Ada Data': '#9ca3af' // Abu-abu jika kosong
     };
 
-    // Squarify-like layout: simple flex wrap approach
-    const containerW = container.offsetWidth || 560;
-    const containerH = 260;
+    // ==========================================
+    // 2. INISIALISASI PETA LEAFLET
+    // ==========================================
+    try {
+        var map = L.map('mapContainer').setView([-4.007004, 122.520806], 12); // Sedikit di-zoom out ke level 12 agar muat lebih banyak
 
-    // Sort descending by jumlah for better layout
-    const sorted = [...data].sort((a, b) => b.jumlah - a.jumlah);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
 
-    sorted.forEach(item => {
-        const frac = item.jumlah / total;
-        const col = colorMap[item.dominan] || colorMap['Normal'];
-        const cell = document.createElement('div');
-        cell.className = 'dash-treemap-cell';
-        cell.style.cssText = `
-            background: ${col.bg};
-            border: 2px solid ${col.border};
-            flex: ${item.jumlah};
-            min-width: ${Math.max(80, frac * containerW * 0.95)}px;
-            color: ${col.text};
-        `;
-        cell.innerHTML = `
-            <span class="dash-treemap-label">${item.kelurahan}</span>
-            <span class="dash-treemap-count">${item.jumlah} pasien</span>
-        `;
-        container.appendChild(cell);
-    });
-})();
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 300);
+
+        // ==========================================
+        // 3. FUNGSI LOAD GEOJSON DENGAN CHOROPLETH
+        // ==========================================
+        function loadKelurahan(fileName) {
+            fetch(fileName)
+                .then(response => {
+                    if (!response.ok) throw new Error("File tidak ditemukan: " + fileName);
+                    return response.json();
+                })
+                .then(data => {
+                    L.geoJSON(data, {
+                        // Aturan Styling / Pewarnaan
+                        style: function (feature) {
+                            var namaKelurahan = feature.properties.wadmkd || ""; 
+                            var status = getStatusDominan(namaKelurahan);
+                            var areaColor = colorMap[status] || colorMap['Tidak Ada Data'];
+
+                            return { 
+                                color: "#ffffff",     // Warna garis tepi (putih)
+                                weight: 1.5,          // Ketebalan garis
+                                fillOpacity: 0.6,     // Transparansi warna isi (agar jalanan basemap tetap terlihat)
+                                fillColor: areaColor  // Warna isi didapat dari colorMap berdasarkan status
+                            };
+                        },
+                        // Interaksi saat poligon di-klik atau disorot
+                        onEachFeature: function (feature, layer) {
+                            var namaKelurahan = feature.properties.wadmkd || "Tidak Diketahui";
+                            var status = getStatusDominan(namaKelurahan);
+                            
+                            // Konten Popup
+                            var popupContent = `
+                                <div style="text-align:center;">
+                                    <b>Kelurahan ${namaKelurahan}</b><br>
+                                    <span style="display:inline-block; margin-top:5px; padding:3px 8px; border-radius:12px; font-size:12px; color:white; background-color:${colorMap[status]};">
+                                        Status Dominan: ${status}
+                                    </span>
+                                </div>
+                            `;
+                            layer.bindPopup(popupContent);
+
+                            // Tambahkan efek hover (opsional agar terlihat interaktif)
+                            layer.on({
+                                mouseover: function (e) {
+                                    var layer = e.target;
+                                    layer.setStyle({
+                                        weight: 3,
+                                        color: '#333',
+                                        fillOpacity: 0.8
+                                    });
+                                    layer.bringToFront(); // Bawa poligon ke depan agar garisnya tidak tertutup yang lain
+                                },
+                                mouseout: function (e) {
+                                    // Kembalikan style seperti semula saat mouse keluar
+                                    L.geoJSON(data, {
+                                        style: function(f) {
+                                            var stat = getStatusDominan(f.properties.wadmkd || "");
+                                            return {
+                                                color: "#ffffff",
+                                                weight: 1.5,
+                                                fillOpacity: 0.6,
+                                                fillColor: colorMap[stat] || colorMap['Tidak Ada Data']
+                                            };
+                                        }
+                                    }).resetStyle(layer); 
+                                }
+                            });
+                        }
+                    }).addTo(map);
+                })
+                .catch(error => console.error('Error memuat GeoJSON:', error));
+        }
+
+        // ==========================================
+        // 4. JALANKAN PEMANGGILAN FILE
+        // ==========================================
+        const dataFileElement = document.getElementById('file-geojson-data');
+        if (dataFileElement && dataFileElement.dataset.files) {
+            const daftarFile = JSON.parse(dataFileElement.dataset.files);
+            
+            daftarFile.forEach(function(namaFile) {
+                let pathLengkap = '/static/kelurahan_geojson/' + namaFile;
+                loadKelurahan(pathLengkap); // Warna tidak lagi di-pass manual dari sini, diurus di dalam style()
+            });
+        }
+
+    } catch (error) {
+        console.error("Gagal memuat peta Leaflet:", error);
+    }
+
+    // ==========================================
+    // 5. FITUR PENCARIAN 
+    // ==========================================
+    try {
+        document.getElementById('searchPasien').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#pasienTable tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    } catch(e) {}
+
 </script>
 {% endblock %}

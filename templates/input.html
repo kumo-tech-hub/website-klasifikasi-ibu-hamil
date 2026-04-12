@@ -6,6 +6,7 @@
     <div class="card">
         <h2>Data Ibu Hamil</h2>
         <p class="card-desc">Lengkapi semua informasi dibawah ini</p>
+        <div id="data-wilayah-container" data-wilayah='{{ data_wilayah | tojson }}' style="display:none;"></div>
 
         <form action="{{ url_for('main_routes.klasifikasi') }}" method="POST">
             <div class="form-group">
@@ -21,11 +22,18 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="kecamatan">Kecamatan</label>
-                    <input type="text" id="kecamatan" name="kecamatan" placeholder="contoh: Abeli" required>
+                    <select id="kecamatan" name="kecamatan" required>
+                        <option value="" disabled selected>Pilih Kecamatan...</option>
+                        {% for kec in kecamatans %}
+                            <option value="{{ kec.nama }}">{{ kec.nama }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="kelurahan">Kelurahan</label>
-                    <input type="text" id="kelurahan" name="kelurahan" placeholder="contoh: Abeli 1" required>
+                    <select id="kelurahan" name="kelurahan" required disabled>
+                        <option value="" disabled selected>Pilih Kelurahan...</option>
+                    </select>
                 </div>
             </div>
 
@@ -103,5 +111,43 @@ function hitungIMT() {
 
 bbAwal.addEventListener('input', hitungIMT);
 tinggi.addEventListener('input', hitungIMT);
+// 1. Ambil elemen HTML yang menyimpan data
+const containerWilayah = document.getElementById('data-wilayah-container');
+let dataWilayah = {};
+
+// 2. Parse (ubah) string JSON di HTML menjadi Objek JavaScript secara aman
+if (containerWilayah && containerWilayah.dataset.wilayah) {
+    dataWilayah = JSON.parse(containerWilayah.dataset.wilayah);
+}
+
+const selectKecamatan = document.getElementById('kecamatan');
+const selectKelurahan = document.getElementById('kelurahan');
+
+// 3. Event Listener: Dijalankan setiap kali dropdown kecamatan diganti
+selectKecamatan.addEventListener('change', function() {
+    // Ambil nama kecamatan yang dipilih
+    const namaKecamatan = this.value;
+    
+    // Ambil daftar kelurahan berdasarkan kecamatan tersebut
+    const daftarKelurahan = dataWilayah[namaKecamatan] || [];
+
+    // Kosongkan opsi kelurahan sebelumnya
+    selectKelurahan.innerHTML = '<option value="" disabled selected>Pilih Kelurahan...</option>';
+
+    // Jika kecamatan valid dan memiliki kelurahan
+    if (daftarKelurahan.length > 0) {
+        selectKelurahan.disabled = false; // Aktifkan dropdown kelurahan
+        
+        // Masukkan kelurahan satu per satu sebagai elemen <option>
+        daftarKelurahan.forEach(function(kelurahan) {
+            const option = document.createElement('option');
+            option.value = kelurahan;
+            option.textContent = kelurahan;
+            selectKelurahan.appendChild(option);
+        });
+    } else {
+        selectKelurahan.disabled = true; // Kunci kembali jika kosong
+    }
+});
 </script>
 {% endblock %}

@@ -1463,9 +1463,12 @@ a {
     flex-shrink: 0;
 }
 
-.dot-normal  { background: #d1fae5; border: 1.5px solid #a7f3d0; }
-.dot-kurang  { background: #fee2e2; border: 1.5px solid #fecaca; }
-.dot-lebih   { background: #fef9c3; border: 1.5px solid #fde68a; }
+.dot-normal  { background: #10b981; border: 1.5px solid #a7f3d0; }
+.dot-kurang  { background: #ef4444; border: 1.5px solid #fecaca; }
+.dot-lebih   { background: #f59e0b; border: 1.5px solid #fde68a; }
+.dot-empty   { background: #9ca3af; border: 1.5px solid #c2bba1; }
+
+
 
 /* Responsive for new dashboard */
 @media (max-width: 900px) {
