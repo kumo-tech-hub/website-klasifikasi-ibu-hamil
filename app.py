@@ -7,6 +7,7 @@ from database.table.riwayat import Riwayat
 from database.table.kecamatan import Kecamatan
 from database.table.kelurahan import Kelurahan
 from database.seeder.kelurahan_seeder import seed_wilayah_kendari
+from database.seeder.riwayat_seeder import seed_riwayat
 from flask_migrate import Migrate
 from sqlalchemy.exc import OperationalError
 
@@ -24,6 +25,10 @@ migrate = Migrate(app, db)
 # Buat semua tabel jika belum ada
 with app.app_context():
     try:
+        print("Mencoba menginisialisasi database dan membuat tabel...")
+        db.create_all()
+        print("Tabel berhasil dicek/dibuat.")
+        
         # 1. Seeder Admin
         admin_user = User.query.filter_by(username='annisa').first()
         if not admin_user:
@@ -34,8 +39,15 @@ with app.app_context():
             
         # 2. Seeder Wilayah Kendari
         seed_wilayah_kendari()
+        print("Seeder wilayah (Kecamatan & Kelurahan) berhasil dijalankan.")
 
-    except OperationalError:
-        print("Menunggu migrasi tabel selesai...")
+        # 3. Seeder Riwayat dari data Excel ANC
+        seed_riwayat(db, Riwayat)
+
+    except Exception as e:
+        print(f"Gagal saat proses inisialisasi database atau menjalankan seeder: {e}")
+        import traceback
+        traceback.print_exc()
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

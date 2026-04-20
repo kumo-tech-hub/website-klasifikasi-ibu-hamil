@@ -73,12 +73,38 @@
 <div class="card dash-card">
     <div class="dash-table-header">
         <h3 class="card-title">Riwayat Pasien</h3>
-        <div class="dash-search-wrapper">
-            <svg class="dash-search-icon" viewBox="0 0 24 24" fill="none" width="16" height="16">
-                <circle cx="11" cy="11" r="8" stroke="#9ca3af" stroke-width="2"/>
-                <path d="m21 21-4.35-4.35" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <input type="text" id="searchPasien" class="dash-search-input" placeholder="Cari pasien...">
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <form id="filterForm" method="GET" action="{{ url_for('main_routes.dashboard') }}" style="display: flex; gap: 8px; margin: 0;">
+                <select name="bulan" class="dash-search-input" style="width: auto; padding-left: 12px;" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">Semua Bulan</option>
+                    <option value="1" {% if request.args.get('bulan') == '1' %}selected{% endif %}>Januari</option>
+                    <option value="2" {% if request.args.get('bulan') == '2' %}selected{% endif %}>Februari</option>
+                    <option value="3" {% if request.args.get('bulan') == '3' %}selected{% endif %}>Maret</option>
+                    <option value="4" {% if request.args.get('bulan') == '4' %}selected{% endif %}>April</option>
+                    <option value="5" {% if request.args.get('bulan') == '5' %}selected{% endif %}>Mei</option>
+                    <option value="6" {% if request.args.get('bulan') == '6' %}selected{% endif %}>Juni</option>
+                    <option value="7" {% if request.args.get('bulan') == '7' %}selected{% endif %}>Juli</option>
+                    <option value="8" {% if request.args.get('bulan') == '8' %}selected{% endif %}>Agustus</option>
+                    <option value="9" {% if request.args.get('bulan') == '9' %}selected{% endif %}>September</option>
+                    <option value="10" {% if request.args.get('bulan') == '10' %}selected{% endif %}>Oktober</option>
+                    <option value="11" {% if request.args.get('bulan') == '11' %}selected{% endif %}>November</option>
+                    <option value="12" {% if request.args.get('bulan') == '12' %}selected{% endif %}>Desember</option>
+                </select>
+                <select name="tahun" class="dash-search-input" style="width: auto; padding-left: 12px;" onchange="document.getElementById('filterForm').submit();">
+                    <option value="">Semua Tahun</option>
+                    {% for y in range(2024, 2031) %}
+                    <option value="{{ y }}" {% if request.args.get('tahun') == y|string %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            
+            <div class="dash-search-wrapper" style="margin: 0;">
+                <svg class="dash-search-icon" viewBox="0 0 24 24" fill="none" width="16" height="16">
+                    <circle cx="11" cy="11" r="8" stroke="#9ca3af" stroke-width="2"/>
+                    <path d="m21 21-4.35-4.35" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <input type="text" id="searchPasien" class="dash-search-input" placeholder="Cari pasien...">
+            </div>
         </div>
     </div>
 
@@ -127,6 +153,48 @@
             </tbody>
         </table>
     </div>
+
+    <!-- ── Pagination ─────────────────────────────────── -->
+    {% if pagination.pages > 1 %}
+    <div class="dash-pagination">
+        <span class="dash-page-info">
+            Menampilkan {{ ((pagination.page - 1) * 8) + 1 }}–{{ [pagination.page * 8, pagination.total] | min }} dari {{ pagination.total }} data
+        </span>
+        <div class="dash-page-controls">
+            {% if pagination.has_prev %}
+            <a href="{{ url_for('main_routes.dashboard', page=pagination.prev_num, bulan=bulan, tahun=tahun) }}" class="dash-page-btn">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            {% else %}
+            <span class="dash-page-btn disabled">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            {% endif %}
+
+            {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if p %}
+                    {% if p == pagination.page %}
+                    <span class="dash-page-btn active">{{ p }}</span>
+                    {% else %}
+                    <a href="{{ url_for('main_routes.dashboard', page=p, bulan=bulan, tahun=tahun) }}" class="dash-page-btn">{{ p }}</a>
+                    {% endif %}
+                {% else %}
+                    <span class="dash-page-ellipsis">…</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.has_next %}
+            <a href="{{ url_for('main_routes.dashboard', page=pagination.next_num, bulan=bulan, tahun=tahun) }}" class="dash-page-btn">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            {% else %}
+            <span class="dash-page-btn disabled">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <!-- Segmentasi Wilayah -->
@@ -135,10 +203,9 @@
     <p class="card-desc">Distribusi status gizi berdasarkan kelurahan</p>
 
     <div class="dash-wilayah-wrapper">
-        <!-- <div class="dash-treemap" id="treemapContainer"></div> -->
          <div id="file-geojson-data" data-files='{{ daftar_file_geojson | tojson }}' style="display:none;"></div>
          <div id="segmentasi-data" data-json='{{ segmentasi_wilayah | tojson }}' style="display:none;"></div>
-        <div id="mapContainer" style="height: 400px; width: 100%; border-radius: 8px; z-index: 1; border: 2px;"></div>
+        <div id="mapContainer" style="height: 600px; width: 100%; border-radius: 8px; z-index: 1;"></div>
         <div class="dash-treemap-legend">
             <div class="dash-legend-item">
                 <span class="dash-legend-dot dot-normal"></span>
@@ -177,29 +244,31 @@
         dataSegmentasi = JSON.parse(segmentasiElement.dataset.json);
     }
     
-    // Fungsi untuk mencari status dominan berdasarkan nama kelurahan
-    function getStatusDominan(namaKelurahan) {
-        // Karena penulisan nama kelurahan di GeoJSON dan Database mungkin berbeda (misal huruf besar/kecil)
-        // Kita bandingkan dengan format huruf kecil semua (lowercase)
+    // Fungsi untuk mencari data lengkap berdasarkan nama kelurahan
+    function getKelurahanData(namaKelurahan) {
         const target = namaKelurahan.toLowerCase().trim();
-        const hasil = dataSegmentasi.find(item => item.kelurahan.toLowerCase().trim() === target);
-        
-        return hasil ? hasil.dominan : 'Tidak Ada Data'; // Jika tidak ada pasien di kelurahan itu
+        return dataSegmentasi.find(item => item.kelurahan.toLowerCase().trim() === target) || null;
+    }
+
+    function getStatusDominan(namaKelurahan) {
+        const data = getKelurahanData(namaKelurahan);
+        return data ? data.dominan : 'Tidak Ada Data';
     }
 
     // Konfigurasi Warna berdasarkan Status Gizi
     const colorMap = {
-        'Normal': '#10b981',   // Hijau
-        'Kurang': '#ef4444',   // Merah
-        'Lebih':  '#f59e0b',   // Kuning/Oranye
-        'Tidak Ada Data': '#9ca3af' // Abu-abu jika kosong
+        'Normal': '#10b981',
+        'Kurang': '#ef4444',
+        'Lebih':  '#f59e0b',
+        'Obesitas': '#8b5cf6',
+        'Tidak Ada Data': '#9ca3af'
     };
 
     // ==========================================
     // 2. INISIALISASI PETA LEAFLET
     // ==========================================
     try {
-        var map = L.map('mapContainer').setView([-4.007004, 122.520806], 12); // Sedikit di-zoom out ke level 12 agar muat lebih banyak
+        var map = L.map('mapContainer').setView([-4.007004, 122.520806], 12);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -221,34 +290,65 @@
                 })
                 .then(data => {
                     L.geoJSON(data, {
-                        // Aturan Styling / Pewarnaan
                         style: function (feature) {
-                            var namaKelurahan = feature.properties.wadmkd || ""; 
+                            var namaKelurahan = feature.properties.wadmkd || "";
                             var status = getStatusDominan(namaKelurahan);
                             var areaColor = colorMap[status] || colorMap['Tidak Ada Data'];
-
-                            return { 
-                                color: "#ffffff",     // Warna garis tepi (putih)
-                                weight: 1.5,          // Ketebalan garis
-                                fillOpacity: 0.6,     // Transparansi warna isi (agar jalanan basemap tetap terlihat)
-                                fillColor: areaColor  // Warna isi didapat dari colorMap berdasarkan status
+                            return {
+                                color: "#ffffff",
+                                weight: 1.5,
+                                fillOpacity: 0.6,
+                                fillColor: areaColor
                             };
                         },
-                        // Interaksi saat poligon di-klik atau disorot
                         onEachFeature: function (feature, layer) {
                             var namaKelurahan = feature.properties.wadmkd || "Tidak Diketahui";
-                            var status = getStatusDominan(namaKelurahan);
-                            
-                            // Konten Popup
-                            var popupContent = `
-                                <div style="text-align:center;">
-                                    <b>Kelurahan ${namaKelurahan}</b><br>
-                                    <span style="display:inline-block; margin-top:5px; padding:3px 8px; border-radius:12px; font-size:12px; color:white; background-color:${colorMap[status]};">
-                                        Status Dominan: ${status}
-                                    </span>
-                                </div>
-                            `;
-                            layer.bindPopup(popupContent);
+                            var kData = getKelurahanData(namaKelurahan);
+
+                            var popupContent;
+                            if (!kData) {
+                                popupContent = `
+                                    <div style="font-family:'Inter',sans-serif; min-width:180px; text-align:center;">
+                                        <b style="font-size:13px;">${namaKelurahan}</b><br>
+                                        <span style="display:inline-block;margin-top:8px;padding:3px 10px;border-radius:12px;font-size:11px;color:white;background:#9ca3af;">
+                                            Tidak Ada Data
+                                        </span>
+                                    </div>`;
+                            } else {
+                                const total = kData.jumlah;
+                                const pct = v => total > 0 ? Math.round(v / total * 100) : 0;
+
+                                const barRow = (label, val, color) => val > 0 ? `
+                                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+                                        <span style="width:60px;font-size:10px;color:#6b7280;text-align:right;flex-shrink:0;">${label}</span>
+                                        <div style="flex:1;background:#f3f4f6;border-radius:4px;height:8px;overflow:hidden;">
+                                            <div style="width:${pct(val)}%;background:${color};height:100%;border-radius:4px;"></div>
+                                        </div>
+                                        <span style="font-size:10px;font-weight:700;color:${color};width:32px;">${val} (${pct(val)}%)</span>
+                                    </div>` : '';
+
+                                popupContent = `
+                                    <div style="font-family:'Inter',sans-serif; min-width:220px; padding:2px;">
+                                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                                            <b style="font-size:13px;color:#111827;">Kel. ${namaKelurahan}</b>
+                                            <span style="font-size:10px;background:#f3f4f6;padding:2px 8px;border-radius:10px;color:#6b7280;">${total} pasien</span>
+                                        </div>
+                                        <div style="margin-bottom:10px;">
+                                            <span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;color:white;background:${colorMap[kData.dominan] || '#9ca3af'};">
+                                                🏆 Dominan: ${kData.dominan}
+                                            </span>
+                                        </div>
+                                        <div style="border-top:1px solid #f3f4f6;padding-top:10px;">
+                                            <p style="font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Rincian Status Gizi</p>
+                                            ${barRow('Normal', kData.normal, '#10b981')}
+                                            ${barRow('Kurang', kData.kurang, '#ef4444')}
+                                            ${barRow('Lebih', kData.lebih, '#f59e0b')}
+                                            ${barRow('Obesitas', kData.obesitas, '#8b5cf6')}
+                                        </div>
+                                    </div>`;
+                            }
+
+                            layer.bindPopup(popupContent, { maxWidth: 280 });
 
                             // Tambahkan efek hover (opsional agar terlihat interaktif)
                             layer.on({

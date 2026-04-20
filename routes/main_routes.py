@@ -11,7 +11,15 @@ from controllers.klasifikasi_controller import (
     logout
 )
 
+from flask import request, redirect, url_for, session
+
 main_routes = Blueprint('main_routes', __name__)
+
+@main_routes.before_request
+def require_login():
+    allowed_routes = ['main_routes.login', 'static']
+    if request.endpoint not in allowed_routes and 'user_id' not in session:
+        return redirect(url_for('main_routes.login'))
 
 main_routes.route('/login', methods=['GET', 'POST'])(login)
 main_routes.route('/logout')(logout)

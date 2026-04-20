@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
@@ -9,10 +9,12 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     curl \
     netcat-openbsd \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# upgrade pip
-RUN pip install --upgrade pip setuptools wheel
+# upgrade pip and pin setuptools/wheel to fix compatibility with older catboost/xgboost
+RUN pip install --upgrade pip
+RUN pip install "setuptools<70.0.0" "wheel<0.44.0"
 
 # copy requirements
 COPY requirements.txt .

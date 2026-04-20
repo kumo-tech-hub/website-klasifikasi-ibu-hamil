@@ -29,7 +29,11 @@ Jika ingin menjalankan manual lewat terminal:
 2.  **Aktifkan venv:**
     * Windows: `.\venv\Scripts\activate`
     * Linux/Mac: `source venv/bin/activate`
+
 3.  **Instal Library:**
+    ```bash
+    pip install "setuptools<70.0.0" "wheel<0.44.0"
+    ```
     ```bash
     pip install -r requirements.txt
     ```
