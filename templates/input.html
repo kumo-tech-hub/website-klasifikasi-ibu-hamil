@@ -4,145 +4,155 @@
 
 {% block content %}
 <div class="container-main">
-    
-<div class="card">
-    <h2>Data Ibu Hamil</h2>
-    <p class="card-desc">Lengkapi semua informasi dibawah ini</p>
-    <div id="data-wilayah-container" data-wilayah='{{ data_wilayah | tojson }}' style="display:none;"></div>
 
-    <form action="{{ url_for('main_routes.klasifikasi') }}" method="POST">
-        <div class="form-row">
-            <div class="form-group">
-                <label for="nama">Nama</label>
-                <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
+    <div class="card">
+        <h2>Data Ibu Hamil</h2>
+        <p class="card-desc">Lengkapi semua informasi dibawah ini</p>
+        <div id="data-wilayah-container" data-wilayah='{{ data_wilayah | tojson }}' style="display:none;"></div>
+
+        <form action="{{ url_for('main_routes.klasifikasi') }}" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nama">Nama</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nik">NIK</label>
+                    <input type="text" id="nik" name="nik" placeholder="16 digit NIK" maxlength="16" pattern="[0-9]{16}"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="kecamatan">Kecamatan</label>
+                    <select id="kecamatan_display" required disabled>
+                        <option value="Abeli" selected>Abeli</option>
+                    </select>
+                    <input type="hidden" id="kecamatan" name="kecamatan" value="Abeli">
+                </div>
+                <div class="form-group">
+                    <label for="kelurahan">Kelurahan</label>
+                    <select id="kelurahan" name="kelurahan" required disabled>
+                        <option value="" disabled selected>Pilih Kelurahan...</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="nik">NIK</label>
-                <input type="text" id="nik" name="nik" placeholder="16 digit NIK" maxlength="16" pattern="[0-9]{16}"
+                <label for="umur">Umur (tahun)</label>
+                <input type="number" id="umur" name="umur" placeholder="contoh: 25" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bb_awal">Berat Badan Awal (Kg)</label>
+                    <input type="number" id="bb_awal" name="bb_awal" placeholder="contoh: 50" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="bb_sekarang">Berat Badan Sekarang (Kg)</label>
+                    <input type="number" id="bb_sekarang" name="bb_sekarang" placeholder="contoh: 56.5" step="0.1"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tinggi_badan">Tinggi Badan (Cm)</label>
+                <input type="number" id="tinggi_badan" name="tinggi_badan" placeholder="contoh: 155" step="0.1"
                     required>
             </div>
-        </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="kecamatan">Kecamatan</label>
-                <select id="kecamatan_display" required disabled>
-                    <option value="Abeli" selected>Abeli</option>
-                </select>
-                <input type="hidden" id="kecamatan" name="kecamatan" value="Abeli">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="lila">LiLA (Cm)</label>
+                    <input type="number" id="lila" name="lila" placeholder="contoh: 25.5" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="trimester">Usia Kehamilan (Trimester)</label>
+                    <select id="trimester" name="trimester" required>
+                        <option value="" disabled selected>Pilih...</option>
+                        <option value="1">Trimester 1 (0-12 minggu)</option>
+                        <option value="2">Trimester 2 (13-27 minggu)</option>
+                        <option value="3">Trimester 3 (28-40 minggu)</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="kelurahan">Kelurahan</label>
-                <select id="kelurahan" name="kelurahan" required disabled>
-                    <option value="" disabled selected>Pilih Kelurahan...</option>
-                </select>
+
+            <div class="imt-preview" id="imtPreview" style="display:none;">
+                <span>IMT Pra-Kehamilan: </span>
+                <strong id="imtValue">-</strong>
+                <span> kg/m²</span>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label for="umur">Umur (tahun)</label>
-            <input type="number" id="umur" name="umur" placeholder="contoh: 25" required>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label for="bb_awal">Berat Badan Awal (Kg)</label>
-                <input type="number" id="bb_awal" name="bb_awal" placeholder="contoh: 50" step="0.1" required>
+            <div class="form-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path
+                        d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5">
+                    </path>
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                </svg>
+                <p>Pastikan semua data yang dimasukkan akurat untuk hasil klasifikasi yang optimal.</p>
             </div>
-            <div class="form-group">
-                <label for="bb_sekarang">Berat Badan Sekarang (Kg)</label>
-                <input type="number" id="bb_sekarang" name="bb_sekarang" placeholder="contoh: 56.5" step="0.1" required>
-            </div>
-        </div>
+            <button type="submit" class="btn" style="margin-top: 15px; width:100%;">Klasifikasi Status Gizi</button>
+        </form>
+    </div>
+    {% endblock %}
 
-        <div class="form-group">
-            <label for="tinggi_badan">Tinggi Badan (Cm)</label>
-            <input type="number" id="tinggi_badan" name="tinggi_badan" placeholder="contoh: 155" step="0.1" required>
-        </div>
+    {% block extra_js %}
+    <script>
+        var bbAwal = document.getElementById('bb_awal');
+        var tinggi = document.getElementById('tinggi_badan');
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="lila">LiLA (Cm)</label>
-                <input type="number" id="lila" name="lila" placeholder="contoh: 25.5" step="0.1" required>
-            </div>
-            <div class="form-group">
-                <label for="trimester">Usia Kehamilan (Trimester)</label>
-                <select id="trimester" name="trimester" required>
-                    <option value="" disabled selected>Pilih...</option>
-                    <option value="1">Trimester 1 (0-12 minggu)</option>
-                    <option value="2">Trimester 2 (13-27 minggu)</option>
-                    <option value="3">Trimester 3 (28-40 minggu)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="imt-preview" id="imtPreview" style="display:none;">
-            <span>IMT Pra-Kehamilan: </span>
-            <strong id="imtValue">-</strong>
-            <span> kg/m²</span>
-        </div>
-
-
-
-        <button type="submit" class="btn" style="margin-top: 15px; width:100%;">Klasifikasi Status Gizi</button>
-    </form>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    var bbAwal = document.getElementById('bb_awal');
-    var tinggi = document.getElementById('tinggi_badan');
-
-    function hitungIMT() {
-        var bb = parseFloat(bbAwal.value);
-        var tb = parseFloat(tinggi.value);
-        if (bb > 0 && tb > 0) {
-            var imt = bb / Math.pow(tb / 100, 2);
-            document.getElementById('imtValue').textContent = imt.toFixed(2);
-            document.getElementById('imtPreview').style.display = 'block';
+        function hitungIMT() {
+            var bb = parseFloat(bbAwal.value);
+            var tb = parseFloat(tinggi.value);
+            if (bb > 0 && tb > 0) {
+                var imt = bb / Math.pow(tb / 100, 2);
+                document.getElementById('imtValue').textContent = imt.toFixed(2);
+                document.getElementById('imtPreview').style.display = 'block';
+            }
         }
-    }
 
-    bbAwal.addEventListener('input', hitungIMT);
-    tinggi.addEventListener('input', hitungIMT);
-    // 1. Ambil elemen HTML yang menyimpan data
-    const containerWilayah = document.getElementById('data-wilayah-container');
-    let dataWilayah = {};
+        bbAwal.addEventListener('input', hitungIMT);
+        tinggi.addEventListener('input', hitungIMT);
+        // 1. Ambil elemen HTML yang menyimpan data
+        const containerWilayah = document.getElementById('data-wilayah-container');
+        let dataWilayah = {};
 
-    // 2. Parse (ubah) string JSON di HTML menjadi Objek JavaScript secara aman
-    if (containerWilayah && containerWilayah.dataset.wilayah) {
-        dataWilayah = JSON.parse(containerWilayah.dataset.wilayah);
-    }
-
-    const inputKecamatan = document.getElementById('kecamatan');
-    const selectKelurahan = document.getElementById('kelurahan');
-
-    // 3. Fungsi untuk memperbarui daftar kelurahan berdasarkan kecamatan
-    function updateKelurahan(namaKecamatan) {
-        const daftarKelurahan = dataWilayah[namaKecamatan] || [];
-        selectKelurahan.innerHTML = '<option value="" disabled selected>Pilih Kelurahan...</option>';
-
-        if (daftarKelurahan.length > 0) {
-            selectKelurahan.disabled = false;
-            daftarKelurahan.forEach(function (kelurahan) {
-                const option = document.createElement('option');
-                option.value = kelurahan;
-                option.textContent = kelurahan;
-                selectKelurahan.appendChild(option);
-            });
-        } else {
-            selectKelurahan.disabled = true;
+        // 2. Parse (ubah) string JSON di HTML menjadi Objek JavaScript secara aman
+        if (containerWilayah && containerWilayah.dataset.wilayah) {
+            dataWilayah = JSON.parse(containerWilayah.dataset.wilayah);
         }
-    }
 
-    // Panggil saat halaman pertama kali dimuat
-    document.addEventListener('DOMContentLoaded', function () {
-        if (inputKecamatan && inputKecamatan.value) {
-            updateKelurahan(inputKecamatan.value);
+        const inputKecamatan = document.getElementById('kecamatan');
+        const selectKelurahan = document.getElementById('kelurahan');
+
+        // 3. Fungsi untuk memperbarui daftar kelurahan berdasarkan kecamatan
+        function updateKelurahan(namaKecamatan) {
+            const daftarKelurahan = dataWilayah[namaKecamatan] || [];
+            selectKelurahan.innerHTML = '<option value="" disabled selected>Pilih Kelurahan...</option>';
+
+            if (daftarKelurahan.length > 0) {
+                selectKelurahan.disabled = false;
+                daftarKelurahan.forEach(function (kelurahan) {
+                    const option = document.createElement('option');
+                    option.value = kelurahan;
+                    option.textContent = kelurahan;
+                    selectKelurahan.appendChild(option);
+                });
+            } else {
+                selectKelurahan.disabled = true;
+            }
         }
-    });
-</script>
+
+        // Panggil saat halaman pertama kali dimuat
+        document.addEventListener('DOMContentLoaded', function () {
+            if (inputKecamatan && inputKecamatan.value) {
+                updateKelurahan(inputKecamatan.value);
+            }
+        });
+    </script>
 </div>
 {% endblock %}
