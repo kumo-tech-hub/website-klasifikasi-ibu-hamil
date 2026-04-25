@@ -30,12 +30,12 @@ with app.app_context():
         print("Tabel berhasil dicek/dibuat.")
         
         # 1. Seeder Admin
-        admin_user = User.query.filter_by(username='annisa').first()
+        admin_user = User.query.filter_by(username='Admin').first()
         if not admin_user:
-            new_admin = User(username='annisa', password='annisa123')
+            new_admin = User(username='Admin', password='AdminAbeli123')
             db.session.add(new_admin)
             db.session.commit()
-            print("User 'annisa' berhasil ditambahkan!")
+            print("User 'admin' berhasil ditambahkan!")
             
         # 2. Seeder Wilayah Kendari
         seed_wilayah_kendari()

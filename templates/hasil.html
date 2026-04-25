@@ -4,111 +4,224 @@
 
 {% block content %}
 <div class="container-main">
+
+    {# ── Back ── #}
     <a href="{{ url_for('main_routes.input_data') }}" class="btn-back">
         <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-            <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
         </svg>
         Kembali ke Form
     </a>
 
     <div class="card">
+        {% if hasil.peringatan_kritis %}
+        <div class="hs-banner hs-banner--kritis">
+            <div class="hs-banner__top">
+                <div class="hs-banner__icon">🚨</div>
+                <div class="hs-banner__text">
+                    <div class="hs-banner__eyebrow">Peringatan Kritis — Gizi Buruk / KEK</div>
+                    <div class="hs-banner__title">Ibu Hamil Berisiko Tinggi Melahirkan Bayi Stunting</div>
+                    <div class="hs-banner__desc">
+                        Status terdeteksi: <strong>{{ hasil.status }}</strong> — Probabilitas gizi kurang: {{
+                        hasil.prob_kurang }}%.
+                        Segera rujuk ke Puskesmas/RS terdekat dan berikan intervensi PMT.
+                    </div>
+                </div>
+            </div>
+            <div class="hs-kek-strip">
+                <span class="hs-kek-dot hs-kek-dot--berisiko"></span>
+                <span class="hs-kek-label">Status KEK</span>
+                <span class="hs-kek-value">{{ hasil.status_kek }}</span>
+                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
+            </div>
+        </div>
 
-        <!-- ══════════════════════════════════════════════════════
-             Status Banner
-        ══════════════════════════════════════════════════════ -->
-        {% if hasil.status == 'Normal' %}
-        <div class="status-banner banner-normal">
-            <div class="status-banner-icon">✅</div>
-            <div class="status-banner-text">
-                <div class="label">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
-                <div class="title">Status Gizi Normal</div>
-                <div class="desc">Pertahankan pola makan dan aktivitas saat ini. Risiko stunting pada janin sangat rendah.</div>
+        {% elif hasil.status == 'Normal' %}
+        <div class="hs-banner hs-banner--normal">
+            <div class="hs-banner__top">
+                <div class="hs-banner__icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                        <path d="M7.5 12.5l3 3 6-6" />
+                    </svg>
+                </div>
+                <div class="hs-banner__text">
+                    <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
+                    <div class="hs-banner__title">Status Gizi Normal</div>
+                    <div class="hs-banner__desc">Pertahankan pola makan dan aktivitas saat ini. Risiko stunting pada
+                        janin sangat rendah.</div>
+                </div>
+            </div>
+            <div class="hs-kek-strip">
+                <span class="hs-kek-dot hs-kek-dot--aman"></span>
+                <span class="hs-kek-label">Status KEK</span>
+                <span class="hs-kek-value">{{ hasil.status_kek }}</span>
+                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
             </div>
         </div>
+
         {% elif hasil.status == 'Kurang' %}
-        <div class="status-banner banner-kurang">
-            <div class="status-banner-icon">⚠️</div>
-            <div class="status-banner-text">
-                <div class="label">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
-                <div class="title">Status Gizi Kurang</div>
-                <div class="desc">Perlu perhatian khusus. Kekurangan gizi dapat meningkatkan risiko stunting pada janin.</div>
+        <div class="hs-banner hs-banner--kurang">
+            <div class="hs-banner__top">
+                <div class="hs-banner__icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </div>
+                <div class="hs-banner__text">
+                    <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
+                    <div class="hs-banner__title">Status Gizi Kurang (Kurus)</div>
+                    <div class="hs-banner__desc">{{ hasil.catatan_status }}. Perlu perhatian khusus untuk mencegah
+                        stunting.</div>
+                </div>
+            </div>
+            <div class="hs-kek-strip">
+                <span
+                    class="hs-kek-dot {% if hasil.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
+                <span class="hs-kek-label">Status KEK</span>
+                <span class="hs-kek-value">{{ hasil.status_kek }}</span>
+                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
             </div>
         </div>
+
         {% elif hasil.status == 'Lebih' %}
-        <div class="status-banner banner-lebih">
-            <div class="status-banner-icon">📊</div>
-            <div class="status-banner-text">
-                <div class="label">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
-                <div class="title">Status Gizi Lebih</div>
-                <div class="desc">Perlu pengaturan pola makan. Konsultasikan dengan tenaga kesehatan.</div>
+        <div class="hs-banner hs-banner--lebih">
+            <div class="hs-banner__top">
+                <div class="hs-banner__icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                </div>
+                <div class="hs-banner__text">
+                    <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
+                    <div class="hs-banner__title">Status Gizi Lebih (Gemuk)</div>
+                    <div class="hs-banner__desc">{{ hasil.catatan_status }}. Perlu pengaturan pola makan.</div>
+                </div>
+            </div>
+            <div class="hs-kek-strip">
+                <span
+                    class="hs-kek-dot {% if hasil.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
+                <span class="hs-kek-label">Status KEK</span>
+                <span class="hs-kek-value">{{ hasil.status_kek }}</span>
+                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
             </div>
         </div>
+
         {% elif hasil.status == 'Obesitas' %}
-        <div class="status-banner banner-obesitas">
-            <div class="status-banner-icon">🔴</div>
-            <div class="status-banner-text">
-                <div class="label">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
-                <div class="title">Status Gizi Obesitas</div>
-                <div class="desc">Perlu penanganan intensif. Obesitas meningkatkan risiko komplikasi kehamilan.</div>
+        <div class="hs-banner hs-banner--obesitas">
+            <div class="hs-banner__top">
+                <div class="hs-banner__icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                </div>
+                <div class="hs-banner__text">
+                    <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
+                    <div class="hs-banner__title">Status Gizi Obesitas</div>
+                    <div class="hs-banner__desc">{{ hasil.catatan_status }}. Perlu penanganan intensif untuk mencegah
+                        komplikasi.</div>
+                </div>
+            </div>
+            <div class="hs-kek-strip">
+                <span
+                    class="hs-kek-dot {% if hasil.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
+                <span class="hs-kek-label">Status KEK</span>
+                <span class="hs-kek-value">{{ hasil.status_kek }}</span>
+                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
             </div>
         </div>
         {% endif %}
 
-        <!-- ══════════════════════════════════════════════════════
-             Informasi Pasien
-        ══════════════════════════════════════════════════════ -->
-        <div class="patient-info" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 20px; margin-bottom: 0;">
-            <p><strong>Nama</strong><br>{{ hasil.nama }}</p>
-            <p><strong>Usia Kehamilan</strong><br>Trimester {{ hasil.trimester }}</p>
-            <p><strong>Algoritma Dipakai</strong><br>{{ hasil.algoritma_dipakai }}</p>
+        {# ── Card: Info Pasien + Pengukuran ── #}
+        <div style="border: 1px solid var(--gray-100);" class="hs-card">
+            <div class="hs-info-row" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="hs-info-cell">
+                    <div class="hs-info-lbl">Nama</div>
+                    <div class="hs-info-val">{{ hasil.nama }}</div>
+                </div>
+                <div class="hs-info-cell">
+                    <div class="hs-info-lbl">Usia Kehamilan</div>
+                    <div class="hs-info-val">Trimester {{ hasil.trimester }}</div>
+                </div>
+            </div>
+            <div class="hs-card__body">
+                <p class="hs-section-label">Ringkasan Pengukuran</p>
+                <div class="hs-measure-grid">
+                    <div class="hs-measure-box">
+                        <span class="hs-measure-lbl">Umur</span>
+                        <span class="hs-measure-val">{{ hasil.umur|int }} Thn</span>
+                    </div>
+                    <div class="hs-measure-box">
+                        <span class="hs-measure-lbl">BB Awal</span>
+                        <span class="hs-measure-val">{{ hasil.bb_awal }} Kg</span>
+                    </div>
+                    <div class="hs-measure-box">
+                        <span class="hs-measure-lbl">BB Sekarang</span>
+                        <span class="hs-measure-val">{{ hasil.bb_sekarang }} Kg</span>
+                    </div>
+                    <div class="hs-measure-box">
+                        <span class="hs-measure-lbl">Tinggi Badan</span>
+                        <span class="hs-measure-val">{{ hasil.tinggi_badan }} cm</span>
+                    </div>
+                    <div class="hs-measure-box">
+                        <span class="hs-measure-lbl">IMT</span>
+                        <span class="hs-measure-val">{{ hasil.imt }} kg/m²</span>
+                    </div>
+                    <div class="hs-measure-box">
+                        <span class="hs-measure-lbl">LiLA</span>
+                        <span class="hs-measure-val">{{ hasil.lila }} cm</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--gray-100);">
-
-        <!-- ══════════════════════════════════════════════════════
-             Ringkasan Pengukuran
-        ══════════════════════════════════════════════════════ -->
-        <p class="section-title">Ringkasan Pengukuran</p>
-        <div class="detail-measure-grid" style="grid-template-columns: repeat(3, 1fr);">
-            <div class="measure-box">
-                <span class="measure-label">Umur</span>
-                <span class="measure-value">{{ hasil.umur|int }} Thn</span>
+        {# ── Card: Rekomendasi BB ── #}
+        <div class="hs-card">
+            <div class="hs-card__header">
+                <p class="hs-section-label">Rekomendasi Penambahan Berat Badan</p>
             </div>
-            <div class="measure-box">
-                <span class="measure-label">BB Awal</span>
-                <span class="measure-value">{{ hasil.bb_awal }} Kg</span>
-            </div>
-            <div class="measure-box">
-                <span class="measure-label">BB Sekarang</span>
-                <span class="measure-value">{{ hasil.bb_sekarang }} Kg</span>
-            </div>
-            <div class="measure-box">
-                <span class="measure-label">Tinggi Badan</span>
-                <span class="measure-value">{{ hasil.tinggi_badan }} cm</span>
-            </div>
-            <div class="measure-box">
-                <span class="measure-label">IMT</span>
-                <span class="measure-value">{{ hasil.imt }} kg/m²</span>
-            </div>
-            <div class="measure-box">
-                <span class="measure-label">LiLA</span>
-                <span class="measure-value">{{ hasil.lila }} cm</span>
+            <div class="hs-card__body">
+                <div class="hs-kenaikan">
+                    <span class="hs-kenaikan__lbl">Kenaikan BB saat ini</span>
+                    <span class="hs-kenaikan__val">{{ hasil.kenaikan_bb }} kg</span>
+                </div>
+                <div class="hs-rec-row">
+                    <span class="hs-rec-key">Pada Trimester 1</span>
+                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.trimester_1 }}</span>
+                </div>
+                <div class="hs-rec-row">
+                    <span class="hs-rec-key">Pada Trimester 2 dan 3</span>
+                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.trimester_2_3 }}</span>
+                </div>
+                <div class="hs-rec-row">
+                    <span class="hs-rec-key">Total Selama Hamil (Kehamilan Tunggal)</span>
+                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.total_tunggal }}</span>
+                </div>
+                <div class="hs-rec-row hs-rec-row--last">
+                    <span class="hs-rec-key">Total Selama Hamil (Kehamilan Ganda)</span>
+                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.total_ganda }}</span>
+                </div>
             </div>
         </div>
 
-        <!-- Rekomendasi BB -->
-        <div class="rekomendasi-bb" style="margin-top: 16px;">
-            <span>Rekomendasi Penambahan BB selama kehamilan</span>
-            <strong>{{ hasil.rekomendasi_bb }}</strong>
-        </div>
-
-        <!-- ══════════════════════════════════════════════════════
-             Tips Edukasi (langsung tampil, tidak toggle)
-        ══════════════════════════════════════════════════════ -->
+        {# ── Card: Tips Edukasi ── #}
         <div class="tips-box" style="margin-top: 20px;">
             <h3>
                 <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 Tips Edukasi untuk Ibu
             </h3>
@@ -119,68 +232,66 @@
             </ol>
         </div>
 
-        <!-- Tombol Ulangi -->
-        <a href="{{ url_for('main_routes.input_data') }}" class="btn" style="width: 100%; margin-top: 14px; display: flex; justify-content: center;">
+
+        {# ── Tombol Ulangi ── #}
+        <a href="{{ url_for('main_routes.input_data') }}" class="btn hs-btn-ulangi">
             Ulangi Pengujian
         </a>
 
-        <!-- Catatan -->
-        <div class="catatan" style="margin-top: 14px;">
+        {# ── Catatan Penting ── #}
+        <div class="catatan hs-catatan">
             <div>
                 <strong>⚠ Catatan Penting</strong>
-                <p>Hasil klasifikasi ini merupakan indikator awal yang dihasilkan oleh sistem berbasis machine learning. Gunakan sebagai acuan konsultasi dengan tenaga kesehatan (ahli gizi dan bidan), bukan sebagai diagnosis medis.</p>
+                <p>Hasil klasifikasi ini merupakan indikator awal yang dihasilkan oleh sistem berbasis machine learning.
+                    Gunakan sebagai acuan konsultasi dengan tenaga kesehatan (ahli gizi dan bidan), bukan sebagai
+                    diagnosis medis.</p>
             </div>
         </div>
 
-        <!-- ══════════════════════════════════════════════════════
-             Prediksi Perbandingan Model (di bawah tips)
-        ══════════════════════════════════════════════════════ -->
-        <hr style="margin: 28px 0 20px; border: none; border-top: 1px solid var(--gray-100);">
-        <p class="section-title">Prediksi Perbandingan Model</p>
-
-        <style>
-            .pred-status-normal   { color: var(--green-600); }
-            .pred-status-kurang   { color: var(--orange-600); }
-            .pred-status-lebih    { color: var(--yellow-600); }
-            .pred-status-obesitas { color: var(--red-600); }
-        </style>
-
-        <div class="model-results-grid">
-            {% for algo, data in hasil.predictions.items() %}
-            <div class="model-card">
-                <p class="model-name">{{ algo }}</p>
-                <div class="model-divider"></div>
-                {% if data.status == 'Error' %}
-                <div class="model-error">{{ data.error }}</div>
+        {# ── Card: Prediksi Perbandingan Model ── #}
+        <div class="hs-card hs-card--model">
+            <div class="hs-card__header">
+                <p class="hs-section-label">Prediksi Perbandingan Model</p>
+            </div>
+            <div class="hs-card__body">
+                {% if hasil.predictions %}
+                <div class="hs-model-grid">
+                    {% for algo, data in hasil.predictions.items() %}
+                    <div class="hs-model-card">
+                        <div class="hs-model-name">{{ algo }}</div>
+                        <div class="hs-model-divider"></div>
+                        {% if data.status == 'Error' %}
+                        <div class="model-error">{{ data.error }}</div>
+                        {% else %}
+                        <div class="hs-model-status hs-status--{{ data.status|lower }}">{{ data.status }}</div>
+                        <div class="hs-model-acc">Akurasi: {{ data.probability }}%</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
                 {% else %}
-                <p class="pred-status-{{ data.status|lower }} model-status">{{ data.status }}</p>
-                <p class="model-accuracy">Akurasi: {{ data.probability }}%</p>
+                <div class="model-empty-state">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p>Gagal memuat prediksi model.</p>
+                    <span>Pastikan file .pkl tersedia di folder ml/ dan library XGBoost/CatBoost terinstall.</span>
+                </div>
                 {% endif %}
             </div>
-            {% endfor %}
-
-            {% if not hasil.predictions %}
-            <div class="model-empty-state">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-                <p>Gagal memuat prediksi model.</p>
-                <span>Pastikan file .pkl tersedia di folder ml/ dan library XGBoost/CatBoost terinstall.</span>
-            </div>
-            {% endif %}
         </div>
-
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-function toggleTips(btn) {
-    var box = document.getElementById('tipsBox');
-    var visible = box.style.display !== 'none';
-    box.style.display = visible ? 'none' : 'block';
-    btn.textContent = visible ? 'Lihat Tips Edukasi' : 'Tutup Tips Edukasi';
-}
+    function toggleTips(btn) {
+        var box = document.getElementById('tipsBox');
+        var visible = box.style.display !== 'none';
+        box.style.display = visible ? 'none' : 'block';
+        btn.textContent = visible ? 'Lihat Tips Edukasi' : 'Tutup Tips Edukasi';
+    }
 </script>
 {% endblock %}

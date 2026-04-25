@@ -3,36 +3,49 @@
 {% block page_title %}Detail Pemeriksaan{% endblock %}
 
 {% block content %}
-<div class="container-sm">
-    <a href="{{ url_for('main_routes.dashboard') }}" class="btn-back">← Kembali ke Dashboard</a>
+<div class="container-main">
+
+    {# ── Back ── #}
+    <a href="{{ url_for('main_routes.dashboard') }}" class="btn-back">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+            <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+        Kembali ke Dashboard
+    </a>
 
     <div class="card">
+
+        {# ── Header ── #}
         <div class="detail-header">
             <h2>Detail Pemeriksaan</h2>
-            <a href="{{ url_for('main_routes.edit_riwayat', id=data.id) }}" class="btn btn-sm btn-outline">✏️ Edit</a>
+            <a href="{{ url_for('main_routes.edit_riwayat', id=data.id) }}" class="btn btn-sm btn-outline">
+                <svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                Edit
+            </a>
         </div>
 
-        <!-- Info Pasien -->
-        <div class="detail-info-grid">
-            <div class="detail-info-item">
-                <span class="detail-label">Nama Pasien</span>
-                <span class="detail-value">{{ data.nama }}</span>
+        {# ── Info Pasien ── #}
+        <div class="hs-info-row" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="hs-info-cell">
+                <div class="hs-info-lbl">Nama</div>
+                <div class="hs-info-val">{{ data.nama }}</div>
             </div>
-            <div class="detail-info-item">
-                <span class="detail-label">Tanggal Pemeriksaan</span>
-                <span class="detail-value">{{ data.tanggal }}</span>
+            <div class="hs-info-cell">
+                <div class="hs-info-lbl">Tanggal Pemeriksaan</div>
+                <div class="hs-info-val">{{ data.tanggal }}</div>
             </div>
-            <div class="detail-info-item">
-                <span class="detail-label">Trimester</span>
-                <span class="detail-value">{{ data.trimester }}</span>
-            </div>
-            <div class="detail-info-item">
-                <span class="detail-label">Algoritma</span>
-                <span class="algo-tag">{{ data.algoritma }}</span>
+            <div class="hs-info-cell">
+                <div class="hs-info-lbl">Usia Kehamilan</div>
+                <div class="hs-info-val">Trimester {{ data.trimester }}</div>
             </div>
         </div>
 
-        <!-- Status Gizi -->
+        {# ── Status Gizi ── #}
         <div class="status-box">
             <span>Status Gizi:</span>
             <span class="badge badge-{{ data.status|lower }}">{{ data.status }}</span>
@@ -40,28 +53,37 @@
 
         {% if data.status == 'Normal' %}
         <div class="status-message msg-normal">
-            <strong>Status Gizi Normal - Pertahankan kondisi saat ini</strong>
+            <strong>Status Gizi Normal — {{ data.catatan_status }}</strong>
             <p>Ibu hamil memiliki status gizi yang baik dengan risiko stunting pada janin sangat rendah.</p>
         </div>
         {% elif data.status == 'Kurang' %}
         <div class="status-message msg-kurang">
-            <strong>Status Gizi Kurang - Perlu perhatian khusus</strong>
+            <strong>Status Gizi Kurang (Kurus) — {{ data.catatan_status }}</strong>
             <p>Ibu hamil terindikasi kekurangan gizi yang dapat meningkatkan risiko stunting pada janin.</p>
         </div>
         {% elif data.status == 'Lebih' %}
         <div class="status-message msg-lebih">
-            <strong>Status Gizi Lebih - Perlu pengaturan pola makan</strong>
+            <strong>Status Gizi Lebih (Gemuk) — {{ data.catatan_status }}</strong>
             <p>Ibu hamil memiliki berat badan berlebih yang perlu dikelola dengan konsultasi tenaga kesehatan.</p>
         </div>
         {% elif data.status == 'Obesitas' %}
         <div class="status-message msg-obesitas">
-            <strong>Status Gizi Obesitas - Perlu penanganan intensif</strong>
+            <strong>Status Gizi Obesitas — {{ data.catatan_status }}</strong>
             <p>Ibu hamil mengalami obesitas yang meningkatkan risiko komplikasi kehamilan.</p>
         </div>
         {% endif %}
 
-        <!-- Ringkasan Pengukuran -->
-        <h3 class="section-title">Ringkasan Pengukuran</h3>
+        {# ── KEK strip (pakai sistem hs-* yang sama) ── #}
+        <div class="hs-kek-strip hs-kek-strip--inline">
+            <span
+                class="hs-kek-dot {% if data.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
+            <span class="hs-kek-label">Status KEK</span>
+            <span class="hs-kek-value">{{ data.status_kek }}</span>
+            <span class="hs-kek-note">LiLA {{ data.lila }} cm — batas 23.5 cm</span>
+        </div>
+
+        {# ── Ringkasan Pengukuran ── #}
+        <p class="section-title">Ringkasan Pengukuran</p>
         <div class="detail-measure-grid">
             <div class="measure-box">
                 <span class="measure-label">Umur</span>
@@ -89,21 +111,52 @@
             </div>
         </div>
 
-        <!-- Rekomendasi -->
-        <div class="rekomendasi-bb">
-            <span>Rekomendasi Penambahan BB selama kehamilan:</span>
-            <strong>{{ data.rekomendasi_bb }}</strong>
+        {# ── Card: Rekomendasi BB ── #}
+        <div class="hs-card" style="margin-top: 20px;">
+            <div class="hs-card__header">
+                <p class="hs-section-label">Rekomendasi Penambahan Berat Badan</p>
+            </div>
+            <div class="hs-card__body">
+                <div class="hs-kenaikan">
+                    <span class="hs-kenaikan__lbl">Kenaikan BB saat ini</span>
+                    <span class="hs-kenaikan__val">{{ data.kenaikan_bb }} kg</span>
+                </div>
+                <div class="hs-rec-row">
+                    <span class="hs-rec-key">Pada Trimester 1</span>
+                    <span class="hs-rec-val">{{ data.rekomendasi_bb.trimester_1 }}</span>
+                </div>
+                <div class="hs-rec-row">
+                    <span class="hs-rec-key">Pada Trimester 2 dan 3</span>
+                    <span class="hs-rec-val">{{ data.rekomendasi_bb.trimester_2_3 }}</span>
+                </div>
+                <div class="hs-rec-row">
+                    <span class="hs-rec-key">Total Selama Hamil (Kehamilan Tunggal)</span>
+                    <span class="hs-rec-val">{{ data.rekomendasi_bb.total_tunggal }}</span>
+                </div>
+                <div class="hs-rec-row hs-rec-row--last">
+                    <span class="hs-rec-key">Total Selama Hamil (Kehamilan Ganda)</span>
+                    <span class="hs-rec-val">{{ data.rekomendasi_bb.total_ganda }}</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Tips -->
-        <div class="tips-box">
-            <h3>Tips Untuk Ibu</h3>
+        {# ── Card: Tips Edukasi ── #}
+        <div class="tips-box" style="margin-top: 20px;">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                    <path
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Tips Edukasi untuk Ibu
+            </h3>
             <ol>
                 {% for tip in data.tips %}
                 <li>{{ tip }}</li>
                 {% endfor %}
             </ol>
         </div>
+
     </div>
 </div>
 {% endblock %}

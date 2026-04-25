@@ -7,6 +7,7 @@ from controllers.klasifikasi_controller import (
     edit_riwayat,
     hapus_riwayat,
     perbandingan_algoritma,
+    pesan_gizi,
     login,
     logout
 )
@@ -32,8 +33,10 @@ main_routes.route('/klasifikasi/proses', methods=['POST'])(klasifikasi)
 
 main_routes.route('/riwayat/<int:id>')(detail_riwayat)
 
-main_routes.route('/riwayat/<int:id>/edit')(edit_riwayat)
+main_routes.route('/riwayat/<int:id>/edit', methods=['GET', 'POST'])(edit_riwayat)
 
 main_routes.route('/riwayat/<int:id>/hapus', methods=['POST'])(hapus_riwayat)
 
-main_routes.route('/algoritma')(perbandingan_algoritma)
+main_routes.route('/algoritma')(perbandingan_algoritma)
+
+main_routes.route('/pesan-gizi')(pesan_gizi)

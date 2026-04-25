@@ -3,14 +3,14 @@
 {% block page_title %}Edit Data{% endblock %}
 
 {% block content %}
-<div class="container-sm">
+<div class="container-main">
     <a href="{{ url_for('main_routes.detail_riwayat', id=data.id) }}" class="btn-back">← Kembali ke Detail</a>
 
     <div class="card">
         <h2>Edit Data Pemeriksaan</h2>
         <p class="card-desc">Perbarui data pemeriksaan ibu hamil</p>
 
-        <form action="#" method="POST">
+        <form action="{{ url_for('main_routes.edit_riwayat', id=data.id) }}" method="POST">
             <div class="form-group">
                 <label for="nama">Nama</label>
                 <input type="text" id="nama" name="nama" value="{{ data.nama }}" required>

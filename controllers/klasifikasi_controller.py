@@ -91,10 +91,30 @@ TIPS = {
 }
 
 REKOMENDASI_BB = {
-    'Kurang': '12,5 - 18 Kg',
-    'Normal': '11,5 - 16 Kg',
-    'Lebih': '7 - 11,5 Kg',
-    'Obesitas': '5 - 9 Kg'
+    'Kurang': {
+        'trimester_1': '1 - 3 kg',
+        'trimester_2_3': '0.5 kg/minggu',
+        'total_tunggal': '12.5 - 18 kg',
+        'total_ganda': '-'
+    },
+    'Normal': {
+        'trimester_1': '1 - 3 kg',
+        'trimester_2_3': '0.4 kg/minggu',
+        'total_tunggal': '11.5 - 16 kg',
+        'total_ganda': '17 - 24 kg'
+    },
+    'Lebih': {
+        'trimester_1': '1 - 3 kg',
+        'trimester_2_3': '0.3 kg/minggu',
+        'total_tunggal': '7 - 11.5 kg',
+        'total_ganda': '14 - 23 kg'
+    },
+    'Obesitas': {
+        'trimester_1': '0.2 - 2 kg',
+        'trimester_2_3': '0.2 kg/minggu',
+        'total_tunggal': '5 - 9 kg',
+        'total_ganda': '11 - 19 kg'
+    }
 }
 
 
@@ -114,6 +134,7 @@ CONFUSION = {
 def dashboard():
     bulan = request.args.get('bulan')
     tahun = request.args.get('tahun')
+    cari  = request.args.get('cari', '').strip()
     page  = request.args.get('page', 1, type=int)
     per_page = 8
 
@@ -123,6 +144,15 @@ def dashboard():
         query = query.filter(db.extract('year', Riwayat.tanggal) == int(tahun))
     if bulan:
         query = query.filter(db.extract('month', Riwayat.tanggal) == int(bulan))
+    if cari:
+        like = f'%{cari}%'
+        query = query.filter(
+            db.or_(
+                Riwayat.nama.ilike(like),
+                Riwayat.nik.ilike(like),
+                Riwayat.kelurahan.ilike(like),
+            )
+        )
 
     # Pagination — 8 data per halaman
     pagination  = query.order_by(Riwayat.tanggal.desc()).paginate(page=page, per_page=per_page, error_out=False)
@@ -186,6 +216,7 @@ def dashboard():
         daftar_file_geojson=daftar_file_geojson,
         bulan=bulan,
         tahun=tahun,
+        cari=cari,
     )
 
 
@@ -237,8 +268,10 @@ def klasifikasi():
 
     predictions = {}
     mapping_status = {0: 'Kurang', 1: 'Normal', 2: 'Lebih', 3: 'Obesitas'}
-    nama_algoritma = None   # akan diisi otomatis oleh model dengan confidence tertinggi
+    nama_algoritma = None 
     status = 'Normal'
+    peringatan_kritis = False
+    best_prob_kurang = 0.0
 
     try:
         import numpy as np
@@ -265,10 +298,15 @@ def klasifikasi():
                 pred = model.predict(input_df.values)
                 
                 prob = None
+                prob_kurang = 0.0
                 try:
                     proba = model.predict_proba(input_df.values)
                     if proba is not None and len(proba) > 0:
                         prob = round(float(np.max(proba[0])) * 100, 2)
+                        
+                        # Ambil probabilitas khusus untuk index 0 (Kurang) jika ada
+                        if len(proba[0]) > 0:
+                            prob_kurang = round(float(proba[0][0]) * 100, 2)
                 except Exception as prob_e:
                     print(f"DEBUG: Error proba {m_name}: {prob_e}")
 
@@ -288,7 +326,8 @@ def klasifikasi():
 
                 predictions[m_name] = {
                     'status': m_status,
-                    'probability': prob
+                    'probability': prob,
+                    'prob_kurang': prob_kurang
                 }
 
                 print(f"DEBUG: Model {m_name} berhasil: {m_status} ({prob}%)")
@@ -308,25 +347,65 @@ def klasifikasi():
             if m_data.get('status') != 'Error' and m_data.get('probability') is not None:
                 if m_data['probability'] > best_prob:
                     best_prob      = m_data['probability']
-                    status         = m_data['status']
                     nama_algoritma = m_name
+                    best_prob_kurang = m_data.get('prob_kurang', 0.0)
 
         # Fallback jika semua model error atau tidak punya probability
         if nama_algoritma is None:
             for m_name, m_data in predictions.items():
                 if m_data.get('status') != 'Error':
-                    status         = m_data['status']
                     nama_algoritma = m_name
+                    best_prob_kurang = m_data.get('prob_kurang', 0.0)
                     break
 
         if nama_algoritma is None:
             nama_algoritma = 'Tidak Diketahui'
 
+        # ── RULE-BASED CLASSIFICATION (OVERRIDE) ───────────────────
+        # Sesuai instruksi:
+        # 1. LiLA < 23.5 -> Kurang (Kurus/KEK)
+        # 2. IMT < 18.5 -> Kurang (Kurus)
+        # 3. IMT >= 30.0 -> Obesitas
+        # 4. IMT >= 25.0 -> Lebih (Gemuk)
+        # 5. Lainnya -> Normal (IMT 18.5 - 24.9 DAN LiLA >= 23.5)
+        
+        status_kek = "KEK" if lila < 23.5 else "Tidak KEK"
+        status_sebelum_hamil = "Normal"
+        catatan_status = ""
+
+        if lila < 23.5:
+            status_sebelum_hamil = "Kurang"
+            catatan_status = "Terdeteksi KEK (LiLA < 23.5 cm)"
+        elif imt < 18.5:
+            status_sebelum_hamil = "Kurang"
+            catatan_status = "IMT Kurang dari 18.5"
+        elif imt >= 30.0:
+            status_sebelum_hamil = "Obesitas"
+            catatan_status = "IMT >= 30.0"
+        elif imt >= 25.0:
+            status_sebelum_hamil = "Lebih"
+            catatan_status = "IMT >= 25.0"
+        else:
+            status_sebelum_hamil = "Normal"
+            catatan_status = "IMT & LiLA dalam batas normal"
+
+        status = status_sebelum_hamil
+        # ──────────────────────────────────────────────────────────
+
         print(f"DEBUG: Semua predictions: {list(predictions.keys())}")
-        print(f"DEBUG: Model terpilih: {nama_algoritma} — {status} ({best_prob}%)")
+        print(f"DEBUG: Model terpilih: {nama_algoritma} (Prob: {best_prob}%)")
+        print(f"DEBUG: Status Akhir (Rule-based): {status}")
+        
+        # Peringatan kritis jika Kurang atau KEK
+        if status == 'Kurang' or status_kek == 'KEK' or best_prob_kurang >= 35.0:
+            peringatan_kritis = True
 
     except Exception as e:
         print("Error utama saat prediksi:", e)
+        # Fallback minimal jika gagal total
+        status = "Normal"
+        status_kek = "Tidak KEK"
+        catatan_status = "Terjadi kesalahan pada sistem prediksi"
 
     # ── Simpan ke database ──────────────────────
     baru = Riwayat(
@@ -357,15 +436,20 @@ def klasifikasi():
         'umur':             umur,
         'bb_awal':          bb_awal,
         'bb_sekarang':      bb_sekarang,
+        'kenaikan_bb':      round(bb_sekarang - bb_awal, 2),
         'tinggi_badan':     tinggi_badan,
         'lila':             lila,
         'trimester':        trimester,
         'imt':              imt,
         'status':           status,
+        'status_kek':       status_kek,
+        'catatan_status':   catatan_status,
         'algoritma_dipakai': nama_algoritma,
         'tips':             TIPS.get(status, []),
-        'rekomendasi_bb':   REKOMENDASI_BB.get(status, '-'),
-        'predictions':      predictions
+        'rekomendasi_bb':   REKOMENDASI_BB.get(status, {}),
+        'predictions':      predictions,
+        'peringatan_kritis': peringatan_kritis,
+        'prob_kurang':       best_prob_kurang
     }
 
     return render_template('hasil.html', hasil=hasil)
@@ -382,8 +466,23 @@ def detail_riwayat(id):
         return redirect(url_for('main_routes.dashboard'))
 
     detail = data.to_dict()
+    detail['kenaikan_bb'] = round(data.bb_sekarang - data.bb_awal, 2)
+    
+    # Recalculate rules for consistency (or you could save these to DB, but recalculating is safer for existing data)
+    imt = detail['imt']
+    lila = detail['lila']
+    status_kek = "KEK" if lila < 23.5 else "Tidak KEK"
+    catatan_status = ""
+    if lila < 23.5: catatan_status = "Terdeteksi KEK (LiLA < 23.5 cm)"
+    elif imt < 18.5: catatan_status = "IMT Kurang dari 18.5"
+    elif imt >= 30.0: catatan_status = "IMT >= 30.0"
+    elif imt >= 25.0: catatan_status = "IMT >= 25.0"
+    else: catatan_status = "IMT & LiLA dalam batas normal"
+
+    detail['status_kek'] = status_kek
+    detail['catatan_status'] = catatan_status
     detail['tips'] = TIPS.get(detail['status'], [])
-    detail['rekomendasi_bb'] = REKOMENDASI_BB.get(detail['status'], '-')
+    detail['rekomendasi_bb'] = REKOMENDASI_BB.get(detail['status'], {})
 
     return render_template('detail.html', data=detail)
 
@@ -397,6 +496,35 @@ def edit_riwayat(id):
 
     if data is None:
         return redirect(url_for('main_routes.dashboard'))
+
+    if request.method == 'POST':
+        # Update fields
+        data.nama = request.form.get('nama')
+        data.umur = float(request.form.get('umur'))
+        data.bb_awal = float(request.form.get('bb_awal'))
+        data.bb_sekarang = float(request.form.get('bb_sekarang'))
+        data.tinggi_badan = float(request.form.get('tinggi_badan'))
+        data.lila = float(request.form.get('lila'))
+        data.trimester = int(request.form.get('trimester'))
+
+        # Recalculate IMT
+        tinggi_m = data.tinggi_badan / 100
+        data.imt = round(data.bb_awal / (tinggi_m ** 2), 2)
+
+        # Recalculate Rule-based classification
+        if data.lila < 23.5:
+            data.status = "Kurang"
+        elif data.imt < 18.5:
+            data.status = "Kurang"
+        elif data.imt >= 30.0:
+            data.status = "Obesitas"
+        elif data.imt >= 25.0:
+            data.status = "Lebih"
+        else:
+            data.status = "Normal"
+
+        db.session.commit()
+        return redirect(url_for('main_routes.detail_riwayat', id=data.id))
 
     return render_template('edit.html', data=data.to_dict())
 
@@ -494,3 +622,9 @@ def perbandingan_algoritma():
         confusion=CONFUSION,
         kesimpulan=kesimpulan,
     )
+
+
+
+
+def pesan_gizi():
+    return render_template('pesan_gizi.html')

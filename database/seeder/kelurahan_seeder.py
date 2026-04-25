@@ -5,14 +5,14 @@ from database.table.kelurahan import Kelurahan
 def seed_wilayah_kendari():
     # Data Master 11 Kecamatan & 65 Kelurahan Kota Kendari
     data_kendari = {
-        "Abeli": ["Abeli", "Anggalomelai", "Benuanirae", "Lapulu", "Poasia", "Puday", "Talia"],
+        "Abeli": ["Abeli", "Anggolomelai", "Benua Nirae", "Lapulu", "Poasia", "Pudai", "Talia", "Tobimeita"],
         "Baruga": ["Baruga", "Lepo-Lepo", "Watubangga", "Wundudopi"],
         "Kadia": ["Anaiwoi", "Bende", "Kadia", "Pondambea", "Wawanggu"],
         "Kambu": ["Kambu", "Lalolara", "Mokoau", "Padaleu"],
         "Kendari": ["Gunung Jati", "Jati Mekar", "Kampungsalo", "Kandai", "Kassilampe", "Kendari Caddi", "Mangga Dua", "Mata", "Purirano"],
         "Kendari Barat": ["Benu-Benua", "Dapu-Dapura", "Kemaraya", "Lahundape", "Punggaloba", "Sadoha", "Sanua", "Tipulu", "Watu-Watu"],
         "Mandonga": ["Alolama", "Anggilowu", "Korumba", "Labibia", "Mandonga", "Wawombalata"],
-        "Nambo": ["Bungkutoko", "Nambo", "Petoaha", "Sambuli", "Tobimeita", "Tondonggeu"],
+        "Nambo": ["Bungkutoko", "Nambo", "Petoaha", "Sambuli", "Tondonggeu"],
         "Poasia": ["Anduonohu", "   Anggoeya", "Matabubu", "Rahandouna", "Wundumbatu"],
         "Puuwatu": ["Abeli Dalam", "Lalodati", "Punggolaka", "Puuwatu", "Tobuuha", "Watulondo"],
         "Wua-Wua": ["Anawai", "Bonggoeya", "Mataiwoi", "Wua-Wua"]

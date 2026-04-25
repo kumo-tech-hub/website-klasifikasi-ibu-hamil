@@ -114,14 +114,14 @@ a {
 .sidebar-logo {
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
-    border-radius: 10px;
+    background: linear-gradient(135deg, #d946ef, #fb7185);    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3);
     color: white;
+    
 }
 
 .sidebar-logo svg,
@@ -368,10 +368,6 @@ a {
                 url('../img/bg-login.png') no-repeat center center fixed;
 */
     background-size: cover;
-}
-
-.container-sm {
-    max-width: 720px;
 }
 
 .container-main {
@@ -1431,15 +1427,15 @@ a {
 
 .dash-subtitle {
     font-size: 12.5px;
-    color: var(--gray-400);
+    color: var(--gray-900);
     margin-top: 2px;
     font-weight: 400;
 }
 
-/* Summary 4-card Grid */
+/* Summary 6-card Grid */
 .dash-summary-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -1447,10 +1443,10 @@ a {
 .dash-summary-card {
     background: #ffffff;
     border-radius: var(--radius-lg);
-    padding: 18px 20px;
+    padding: 14px 16px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     box-shadow: var(--shadow);
     border: 1px solid var(--gray-100);
     transition: all var(--transition);
@@ -1462,9 +1458,9 @@ a {
 }
 
 .dash-summary-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1482,13 +1478,23 @@ a {
 }
 
 .icon-kurang {
-    background: linear-gradient(135deg, #f97316, #c2410c);
-    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.icon-Lebih {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.icon-obesitas {
+    background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
 }
 
 .icon-wilayah {
-    background: linear-gradient(135deg, #a78bfa, #7c3aed);
-    box-shadow: 0 4px 14px rgba(167, 139, 250, 0.35);
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
 }
 
 .dash-summary-info {
@@ -1498,10 +1504,10 @@ a {
 }
 
 .dash-summary-value {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 800;
     color: var(--gray-900);
-    letter-spacing: -0.8px;
+    letter-spacing: -0.5px;
     line-height: 1;
     margin: 0;
 }
@@ -1772,6 +1778,11 @@ a {
     border: 1.5px solid #fde68a;
 }
 
+.dot-obesitas {
+    background: #8b5cf6;
+    border: 1.5px solid #ddd6fe;
+}
+
 .dot-empty {
     background: #9ca3af;
     border: 1.5px solid #c2bba1;
@@ -1850,9 +1861,9 @@ a {
 
 /* Responsive for new dashboard */
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .dash-summary-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -2190,4 +2201,370 @@ a {
     .algo-metric-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+/* ============================================================
+   HASIL KLASIFIKASI — Tambahkan di bagian bawah style.css
+   Semua class pakai prefix "hs-" agar tidak bentrok
+   ============================================================ */
+
+/* ── Banner ── */
+.hs-banner {
+    border-radius: var(--radius-lg);
+    border: 1px solid transparent;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.hs-banner__top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 22px;
+}
+
+.hs-banner__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.hs-banner__eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    opacity: 0.65;
+    margin-bottom: 3px;
+}
+
+.hs-banner__title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.hs-banner__desc {
+    font-size: 12.5px;
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+/* KEK strip — menyatu di bawah banner */
+.hs-kek-strip {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 9px 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+}
+
+.hs-kek-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.hs-kek-dot--aman     { background: var(--green-600); }
+.hs-kek-dot--berisiko { background: var(--red-600); }
+
+.hs-kek-label { opacity: 0.6; }
+.hs-kek-value { font-weight: 600; }
+
+.hs-kek-note {
+    margin-left: auto;
+    font-size: 11.5px;
+    opacity: 0.55;
+    font-style: italic;
+}
+
+/* Warna per status */
+.hs-banner--normal {
+    background: var(--green-50);
+    border-color: #bbf7d0;
+    color: #14532d;
+}
+
+.hs-banner--kurang {
+    background: var(--orange-50);
+    border-color: #fed7aa;
+    color: #7c2d12;
+}
+
+.hs-banner--lebih {
+    background: var(--yellow-50);
+    border-color: #fde68a;
+    color: #713f12;
+}
+
+.hs-banner--obesitas {
+    background: var(--red-50);
+    border-color: #fecaca;
+    color: #7f1d1d;
+}
+
+.hs-banner--kritis {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #7f1d1d;
+}
+
+/* ── Card ── */
+.hs-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    transition: box-shadow var(--transition);
+    
+}
+
+.hs-card:hover { box-shadow: var(--shadow-md); }
+
+.hs-card__header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    background: var(--gray-50);
+}
+
+.hs-card__body { padding: 20px; }
+
+.hs-card--model { margin-top: 16px; }
+
+/* ── Section label ── */
+.hs-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--gray-400);
+    margin-bottom: 14px;
+}
+
+.hs-card__header .hs-section-label { margin-bottom: 0; }
+
+/* ── Info Pasien (3 kolom di header card) ── */
+.hs-info-row {
+    display: grid;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.hs-info-cell { padding: 14px 20px; }
+
+.hs-info-cell:not(:last-child) {
+    border-right: 1px solid var(--gray-100);
+}
+
+.hs-info-lbl {
+    font-size: 11px;
+    color: var(--gray-400);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.hs-info-val {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+/* ── Measure Grid ── */
+.hs-measure-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.hs-measure-box {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: var(--radius);
+    padding: 12px 10px;
+    text-align: center;
+    transition: all var(--transition);
+}
+
+.hs-measure-box:hover {
+    background: var(--pink-50);
+    border-color: var(--pink-100);
+}
+
+.hs-measure-lbl {
+    display: block;
+    font-size: 10.5px;
+    color: var(--gray-400);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+}
+
+.hs-measure-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gray-800);
+    letter-spacing: -0.2px;
+}
+
+/* ── Kenaikan BB ── */
+.hs-kenaikan {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.hs-kenaikan__lbl {
+    font-size: 13px;
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+.hs-kenaikan__val {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gray-800);
+    letter-spacing: -0.3px;
+}
+
+/* ── Rec rows ── */
+.hs-rec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--gray-100);
+    font-size: 13px;
+}
+
+.hs-rec-row--last { border-bottom: none; }
+
+.hs-rec-key {
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+.hs-rec-val {
+    font-weight: 700;
+    color: var(--pink-700);
+}
+
+/* ── Tips ── */
+.hs-tip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hs-tip-item {
+    font-size: 13px;
+    color: var(--gray-600);
+    line-height: 1.65;
+    padding: 10px 14px;
+    background: var(--pink-50);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--pink-400);
+}
+
+/* ── Tombol Ulangi ── */
+.hs-btn-ulangi {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 4px;
+}
+
+/* ── Catatan ── */
+.hs-catatan { margin-top: 12px; }
+
+/* ── Model Comparison ── */
+.hs-model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+}
+
+.hs-model-card {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: var(--radius);
+    padding: 14px 10px;
+    text-align: center;
+    transition: all var(--transition);
+}
+
+.hs-model-card:hover {
+    background: #fff;
+    box-shadow: var(--shadow);
+}
+
+.hs-model-name {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.hs-model-divider {
+    height: 1px;
+    background: var(--gray-100);
+    margin: 0 auto 10px;
+}
+
+.hs-model-status {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.hs-model-acc {
+    font-size: 11.5px;
+    color: var(--gray-400);
+    font-weight: 500;
+}
+
+/* Status warna model */
+.hs-status--normal   { color: var(--green-600); }
+.hs-status--kurang   { color: var(--orange-600); }
+.hs-status--lebih    { color: var(--yellow-600); }
+.hs-status--obesitas { color: var(--red-600); }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .hs-info-row { grid-template-columns: 1fr; }
+
+    .hs-info-cell:not(:last-child) {
+        border-right: none;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .hs-measure-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .hs-model-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .hs-banner__top { flex-direction: column; }
+
+    .hs-kek-note { display: none; }
+}
+
+@media (max-width: 480px) {
+    .hs-measure-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .hs-kenaikan { flex-direction: column; align-items: flex-start; gap: 4px; }
 }

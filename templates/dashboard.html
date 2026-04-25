@@ -56,6 +56,34 @@
     </div>
 
     <div class="dash-summary-card">
+        <div class="dash-summary-icon icon-Lebih">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="16 7 22 7 22 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="dash-summary-info">
+            <h3 class="dash-summary-value">{{ ringkasan.lebih }}</h3>
+            <p class="dash-summary-label">Gizi Lebih</p>
+        </div>
+    </div>
+
+        <div class="dash-summary-card">
+        <div class="dash-summary-icon icon-obesitas">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="12" y1="8" x2="12" y2="12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="12" y1="16" x2="12.01" y2="16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="dash-summary-info">
+            <h3 class="dash-summary-value">{{ ringkasan.obesitas }}</h3>
+            <p class="dash-summary-label">Obesitas</p>
+        </div>
+    </div>
+
+
+    <div class="dash-summary-card">
         <div class="dash-summary-icon icon-wilayah">
             <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -63,7 +91,7 @@
             </svg>
         </div>
         <div class="dash-summary-info">
-            <h3 class="dash-summary-value">{{ ringkasan.wilayah }}</h3>
+            <h3 class="dash-summary-value">8</h3>
             <p class="dash-summary-label">Wilayah</p>
         </div>
     </div>
@@ -74,7 +102,7 @@
     <div class="dash-table-header">
         <h3 class="card-title">Riwayat Pasien</h3>
         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-            <form id="filterForm" method="GET" action="{{ url_for('main_routes.dashboard') }}" style="display: flex; gap: 8px; margin: 0;">
+            <form id="filterForm" method="GET" action="{{ url_for('main_routes.dashboard') }}" style="display: flex; gap: 8px; margin: 0; flex-wrap: wrap; align-items: center;">
                 <select name="bulan" class="dash-search-input" style="width: auto; padding-left: 12px;" onchange="document.getElementById('filterForm').submit();">
                     <option value="">Semua Bulan</option>
                     <option value="1" {% if request.args.get('bulan') == '1' %}selected{% endif %}>Januari</option>
@@ -96,15 +124,14 @@
                     <option value="{{ y }}" {% if request.args.get('tahun') == y|string %}selected{% endif %}>{{ y }}</option>
                     {% endfor %}
                 </select>
+                <div class="dash-search-wrapper" style="margin: 0;">
+                    <svg class="dash-search-icon" viewBox="0 0 24 24" fill="none" width="16" height="16">
+                        <circle cx="11" cy="11" r="8" stroke="#9ca3af" stroke-width="2"/>
+                        <path d="m21 21-4.35-4.35" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <input type="text" id="searchPasien" name="cari" class="dash-search-input" placeholder="Cari nama, NIK, kelurahan..." value="{{ cari }}">
+                </div>
             </form>
-            
-            <div class="dash-search-wrapper" style="margin: 0;">
-                <svg class="dash-search-icon" viewBox="0 0 24 24" fill="none" width="16" height="16">
-                    <circle cx="11" cy="11" r="8" stroke="#9ca3af" stroke-width="2"/>
-                    <path d="m21 21-4.35-4.35" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <input type="text" id="searchPasien" class="dash-search-input" placeholder="Cari pasien...">
-            </div>
         </div>
     </div>
 
@@ -115,6 +142,10 @@
                     <th>Nama</th>
                     <th>NIK</th>
                     <th>Umur</th>
+                    <th>BB Awal (kg)</th>
+                    <th>Tinggi (cm)</th>
+                    <th>LILA (cm)</th>
+                    <th>IMT Sebelum Hamil</th>
                     <th>Kelurahan</th>
                     <th>Status Gizi</th>
                     <th>Aksi</th>
@@ -126,12 +157,16 @@
                     <td class="td-nama">{{ r.nama }}</td>
                     <td class="td-nik">{{ r.nik }}</td>
                     <td>{{ r.umur }} th</td>
+                    <td>{{ r.bb_awal }} kg</td>
+                    <td>{{ r.tinggi_badan }} cm</td>
+                    <td>{{ r.lila }} cm</td>
+                    <td>{{ "%.1f"|format(r.imt) }} kg</td>
                     <td>{{ r.kelurahan }}</td>
                     <td>
                         <span class="dash-status-badge dash-badge-{{ r.status|lower }}">{{ r.status }}</span>
                     </td>
                     <td class="dash-aksi-cell">
-                        <a href="{{ url_for('main_routes.edit_riwayat', id=r.id) }}" class="dash-btn-icon dash-btn-edit" title="Edit">
+                        <a href="{{ url_for('main_routes.detail_riwayat', id=r.id) }}" class="dash-btn-icon dash-btn-edit" title="Edit">
                             <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -162,7 +197,7 @@
         </span>
         <div class="dash-page-controls">
             {% if pagination.has_prev %}
-            <a href="{{ url_for('main_routes.dashboard', page=pagination.prev_num, bulan=bulan, tahun=tahun) }}" class="dash-page-btn">
+            <a href="{{ url_for('main_routes.dashboard', page=pagination.prev_num, bulan=bulan, tahun=tahun, cari=cari) }}" class="dash-page-btn">
                 <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
             {% else %}
@@ -176,7 +211,7 @@
                     {% if p == pagination.page %}
                     <span class="dash-page-btn active">{{ p }}</span>
                     {% else %}
-                    <a href="{{ url_for('main_routes.dashboard', page=p, bulan=bulan, tahun=tahun) }}" class="dash-page-btn">{{ p }}</a>
+                    <a href="{{ url_for('main_routes.dashboard', page=p, bulan=bulan, tahun=tahun, cari=cari) }}" class="dash-page-btn">{{ p }}</a>
                     {% endif %}
                 {% else %}
                     <span class="dash-page-ellipsis">…</span>
@@ -184,7 +219,7 @@
             {% endfor %}
 
             {% if pagination.has_next %}
-            <a href="{{ url_for('main_routes.dashboard', page=pagination.next_num, bulan=bulan, tahun=tahun) }}" class="dash-page-btn">
+            <a href="{{ url_for('main_routes.dashboard', page=pagination.next_num, bulan=bulan, tahun=tahun, cari=cari) }}" class="dash-page-btn">
                 <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
             {% else %}
@@ -218,6 +253,10 @@
             <div class="dash-legend-item">
                 <span class="dash-legend-dot dot-lebih"></span>
                 <span>Lebih</span>
+            </div>
+            <div class="dash-legend-item">
+                <span class="dash-legend-dot dot-obesitas"></span>
+                <span>Obesitas</span>
             </div>
             <div class="dash-legend-item">
                 <span class="dash-legend-dot dot-empty"></span>
@@ -400,16 +439,15 @@
     }
 
     // ==========================================
-    // 5. FITUR PENCARIAN 
+    // 5. FITUR PENCARIAN (server-side, auto-submit)
     // ==========================================
     try {
+        let searchTimer;
         document.getElementById('searchPasien').addEventListener('input', function() {
-            const query = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#pasienTable tbody tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(function() {
+                document.getElementById('filterForm').submit();
+            }, 400);
         });
     } catch(e) {}
 
