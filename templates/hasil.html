@@ -179,41 +179,46 @@
                         <span class="hs-measure-val">{{ hasil.imt }} kg/m²</span>
                     </div>
                     <div class="hs-measure-box">
-                        <span class="hs-measure-lbl">LiLA</span>
+                        <span class="hs-measure-lbl">LILA</span>
                         <span class="hs-measure-val">{{ hasil.lila }} cm</span>
+                    </div>
+                </div>
+
+                {# ── Kenaikan BB (Sekarang di dalam card utama) ── #}
+                <div class="hs-kenaikan" style="margin-top: 15px; border-style: dashed; background: var(--pink-50); border-color: var(--pink-200);">
+                    <span class="hs-kenaikan__lbl">Kenaikan BB saat ini</span>
+                    <span class="hs-kenaikan__val" style="color: var(--pink-700);">{{ hasil.kenaikan_bb }} kg</span>
+                </div>
+
+                {# ── Rekomendasi BB (Menggunakan gaya tips-box) ── #}
+                <div class="tips-box" style="margin-top: 15px; margin-bottom: 0;">
+                    <h3 style="font-size: 13px; margin-bottom: 10px; color: var(--pink-700); display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                            <path d="M12 20v-6M9 17l3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18 10A6 6 0 0 0 6 10c0 7 3 9 6 9s6-2 6-9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Rekomendasi Target BB Selanjutnya
+                    </h3>
+                    <div class="hs-rec-row">
+                        <span class="hs-rec-key">Trimester 1</span>
+                        <span class="hs-rec-val">{{ hasil.rekomendasi_bb.trimester_1 }}</span>
+                    </div>
+                    <div class="hs-rec-row">
+                        <span class="hs-rec-key">Trimester 2 & 3</span>
+                        <span class="hs-rec-val">{{ hasil.rekomendasi_bb.trimester_2_3 }}</span>
+                    </div>
+                    <div class="hs-rec-row">
+                        <span class="hs-rec-key">Total (Tunggal)</span>
+                        <span class="hs-rec-val">{{ hasil.rekomendasi_bb.total_tunggal }}</span>
+                    </div>
+                    <div class="hs-rec-row hs-rec-row--last">
+                        <span class="hs-rec-key">Total (Ganda)</span>
+                        <span class="hs-rec-val">{{ hasil.rekomendasi_bb.total_ganda }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        {# ── Card: Rekomendasi BB ── #}
-        <div class="hs-card">
-            <div class="hs-card__header">
-                <p class="hs-section-label">Rekomendasi Penambahan Berat Badan</p>
-            </div>
-            <div class="hs-card__body">
-                <div class="hs-kenaikan">
-                    <span class="hs-kenaikan__lbl">Kenaikan BB saat ini</span>
-                    <span class="hs-kenaikan__val">{{ hasil.kenaikan_bb }} kg</span>
-                </div>
-                <div class="hs-rec-row">
-                    <span class="hs-rec-key">Pada Trimester 1</span>
-                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.trimester_1 }}</span>
-                </div>
-                <div class="hs-rec-row">
-                    <span class="hs-rec-key">Pada Trimester 2 dan 3</span>
-                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.trimester_2_3 }}</span>
-                </div>
-                <div class="hs-rec-row">
-                    <span class="hs-rec-key">Total Selama Hamil (Kehamilan Tunggal)</span>
-                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.total_tunggal }}</span>
-                </div>
-                <div class="hs-rec-row hs-rec-row--last">
-                    <span class="hs-rec-key">Total Selama Hamil (Kehamilan Ganda)</span>
-                    <span class="hs-rec-val">{{ hasil.rekomendasi_bb.total_ganda }}</span>
-                </div>
-            </div>
-        </div>
 
         {# ── Card: Tips Edukasi ── #}
         <div class="tips-box" style="margin-top: 20px;">
@@ -264,7 +269,8 @@
                         <div class="model-error">{{ data.error }}</div>
                         {% else %}
                         <div class="hs-model-status hs-status--{{ data.status|lower }}">{{ data.status }}</div>
-                        <div class="hs-model-acc">Akurasi: {{ data.probability }}%</div>
+                        <div class="hs-model-acc" style="font-size: 11px; color: var(--gray-400);">Akurasi Model: {{ data.global_accuracy }}%</div>
+                        <div class="hs-model-acc" style="margin-top: 2px;">Keyakinan: {{ data.probability }}%</div>
                         {% endif %}
                     </div>
                     {% endfor %}

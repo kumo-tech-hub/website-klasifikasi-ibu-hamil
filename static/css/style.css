@@ -527,6 +527,27 @@ a {
     font-weight: 400;
 }
 
+.form-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.form-info p {
+    font-size: 12.5px;
+    color: var(--gray-400);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.form-info svg {
+    width: 14px !important;
+    height: 14px !important;
+    color: var(--gray-400);
+    flex-shrink: 0;
+}
+
 .card-header-row {
     display: flex;
     justify-content: space-between;

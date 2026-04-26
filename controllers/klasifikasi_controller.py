@@ -267,7 +267,7 @@ def klasifikasi():
     )
 
     predictions = {}
-    mapping_status = {0: 'Kurang', 1: 'Normal', 2: 'Lebih', 3: 'Obesitas'}
+    mapping_status = {0: 'Kurang', 1: 'Lebih', 2: 'Normal', 3: 'Obesitas'}
     nama_algoritma = None 
     status = 'Normal'
     peringatan_kritis = False
@@ -304,7 +304,7 @@ def klasifikasi():
                     if proba is not None and len(proba) > 0:
                         prob = round(float(np.max(proba[0])) * 100, 2)
                         
-                        # Ambil probabilitas khusus untuk index 0 (Kurang) jika ada
+                     
                         if len(proba[0]) > 0:
                             prob_kurang = round(float(proba[0][0]) * 100, 2)
                 except Exception as prob_e:
@@ -324,10 +324,16 @@ def klasifikasi():
                 else:
                     m_status = str(temp_pred).strip("[]'\" ")
 
+                global_acc = 0
+                lookup_name = m_name.replace(' (', ' ').replace(')', '') # 'XGBoost (SMOTE)' -> 'XGBoost SMOTE'
+                if lookup_name in PERBANDINGAN_DETAIL:
+                    global_acc = PERBANDINGAN_DETAIL[lookup_name]['accuracy']
+
                 predictions[m_name] = {
                     'status': m_status,
                     'probability': prob,
-                    'prob_kurang': prob_kurang
+                    'prob_kurang': prob_kurang,
+                    'global_accuracy': global_acc
                 }
 
                 print(f"DEBUG: Model {m_name} berhasil: {m_status} ({prob}%)")
