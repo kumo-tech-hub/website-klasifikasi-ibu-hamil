@@ -665,7 +665,10 @@ def get_pasien_by_nik(nik):
                 'nama': data.nama,
                 'kecamatan': data.kecamatan,
                 'kelurahan': data.kelurahan,
-                'tanggal_lahir': data.tanggal_lahir.strftime('%Y-%m-%d') if data.tanggal_lahir else ''
+                'tanggal_lahir': data.tanggal_lahir.strftime('%Y-%m-%d') if data.tanggal_lahir else '',
+                'bb_awal': data.bb_awal,
+                'tinggi_badan': data.tinggi_badan,
+                'lila': data.lila,
             }
         })
     return jsonify({'success': False, 'message': 'Data tidak ditemukan'})

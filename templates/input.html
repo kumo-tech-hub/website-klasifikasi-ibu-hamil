@@ -15,28 +15,45 @@
         animation: fadeInBadge 0.3s ease-out;
         letter-spacing: 0.2px;
     }
+
     .nik-status-terdaftar {
         background-color: var(--green-50) !important;
         color: var(--green-700) !important;
         border: 1px solid var(--green-100) !important;
     }
+
     .nik-status-baru {
         background-color: var(--pink-50) !important;
         color: var(--pink-700) !important;
         border: 1px solid var(--pink-200) !important;
     }
+
     .nik-status-loading {
         background-color: var(--gray-50) !important;
         color: var(--gray-500) !important;
         border: 1px solid var(--gray-200) !important;
     }
+
     @keyframes fadeInBadge {
-        from { opacity: 0; transform: translateY(-4px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
 </style>
 {% endblock %}
@@ -277,6 +294,9 @@
                             // update tanggal lahir
                             tanggal_lahir.value = data.data.tanggal_lahir;
                             calculateAge();
+                            document.getElementById('bb_awal').value = data.data.bb_awal;
+                            document.getElementById('tinggi_badan').value = data.data.tinggi_badan;
+                            document.getElementById('lila').value = data.data.lila;
 
                             isAutoFilled = true;
 
