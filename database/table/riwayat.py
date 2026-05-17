@@ -7,9 +7,10 @@ class Riwayat(db.Model):
 
     id             = db.Column(db.Integer, primary_key=True)
     nama           = db.Column(db.String(100), nullable=False)
-    nik            = db.Column(db.String(16),  nullable=False)
+    nik            = db.Column(db.String(16),  nullable=False, unique=True)
     kecamatan      = db.Column(db.String(100), nullable=False)
     kelurahan      = db.Column(db.String(100), nullable=False)
+    tanggal_lahir  = db.Column(db.Date)
     umur           = db.Column(db.Integer,     nullable=False)
     bb_awal        = db.Column(db.Float,       nullable=False)
     bb_sekarang    = db.Column(db.Float,       nullable=False)

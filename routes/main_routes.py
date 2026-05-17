@@ -9,7 +9,8 @@ from controllers.klasifikasi_controller import (
     perbandingan_algoritma,
     pesan_gizi,
     login,
-    logout
+    logout,
+    get_pasien_by_nik
 )
 
 from flask import request, redirect, url_for, session
@@ -39,4 +40,8 @@ main_routes.route('/riwayat/<int:id>/hapus', methods=['POST'])(hapus_riwayat)
 
 main_routes.route('/algoritma')(perbandingan_algoritma)
 
-main_routes.route('/pesan-gizi')(pesan_gizi)
+main_routes.route('/pesan-gizi')(pesan_gizi)
+
+main_routes.route('/api/pasien/<string:nik>')(get_pasien_by_nik)
+
+

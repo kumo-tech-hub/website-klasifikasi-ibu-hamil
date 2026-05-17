@@ -1,5 +1,46 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    #nik-status {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        display: none;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-sm);
+        animation: fadeInBadge 0.3s ease-out;
+        letter-spacing: 0.2px;
+    }
+    .nik-status-terdaftar {
+        background-color: var(--green-50) !important;
+        color: var(--green-700) !important;
+        border: 1px solid var(--green-100) !important;
+    }
+    .nik-status-baru {
+        background-color: var(--pink-50) !important;
+        color: var(--pink-700) !important;
+        border: 1px solid var(--pink-200) !important;
+    }
+    .nik-status-loading {
+        background-color: var(--gray-50) !important;
+        color: var(--gray-500) !important;
+        border: 1px solid var(--gray-200) !important;
+    }
+    @keyframes fadeInBadge {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
 {% block page_title %}Klasifikasi{% endblock %}
 
 {% block content %}
@@ -13,14 +54,18 @@
         <form action="{{ url_for('main_routes.klasifikasi') }}" method="POST">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="nama">Nama</label>
-                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <label for="nik" style="margin-bottom: 0;">NIK</label>
+                        <span id="nik-status"></span>
+                    </div>
+                    <input type="text" id="nik" name="nik" placeholder="16 digit NIK" maxlength="16" pattern="[0-9]{16}"
+                        required>
                 </div>
 
                 <div class="form-group">
-                    <label for="nik">NIK</label>
-                    <input type="text" id="nik" name="nik" placeholder="16 digit NIK" maxlength="16" pattern="[0-9]{16}"
-                        required>
+                    <label for="nama">Nama</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
                 </div>
             </div>
 
@@ -40,9 +85,17 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="umur">Umur (tahun)</label>
-                <input type="number" id="umur" name="umur" placeholder="contoh: 25" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" required>
+                </div>
+                <div class="form-group">
+                    <label for="umur">Umur (tahun)</label>
+                    <input type="number" id="umur" name="umur" placeholder="contoh: 25" readonly required>
+                </div>
+
+
             </div>
 
             <div class="form-row">
@@ -85,8 +138,8 @@
                 <span> kg/m²</span>
             </div>
             <div class="form-info">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path
                         d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5">
                     </path>
@@ -104,7 +157,28 @@
     <script>
         var bbAwal = document.getElementById('bb_awal');
         var tinggi = document.getElementById('tinggi_badan');
+        var umur = document.getElementById('umur');
+        var tanggal_lahir = document.getElementById('tanggal_lahir');
 
+        function calculateAge() {
+            const today = new Date();
+            const birthday = new Date(tanggal_lahir.value);
+
+            let currentAge = today.getFullYear() - birthday.getFullYear()
+
+            let selisihTanggal = today.getDate() - birthday.getDate()
+            let selisihBulan = today.getMonth() - birthday.getMonth()
+
+            if (selisihBulan < 0 || (selisihBulan === 0 && selisihTanggal < 0)) {
+                currentAge--;
+            }
+
+            umur.value = currentAge
+
+        }
+
+
+        tanggal_lahir.addEventListener('input', calculateAge)
         function hitungIMT() {
             var bb = parseFloat(bbAwal.value);
             var tb = parseFloat(tinggi.value);
@@ -114,6 +188,8 @@
                 document.getElementById('imtPreview').style.display = 'block';
             }
         }
+
+
 
         bbAwal.addEventListener('input', hitungIMT);
         tinggi.addEventListener('input', hitungIMT);
@@ -151,6 +227,77 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (inputKecamatan && inputKecamatan.value) {
                 updateKelurahan(inputKecamatan.value);
+            }
+        });
+
+        // Dynamic NIK checking and auto-fill
+        const inputNik = document.getElementById('nik');
+        const inputNama = document.getElementById('nama');
+        const statusBadge = document.getElementById('nik-status');
+        let isAutoFilled = false;
+
+        function resetPatientFields() {
+            if (isAutoFilled) {
+                inputNama.value = '';
+                tanggal_lahir.value = '';
+                umur.value = '';
+
+                const defaultKec = "Abeli";
+                document.getElementById('kecamatan').value = defaultKec;
+                document.getElementById('kecamatan_display').innerHTML = `<option value="${defaultKec}" selected>${defaultKec}</option>`;
+                updateKelurahan(defaultKec);
+
+                isAutoFilled = false;
+            }
+        }
+
+        inputNik.addEventListener('input', function () {
+            const nikVal = this.value.trim();
+
+            if (nikVal.length === 16) {
+                statusBadge.style.display = 'inline-flex';
+                statusBadge.className = 'nik-status-loading';
+                statusBadge.innerHTML = `<svg class="spin-icon" style="width: 12px; height: 12px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; flex-shrink: 0;"></svg> <span>Mendeteksi...</span>`;
+
+                fetch('/api/pasien/' + nikVal)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            inputNama.value = data.data.nama;
+
+                            // update kecamatan
+                            const kec = data.data.kecamatan;
+                            document.getElementById('kecamatan').value = kec;
+                            document.getElementById('kecamatan_display').innerHTML = `<option value="${kec}" selected>${kec}</option>`;
+
+                            // update kelurahan
+                            updateKelurahan(kec);
+                            document.getElementById('kelurahan').value = data.data.kelurahan;
+
+                            // update tanggal lahir
+                            tanggal_lahir.value = data.data.tanggal_lahir;
+                            calculateAge();
+
+                            isAutoFilled = true;
+
+                            // Show registered badge with clean green checkcircle icon
+                            statusBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <span>Terdaftar (Data Dimuat)</span>`;
+                            statusBadge.className = 'nik-status-terdaftar';
+                        } else {
+                            resetPatientFields();
+                            // Show new patient badge with clean plus circle icon
+                            statusBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> <span>Pasien Baru</span>`;
+                            statusBadge.className = 'nik-status-baru';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        statusBadge.style.display = 'none';
+                    });
+            } else {
+                statusBadge.style.display = 'none';
+                statusBadge.className = '';
+                resetPatientFields();
             }
         });
     </script>

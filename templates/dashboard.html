@@ -285,7 +285,7 @@
     
     // Fungsi untuk mencari data lengkap berdasarkan nama kelurahan
     function getKelurahanData(namaKelurahan) {
-        const target = namaKelurahan.toLowerCase().trim();
+        const target = namaKelurahan.toLowerCase().trim().replace(/\s/g, '');
         return dataSegmentasi.find(item => item.kelurahan.toLowerCase().trim() === target) || null;
     }
 

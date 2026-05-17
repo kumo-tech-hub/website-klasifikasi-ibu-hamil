@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session,current_app
+from flask import render_template, request, redirect, url_for, session,current_app, jsonify
 from database.db import db
 from database.table.riwayat import Riwayat
 from database.table.user import User
@@ -238,7 +238,6 @@ def input_data():
         data_wilayah=data_wilayah
         )
 
-
 # ─────────────────────────────────────────────
 # KLASIFIKASI — proses ML + simpan ke DB
 # ─────────────────────────────────────────────
@@ -248,6 +247,7 @@ def klasifikasi():
     nik          = request.form.get('nik', '')
     kecamatan    = request.form.get('kecamatan', '')
     kelurahan    = request.form.get('kelurahan', '')
+    tanggal_lahir= request.form.get('tanggal_lahir', '')
     umur         = float(request.form.get('umur'))
     bb_awal      = float(request.form.get('bb_awal'))
     bb_sekarang  = float(request.form.get('bb_sekarang'))
@@ -413,25 +413,44 @@ def klasifikasi():
         status_kek = "Tidak KEK"
         catatan_status = "Terjadi kesalahan pada sistem prediksi"
 
-    # ── Simpan ke database ──────────────────────
-    baru = Riwayat(
-        nama=nama,
-        nik=nik,
-        kecamatan=kecamatan,
-        kelurahan=kelurahan,
-        umur=int(umur),
-        bb_awal=bb_awal,
-        bb_sekarang=bb_sekarang,
-        tinggi_badan=tinggi_badan,
-        lila=lila,
-        trimester=trimester,
-        imt=imt,
-        status=status,
-        algoritma=nama_algoritma,
-        tanggal=datetime.now(),
-    )
-    db.session.add(baru)
-    db.session.commit()
+    # ── Simpan/Update ke database ──────────────────────
+    existing = Riwayat.query.filter_by(nik=nik).first()
+    if existing:
+        existing.nama = nama
+        existing.kecamatan = kecamatan
+        existing.kelurahan = kelurahan
+        existing.tanggal_lahir = tanggal_lahir
+        existing.umur = int(umur)
+        existing.bb_awal = bb_awal
+        existing.bb_sekarang = bb_sekarang
+        existing.tinggi_badan = tinggi_badan
+        existing.lila = lila
+        existing.trimester = trimester
+        existing.imt = imt
+        existing.status = status
+        existing.algoritma = nama_algoritma
+        existing.tanggal = datetime.now()
+        db.session.commit()
+    else:
+        baru = Riwayat(
+            nama=nama,
+            nik=nik,
+            kecamatan=kecamatan,
+            kelurahan=kelurahan,
+            tanggal_lahir=tanggal_lahir,
+            umur=int(umur),
+            bb_awal=bb_awal,
+            bb_sekarang=bb_sekarang,
+            tinggi_badan=tinggi_badan,
+            lila=lila,
+            trimester=trimester,
+            imt=imt,
+            status=status,
+            algoritma=nama_algoritma,
+            tanggal=datetime.now(),
+        )
+        db.session.add(baru)
+        db.session.commit()
     # ────────────────────────────────────────────
 
     hasil = {
@@ -439,6 +458,7 @@ def klasifikasi():
         'nik':              nik,
         'kecamatan':        kecamatan,
         'kelurahan':        kelurahan,
+        'tanggal_lahir':    tanggal_lahir,
         'umur':             umur,
         'bb_awal':          bb_awal,
         'bb_sekarang':      bb_sekarang,
@@ -506,6 +526,7 @@ def edit_riwayat(id):
     if request.method == 'POST':
         # Update fields
         data.nama = request.form.get('nama')
+        data.tanggal_lahir = request.form.get('tanggal_lahir')
         data.umur = float(request.form.get('umur'))
         data.bb_awal = float(request.form.get('bb_awal'))
         data.bb_sekarang = float(request.form.get('bb_sekarang'))
@@ -634,3 +655,17 @@ def perbandingan_algoritma():
 
 def pesan_gizi():
     return render_template('pesan_gizi.html')
+
+def get_pasien_by_nik(nik):
+    data = Riwayat.query.filter_by(nik=nik).first()
+    if data:
+        return jsonify({
+            'success': True,
+            'data': {
+                'nama': data.nama,
+                'kecamatan': data.kecamatan,
+                'kelurahan': data.kelurahan,
+                'tanggal_lahir': data.tanggal_lahir.strftime('%Y-%m-%d') if data.tanggal_lahir else ''
+            }
+        })
+    return jsonify({'success': False, 'message': 'Data tidak ditemukan'})
