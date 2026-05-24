@@ -204,7 +204,7 @@ def dashboard():
 
     daftar_file_geojson = []
     if os.path.exists(folder_path):
-        daftar_file_geojson = [f for f in os.listdir(folder_path) if f.endswith('.geojson')]
+        daftar_file_geojson = [f for f in os.listdir(folder_path) if f.endswith('.geojson')] 
 
     return render_template(
         'dashboard.html',

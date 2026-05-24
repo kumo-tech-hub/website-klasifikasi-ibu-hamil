@@ -2562,9 +2562,9 @@ a {
 
 /* Status warna model */
 .hs-status--normal   { color: var(--green-600); }
-.hs-status--kurang   { color: var(--orange-600); }
-.hs-status--lebih    { color: var(--yellow-600); }
-.hs-status--obesitas { color: var(--red-600); }
+.hs-status--kurang   { color: var(--red-600); }
+.hs-status--lebih    { color: var(--orange-600); }
+.hs-status--obesitas { color: #8b5cf6; }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {

@@ -285,12 +285,15 @@
     
     // Fungsi untuk mencari data lengkap berdasarkan nama kelurahan
     function getKelurahanData(namaKelurahan) {
-        const target = namaKelurahan.toLowerCase().trim().replace(/\s/g, '');
+        const target = namaKelurahan.toLowerCase().trim();
+        console.log("Mencari status dominan untuk kelurahan:", target);
+
         return dataSegmentasi.find(item => item.kelurahan.toLowerCase().trim() === target) || null;
     }
 
     function getStatusDominan(namaKelurahan) {
         const data = getKelurahanData(namaKelurahan);
+        console.log("Data yang ditemukan:", data);
         return data ? data.dominan : 'Tidak Ada Data';
     }
 
@@ -343,6 +346,8 @@
                         onEachFeature: function (feature, layer) {
                             var namaKelurahan = feature.properties.wadmkd || "Tidak Diketahui";
                             var kData = getKelurahanData(namaKelurahan);
+
+
 
                             var popupContent;
                             if (!kData) {
