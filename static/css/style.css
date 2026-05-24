@@ -51,6 +51,14 @@
     --red-600: #dc2626;
     --red-700: #b91c1c;
 
+    --ungu-50: #F0E0ED;
+    --ungu-100: #E0D0E0;
+    --ungu-600: #9333EA;
+    --ungu-700: #7E22CE;
+
+    --ungu-800: #f0e0ed;
+    --ungu-900: #961589;
+
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
@@ -614,11 +622,11 @@ a {
 }
 
 .icon-lebih {
-    background: var(--yellow-100);
+    background: var(--orange-100);
 }
 
 .icon-obesitas {
-    background: var(--red-100);
+    background: #8b5cf6;
 }
 
 .summary-label {
@@ -805,7 +813,7 @@ a {
 }
 
 .badge-kurang {
-    background: var(--orange-100);
+    background: var(--red-100);
     color: var(--orange-700);
 }
 
@@ -820,8 +828,8 @@ a {
 }
 
 .badge-obesitas {
-    background: var(--red-100);
-    color: var(--red-700);
+    background: var(--ungu-800);
+    color: var(--ungu-900);
 }
 
 /* ============================================================
@@ -1048,9 +1056,9 @@ a {
 }
 
 .banner-lebih {
-    background: var(--yellow-50);
-    border-color: #fde68a;
-    color: #713f12;
+    background: var(--orange-50);
+    border-color: #fed7aa;
+    color: #7c2d12;
 }
 
 .banner-obesitas {
@@ -1064,11 +1072,11 @@ a {
 }
 
 .banner-kurang .status-banner-icon {
-    background: var(--orange-100);
+    background: var(--red-100);
 }
 
 .banner-lebih .status-banner-icon {
-    background: var(--yellow-100);
+    background: var(--orange-100);
 }
 
 .banner-obesitas .status-banner-icon {
@@ -1123,8 +1131,8 @@ a {
 }
 
 .msg-kurang {
-    background: var(--orange-100);
-    border-color: #f97316;
+    background: var(--red-100);
+    border-color: var(--orange-700);
     color: var(--orange-700);
 }
 
@@ -1136,14 +1144,14 @@ a {
 
 .msg-lebih {
     background: var(--yellow-100);
-    border-color: #eab308;
+    border-color: #a16207;
     color: var(--yellow-700);
 }
 
 .msg-obesitas {
-    background: var(--red-100);
-    border-color: #ef4444;
-    color: var(--red-700);
+    background: var(--ungu-800);
+    border-color: #961589;
+    color: var(--ungu-900);
 }
 
 /* ============================================================
@@ -1499,7 +1507,7 @@ a {
 }
 
 .icon-kurang {
-    background: linear-gradient(135deg, #f87171, #ef4444);
+    background: linear-gradient(135deg, #ea3a3a, #ef4444);
     box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
 }
 
@@ -1657,13 +1665,13 @@ a {
 }
 
 .dash-badge-lebih {
-    background: #fef9c3;
+    background: #faf4b7;
     color: #713f12;
 }
 
 .dash-badge-obesitas {
-    background: #fee2e2;
-    color: #991b1b;
+    background: #f0e0ed;
+    color: #961589;
 }
 
 /* Action Buttons */
@@ -2323,21 +2331,21 @@ a {
 }
 
 .hs-banner--lebih {
-    background: var(--yellow-50);
-    border-color: #fde68a;
-    color: #713f12;
+    background: var(--orange-50);
+    border-color: #fed7aa;
+    color: #7c2d12;
 }
 
 .hs-banner--obesitas {
-    background: var(--red-50);
-    border-color: #fecaca;
-    color: #7f1d1d;
+    background: var(--ungu-800);
+    border-color: #961589;
+    color: var(--ungu-900);
 }
 
 .hs-banner--kritis {
     background: #fef2f2;
     border-color: #fca5a5;
-    color: #7f1d1d;
+    color: #a11d1d;
 }
 
 /* ── Card ── */
