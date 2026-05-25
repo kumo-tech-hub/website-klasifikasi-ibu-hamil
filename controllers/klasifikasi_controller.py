@@ -70,25 +70,26 @@ TIPS = {
         'Memastikan asupan air putih cukup setiap hari.'
     ],
     'Kurang': [
-        'Meningkatkan asupan kalori dan protein (misalnya dari telur, ikan, daging, susu).',
-        'Mengonsumsi makanan tambahan atau suplemen sesuai anjuran tenaga kesehatan.',
-        'Makan dengan porsi kecil tetapi lebih sering.',
-        'Memperhatikan asupan zat besi dan asam folat.',
-        'Segera berkonsultasi dengan bidan atau ahli gizi untuk penanganan lebih lanjut.'
+        'Mengkonsumsi makanan bergizi seimbang dengan porsi yang cukup, termasuk karbohidrat, protein, sayur, buah, dan lemak sehat.',
+        'Meningkatkan asupan kalori dengan protein hewani (telur, ikan, daging, susu) dan nabati (tahu, tempe, kacang-kacangan).',
+        'Makan dengan porsi lebih besar atau porsi kecil tetapi lebih sering.',
+        'Konsumsi camilan sehat padat nutrisi, seperti alpukat.',
+        'Konsumsi suplemen Tablet Tambah Darah (TTD).',
+        'Mengurangi aktivitas fisik yang terlalu berat.'
     ],
     'Lebih': [
-        'Mengontrol pola makan dengan mengurangi makanan tinggi gula dan lemak.',
+        'Mengontrol pola makan namun tetap memenuhi kebutuhan nutrisi ibu dan janin.',
+        'Mengurangi makanan cepat saji, tinggi gula, dan lemak berlebih.',
         'Memperbanyak konsumsi makanan berserat seperti sayur dan buah.',
-        'Mengatur porsi makan agar tidak berlebihan.',
-        'Melakukan aktivitas fisik ringan secara rutin.',
-        'Konsultasi dengan tenaga kesehatan untuk menjaga kenaikan berat badan tetap ideal.'
+        'Pilih camilan seperti buah (apel, pir, jeruk) atau yoghurt daripada camilan tinggi kalori.',
+        'Rutin melakukan aktivitas fisik ringan (misalnya jalan santai atau yoga prenatal).'
     ],
     'Obesitas': [
-        'Melakukan pengaturan pola makan secara ketat namun tetap memenuhi kebutuhan nutrisi ibu dan janin.',
-        'Menghindari makanan cepat saji, tinggi gula, dan lemak berlebih.',
-        'Rutin melakukan aktivitas fisik sesuai anjuran (misalnya senam hamil).',
-        'Melakukan pemantauan berat badan secara berkala.',
-        'Wajib berkonsultasi secara intensif dengan tenaga kesehatan (dokter, bidan, atau ahli gizi).'
+        'Mengontrol pola makan namun tetap memenuhi kebutuhan nutrisi ibu dan janin.',
+        'Mengurangi makanan cepat saji, tinggi gula, dan lemak berlebih.',
+        'Memperbanyak konsumsi makanan berserat seperti sayur dan buah.',
+        'Pilih camilan seperti buah (apel, pir, jeruk) atau yoghurt daripada camilan tinggi kalori.',
+        'Rutin melakukan aktivitas fisik ringan (misalnya jalan santai atau yoga prenatal).'
     ]
 }
 

@@ -54,17 +54,17 @@
         {% if data.status == 'Normal' %}
         <div class="status-message msg-normal">
             <strong>Status Gizi Normal — {{ data.catatan_status }}</strong>
-            <p>Ibu hamil memiliki status gizi yang baik dengan risiko stunting pada janin sangat rendah.</p>
+            <p>Ibu hamil memiliki status gizi yang baik</p>
         </div>
         {% elif data.status == 'Kurang' %}
         <div class="status-message msg-kurang">
-            <strong>Status Gizi Kurang (Kurus) — {{ data.catatan_status }}</strong>
-            <p>Ibu hamil terindikasi kekurangan gizi yang dapat meningkatkan risiko stunting pada janin.</p>
+            <strong>Status Gizi Kurang  (Kurus) — {{ data.catatan_status }}</strong>
+            <p>Ibu hamil terindikasi beresiko KEK yang meningkatkan risiko stunting pada janin</p>
         </div>
         {% elif data.status == 'Lebih' %}
         <div class="status-message msg-lebih">
             <strong>Status Gizi Lebih (Gemuk) — {{ data.catatan_status }}</strong>
-            <p>Ibu hamil memiliki berat badan berlebih yang perlu dikelola dengan konsultasi tenaga kesehatan.</p>
+            <p>Ibu hamil memiliki berat badan berlebih </p>
         </div>
         {% elif data.status == 'Obesitas' %}
         <div class="status-message msg-obesitas">

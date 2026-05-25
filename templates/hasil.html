@@ -20,12 +20,11 @@
             <div class="hs-banner__top">
                 <div class="hs-banner__icon">🚨</div>
                 <div class="hs-banner__text">
-                    <div class="hs-banner__eyebrow">Peringatan Kritis — Gizi Buruk / KEK</div>
-                    <div class="hs-banner__title">Ibu Hamil Berisiko Tinggi Melahirkan Bayi Stunting</div>
+                    <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
+                    <div class="hs-banner__title">Status Gizi Kurang</div>
                     <div class="hs-banner__desc">
-                        Status terdeteksi: <strong>{{ hasil.status }}</strong> — Probabilitas gizi kurang: {{
-                        hasil.prob_kurang }}%.
-                        Segera rujuk ke Puskesmas/RS terdekat dan berikan intervensi PMT.
+                        Tingkatkan asupan nutrisi dan protein harian ibu untuk mencegah stunting dan mendukung tumbuh
+                        kembang janin.
                     </div>
                 </div>
             </div>
@@ -50,8 +49,9 @@
                 <div class="hs-banner__text">
                     <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
                     <div class="hs-banner__title">Status Gizi Normal</div>
-                    <div class="hs-banner__desc">Pertahankan pola makan dan aktivitas saat ini. Risiko stunting pada
-                        janin sangat rendah.</div>
+                    <div class="hs-banner__desc">Pertahankan pola makan seimbang dan pantau tumbuh kembang janin secara
+                        berkala, risiko stunting pada janin sangat rendah.</div>
+
                 </div>
             </div>
             <div class="hs-kek-strip">
@@ -76,8 +76,9 @@
                 <div class="hs-banner__text">
                     <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
                     <div class="hs-banner__title">Status Gizi Kurang (Kurus)</div>
-                    <div class="hs-banner__desc">{{ hasil.catatan_status }}. Perlu perhatian khusus untuk mencegah
-                        stunting.</div>
+                    <div class="hs-banner__desc">{{ hasil.catatan_status }}. Tingkatkan asupan nutrisi dan protein,
+                        perlu perhatian khusus untuk meminimalkan risiko stunting dan mendukung tumbuh kembang janin.
+                    </div>
                 </div>
             </div>
             <div class="hs-kek-strip">
@@ -103,7 +104,8 @@
                 <div class="hs-banner__text">
                     <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
                     <div class="hs-banner__title">Status Gizi Lebih (Gemuk)</div>
-                    <div class="hs-banner__desc">{{ hasil.catatan_status }}. Perlu pengaturan pola makan.</div>
+                    <div class="hs-banner__desc">{{ hasil.catatan_status }}, batasi makanan tinggi gula dan lemak jenuh,
+                        serta jaga kenaikan berat badan ideal selama kehamilan.</div>
                 </div>
             </div>
             <div class="hs-kek-strip">
@@ -130,7 +132,7 @@
                     <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
                     <div class="hs-banner__title">Status Gizi Obesitas</div>
                     <div class="hs-banner__desc">{{ hasil.catatan_status }}. Perlu penanganan intensif untuk mencegah
-                        komplikasi.</div>
+                        komplikasi kehamilan.</div>
                 </div>
             </div>
             <div class="hs-kek-strip">
@@ -278,7 +280,8 @@
                         {% else %}
                         <div class="hs-model-status hs-status--{{ data.status|lower }}">{{ data.status }}</div>
                         <!-- <div class="hs-model-acc" style="font-size: 11px; color: var(--gray-400);">Akurasi Model: {{ data.global_accuracy }}%</div> -->
-                        <div class="hs-model-acc" style="margin-top: 2px;">Keyakinan: {{ data.probability }}%</div>
+                        <div class="hs-model-acc" style="margin-top: 2px;">Confidence Score: {{ data.probability }}%
+                        </div>
                         {% endif %}
                     </div>
                     {% endfor %}

@@ -51,10 +51,13 @@
     --red-600: #dc2626;
     --red-700: #b91c1c;
 
-    --purple-50: #faf5ff;
-    --purple-100: #f3e8ff;
-    --purple-600: #9333ea;
-    --purple-700: #7e22ce;
+    --ungu-50: #F0E0ED;
+    --ungu-100: #E0D0E0;
+    --ungu-600: #9333EA;
+    --ungu-700: #7E22CE;
+
+    --ungu-800: #f0e0ed;
+    --ungu-900: #961589;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -625,7 +628,7 @@ a {
 }
 
 .icon-obesitas {
-    background: var(--purple-100);
+    background: #8b5cf6;
 }
 
 .summary-label {
@@ -815,7 +818,7 @@ a {
 
 .badge-kurang {
     background: var(--red-100);
-    color: var(--red-700);
+    color: var(--orange-700);
 }
 
 .badge-normal {
@@ -829,8 +832,8 @@ a {
 }
 
 .badge-obesitas {
-    background: var(--purple-100);
-    color: var(--purple-700);
+    background: var(--ungu-800);
+    color: var(--ungu-900);
 }
 
 /* ============================================================
@@ -1062,6 +1065,12 @@ a {
     color: #7c2d12;
 }
 
+.banner-lebih {
+    background: var(--orange-50);
+    border-color: #fed7aa;
+    color: #7c2d12;
+}
+
 .banner-obesitas {
     background: var(--purple-50);
     border-color: #e9d5ff;
@@ -1133,8 +1142,8 @@ a {
 
 .msg-kurang {
     background: var(--red-100);
-    border-color: #ef4444;
-    color: var(--red-700);
+    border-color: var(--orange-700);
+    color: var(--orange-700);
 }
 
 .msg-normal {
@@ -1144,15 +1153,15 @@ a {
 }
 
 .msg-lebih {
-    background: var(--orange-100);
-    border-color: #f97316;
-    color: var(--orange-700);
+    background: var(--yellow-100);
+    border-color: #a16207;
+    color: var(--yellow-700);
 }
 
 .msg-obesitas {
-    background: var(--purple-100);
-    border-color: #a855f7;
-    color: var(--purple-700);
+    background: var(--ungu-800);
+    border-color: #961589;
+    color: var(--ungu-900);
 }
 
 /* ============================================================
@@ -1508,7 +1517,7 @@ a {
 }
 
 .icon-kurang {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, #ea3a3a, #ef4444);
     box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
 }
 
@@ -1667,13 +1676,13 @@ a {
 }
 
 .dash-badge-lebih {
-    background: var(--orange-100);
-    color: var(--orange-700);
+    background: #faf4b7;
+    color: #713f12;
 }
 
 .dash-badge-obesitas {
-    background: var(--purple-100);
-    color: var(--purple-700);
+    background: #f0e0ed;
+    color: #961589;
 }
 
 /* Action Buttons */
@@ -1919,6 +1928,8 @@ a {
 
     .dash-treemap-legend {
         flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }
 
@@ -2338,16 +2349,22 @@ a {
     color: #7c2d12;
 }
 
+.hs-banner--lebih {
+    background: var(--orange-50);
+    border-color: #fed7aa;
+    color: #7c2d12;
+}
+
 .hs-banner--obesitas {
-    background: var(--purple-50);
-    border-color: #e9d5ff;
-    color: #581c87;
+    background: var(--ungu-800);
+    border-color: #961589;
+    color: var(--ungu-900);
 }
 
 .hs-banner--kritis {
     background: #fef2f2;
     border-color: #fca5a5;
-    color: #7f1d1d;
+    color: #a11d1d;
 }
 
 /* ── Card ── */
