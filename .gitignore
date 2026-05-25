@@ -14,6 +14,12 @@ __pycache__/
 .vscode/
 .idea/
 
+# docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+docker/
+
 # OS metadata
 .DS_StoreFROM python:3.12-slim
 

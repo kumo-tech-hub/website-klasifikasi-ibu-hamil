@@ -7,6 +7,8 @@ from datetime import datetime
 from database.table.kecamatan import Kecamatan
 from database.table.kelurahan import Kelurahan
 import os
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning)
 
 # ─────────────────────────────────────────────
 # LOGIN
@@ -53,9 +55,9 @@ PERBANDINGAN = {
 
 # Detail tiap variant (untuk referensi / pengembangan)
 PERBANDINGAN_DETAIL = {
-    'XGBoost Baseline': {'accuracy': 94.2, 'precision': 93.8, 'recall': 93.5, 'f1': 93.6},
+    # 'XGBoost Baseline': {'accuracy': 94.2, 'precision': 93.8, 'recall': 93.5, 'f1': 93.6},
     'XGBoost SMOTE':    {'accuracy': 91.8, 'precision': 92.1, 'recall': 94.7, 'f1': 93.4},
-    'CatBoost Baseline':{'accuracy': 95.1, 'precision': 94.6, 'recall': 94.2, 'f1': 94.4},
+    # 'CatBoost Baseline':{'accuracy': 95.1, 'precision': 94.6, 'recall': 94.2, 'f1': 94.4},
     'CatBoost SMOTE':   {'accuracy': 93.0, 'precision': 93.5, 'recall': 96.1, 'f1': 94.8},
 }
 
@@ -254,6 +256,7 @@ def klasifikasi():
     tinggi_badan = float(request.form.get('tinggi_badan'))
     lila         = float(request.form.get('lila'))
     trimester    = int(request.form.get('trimester'))
+    tanggal      = datetime.now()
 
     tinggi_m = tinggi_badan / 100
     imt = round(bb_awal / (tinggi_m ** 2), 2)
@@ -279,10 +282,10 @@ def klasifikasi():
         import os
 
         model_paths = {
-            'XGBoost (SMOTE)': 'ml/model_xgb_smote.pkl',
-            'XGBoost (Baseline)': 'ml/model_xgb_baseline.pkl',
-            'CatBoost (SMOTE)': 'ml/model_cat_smote.pkl',
-            'CatBoost (Baseline)': 'ml/model_cat_baseline.pkl'
+            'XGBoost (SMOTE)': 'ml/model_xgb_smote (1).pkl',
+            # 'XGBoost (Baseline)': 'ml/model_xgb_baseline.pkl',
+            'CatBoost (SMOTE)': 'ml/model_cat_smote (1).pkl',
+            # 'CatBoost (Baseline)': 'ml/model_cat_baseline.pkl'
         }
 
         for m_name, rel_path in model_paths.items():
@@ -475,6 +478,7 @@ def klasifikasi():
         'rekomendasi_bb':   REKOMENDASI_BB.get(status, {}),
         'predictions':      predictions,
         'peringatan_kritis': peringatan_kritis,
+        'tanggal':          tanggal,
         'prob_kurang':       best_prob_kurang
     }
 
@@ -667,6 +671,7 @@ def get_pasien_by_nik(nik):
                 'kelurahan': data.kelurahan,
                 'tanggal_lahir': data.tanggal_lahir.strftime('%Y-%m-%d') if data.tanggal_lahir else '',
                 'bb_awal': data.bb_awal,
+                'bb_sekarang': data.bb_sekarang,
                 'tinggi_badan': data.tinggi_badan,
                 'lila': data.lila,
             }

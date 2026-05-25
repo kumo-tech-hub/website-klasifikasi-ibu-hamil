@@ -51,6 +51,11 @@
     --red-600: #dc2626;
     --red-700: #b91c1c;
 
+    --purple-50: #faf5ff;
+    --purple-100: #f3e8ff;
+    --purple-600: #9333ea;
+    --purple-700: #7e22ce;
+
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
@@ -353,6 +358,7 @@ a {
 
 .main-wrapper {
     flex: 1;
+    min-width: 0;
     margin-left: var(--sidebar-w);
     min-height: 100vh;
     display: flex;
@@ -361,6 +367,7 @@ a {
 
 .main-content {
     flex: 1;
+    min-width: 0;
     padding: 28px 28px 40px;
     background-image: url('../img/backgroundweb.png');
 /*
@@ -610,15 +617,15 @@ a {
 }
 
 .icon-kurang {
-    background: var(--orange-100);
+    background: var(--red-100);
 }
 
 .icon-lebih {
-    background: var(--yellow-100);
+    background: var(--orange-100);
 }
 
 .icon-obesitas {
-    background: var(--red-100);
+    background: var(--purple-100);
 }
 
 .summary-label {
@@ -722,6 +729,8 @@ a {
     overflow-x: auto;
     border-radius: var(--radius);
     border: 1px solid var(--gray-100);
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
 }
 
 .riwayat-table {
@@ -805,8 +814,8 @@ a {
 }
 
 .badge-kurang {
-    background: var(--orange-100);
-    color: var(--orange-700);
+    background: var(--red-100);
+    color: var(--red-700);
 }
 
 .badge-normal {
@@ -815,13 +824,13 @@ a {
 }
 
 .badge-lebih {
-    background: var(--yellow-100);
-    color: var(--yellow-700);
+    background: var(--orange-100);
+    color: var(--orange-700);
 }
 
 .badge-obesitas {
-    background: var(--red-100);
-    color: var(--red-700);
+    background: var(--purple-100);
+    color: var(--purple-700);
 }
 
 /* ============================================================
@@ -1042,21 +1051,21 @@ a {
 }
 
 .banner-kurang {
+    background: var(--red-50);
+    border-color: #fca5a5;
+    color: #7f1d1d;
+}
+
+.banner-lebih {
     background: var(--orange-50);
     border-color: #fed7aa;
     color: #7c2d12;
 }
 
-.banner-lebih {
-    background: var(--yellow-50);
-    border-color: #fde68a;
-    color: #713f12;
-}
-
 .banner-obesitas {
-    background: var(--red-50);
-    border-color: #fecaca;
-    color: #7f1d1d;
+    background: var(--purple-50);
+    border-color: #e9d5ff;
+    color: #581c87;
 }
 
 .banner-normal .status-banner-icon {
@@ -1064,15 +1073,15 @@ a {
 }
 
 .banner-kurang .status-banner-icon {
-    background: var(--orange-100);
+    background: var(--red-100);
 }
 
 .banner-lebih .status-banner-icon {
-    background: var(--yellow-100);
+    background: var(--orange-100);
 }
 
 .banner-obesitas .status-banner-icon {
-    background: var(--red-100);
+    background: var(--purple-100);
 }
 
 /* Patient info */
@@ -1123,9 +1132,9 @@ a {
 }
 
 .msg-kurang {
-    background: var(--orange-100);
-    border-color: #f97316;
-    color: var(--orange-700);
+    background: var(--red-100);
+    border-color: #ef4444;
+    color: var(--red-700);
 }
 
 .msg-normal {
@@ -1135,15 +1144,15 @@ a {
 }
 
 .msg-lebih {
-    background: var(--yellow-100);
-    border-color: #eab308;
-    color: var(--yellow-700);
+    background: var(--orange-100);
+    border-color: #f97316;
+    color: var(--orange-700);
 }
 
 .msg-obesitas {
-    background: var(--red-100);
-    border-color: #ef4444;
-    color: var(--red-700);
+    background: var(--purple-100);
+    border-color: #a855f7;
+    color: var(--purple-700);
 }
 
 /* ============================================================
@@ -1494,23 +1503,23 @@ a {
 }
 
 .icon-normal {
-    background: linear-gradient(135deg, #22c55e, #15803d);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
 }
 
 .icon-kurang {
-    background: linear-gradient(135deg, #f87171, #ef4444);
+    background: linear-gradient(135deg, #ef4444, #dc2626);
     box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
 }
 
 .icon-Lebih {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
 }
 
 .icon-obesitas {
-    background: linear-gradient(135deg, #a78bfa, #8b5cf6);
-    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
 }
 
 .icon-wilayah {
@@ -1615,6 +1624,7 @@ a {
     border-bottom: 1px solid var(--gray-100);
     color: var(--gray-700);
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 .dash-pasien-table tbody tr:last-child td {
@@ -1657,13 +1667,13 @@ a {
 }
 
 .dash-badge-lebih {
-    background: #fef9c3;
-    color: #713f12;
+    background: var(--orange-100);
+    color: var(--orange-700);
 }
 
 .dash-badge-obesitas {
-    background: #fee2e2;
-    color: #991b1b;
+    background: var(--purple-100);
+    color: var(--purple-700);
 }
 
 /* Action Buttons */
@@ -1785,23 +1795,23 @@ a {
 }
 
 .dot-normal {
-    background: #10b981;
-    border: 1.5px solid #a7f3d0;
+    background: var(--green-600);
+    border: 1.5px solid #bbf7d0;
 }
 
 .dot-kurang {
-    background: #ef4444;
+    background: var(--red-600);
     border: 1.5px solid #fecaca;
 }
 
 .dot-lebih {
-    background: #f59e0b;
-    border: 1.5px solid #fde68a;
+    background: var(--orange-600);
+    border: 1.5px solid #fed7aa;
 }
 
 .dot-obesitas {
-    background: #8b5cf6;
-    border: 1.5px solid #ddd6fe;
+    background: var(--purple-600);
+    border: 1.5px solid #e9d5ff;
 }
 
 .dot-empty {
@@ -2317,21 +2327,21 @@ a {
 }
 
 .hs-banner--kurang {
+    background: var(--red-50);
+    border-color: #fca5a5;
+    color: #7f1d1d;
+}
+
+.hs-banner--lebih {
     background: var(--orange-50);
     border-color: #fed7aa;
     color: #7c2d12;
 }
 
-.hs-banner--lebih {
-    background: var(--yellow-50);
-    border-color: #fde68a;
-    color: #713f12;
-}
-
 .hs-banner--obesitas {
-    background: var(--red-50);
-    border-color: #fecaca;
-    color: #7f1d1d;
+    background: var(--purple-50);
+    border-color: #e9d5ff;
+    color: #581c87;
 }
 
 .hs-banner--kritis {
@@ -2564,7 +2574,7 @@ a {
 .hs-status--normal   { color: var(--green-600); }
 .hs-status--kurang   { color: var(--red-600); }
 .hs-status--lebih    { color: var(--orange-600); }
-.hs-status--obesitas { color: #8b5cf6; }
+.hs-status--obesitas { color: var(--purple-600); }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
