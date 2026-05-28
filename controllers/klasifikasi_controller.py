@@ -235,10 +235,19 @@ def input_data():
     for kec in kecamatans:
         # Asumsi Anda menggunakan db.relationship('Kelurahan') dengan backref='kecamatan'
         data_wilayah[kec.nama] = [kel.nama for kel in kec.kelurahan_list]
+    
+    # Jika akses dari menu / nav, buka form baru tanpa data lama
+    clear_form = request.args.get('fresh') == '1'
+    if clear_form and 'last_input' in session:
+        del session['last_input']
+
+    last_input = None if clear_form else session.get('last_input', None)
+    
     return render_template(
         'input.html',
         kecamatans=kecamatans, 
-        data_wilayah=data_wilayah
+        data_wilayah=data_wilayah,
+        last_input=last_input
         )
 
 # ─────────────────────────────────────────────
@@ -379,22 +388,28 @@ def klasifikasi():
         # 4. IMT >= 25.0 -> Lebih (Gemuk)
         # 5. Lainnya -> Normal (IMT 18.5 - 24.9 DAN LiLA >= 23.5)
         
-        status_kek = "KEK" if lila < 23.5 else "Tidak KEK"
+       # 1. Aturan Penentuan Status KEK 
+        if lila < 23.5 and imt < 18.5:
+            status_kek = "KEK"
+        elif lila < 23.5 or imt < 18.5:
+            status_kek = "Risiko KEK"
+        else:
+            status_kek = "Tidak KEK"
         status_sebelum_hamil = "Normal"
         catatan_status = ""
 
         if lila < 23.5:
             status_sebelum_hamil = "Kurang"
-            catatan_status = "Terdeteksi KEK (LiLA < 23.5 cm)"
+            catatan_status = "LiLA < 23.5 cm"
         elif imt < 18.5:
             status_sebelum_hamil = "Kurang"
-            catatan_status = "IMT Kurang dari 18.5"
+            catatan_status = "IMT < 18.5"
         elif imt >= 30.0:
-            status_sebelum_hamil = "Obesitas"
-            catatan_status = "IMT >= 30.0"
+            pytstatus_sebelum_hamil = "Obesitas"
+            catatan_status = "IMT >= 30.0"  
         elif imt >= 25.0:
             status_sebelum_hamil = "Lebih"
-            catatan_status = "IMT >= 25.0"
+            catatan_status = "IMT >= 25.0"    
         else:
             status_sebelum_hamil = "Normal"
             catatan_status = "IMT & LiLA dalam batas normal"
@@ -483,6 +498,21 @@ def klasifikasi():
         'prob_kurang':       best_prob_kurang
     }
 
+    # Simpan data terakhir ke session agar bisa ditampilkan kembali di form (untuk edit)
+    session['last_input'] = {
+        'nama': nama,
+        'nik': nik,
+        'kecamatan': kecamatan,
+        'kelurahan': kelurahan,
+        'tanggal_lahir': tanggal_lahir,
+        'umur': str(umur),
+        'bb_awal': str(bb_awal),
+        'bb_sekarang': str(bb_sekarang),
+        'tinggi_badan': str(tinggi_badan),
+        'lila': str(lila),
+        'trimester': str(trimester),
+    }
+
     return render_template('hasil.html', hasil=hasil)
 
 
@@ -501,13 +531,20 @@ def detail_riwayat(id):
     
     # Recalculate rules for consistency (or you could save these to DB, but recalculating is safer for existing data)
     imt = detail['imt']
+    
     lila = detail['lila']
-    status_kek = "KEK" if lila < 23.5 else "Tidak KEK"
+    if lila < 23.5 and imt < 18.5:
+        status_kek = "KEK"
+    elif lila < 23.5 or imt < 18.5:
+        status_kek = "Risiko KEK"  
+    else:
+        status_kek = "Tidak KEK"
+        
     catatan_status = ""
-    if lila < 23.5: catatan_status = "Terdeteksi KEK (LiLA < 23.5 cm)"
-    elif imt < 18.5: catatan_status = "IMT Kurang dari 18.5"
-    elif imt >= 30.0: catatan_status = "IMT >= 30.0"
+    if lila < 23.5: catatan_status = "(LiLA < 23.5 cm)"
+    elif imt < 18.5: catatan_status = "IMT < 18.5"
     elif imt >= 25.0: catatan_status = "IMT >= 25.0"
+    elif imt >= 30.0: catatan_status = "IMT >= 30.0"
     else: catatan_status = "IMT & LiLA dalam batas normal"
 
     detail['status_kek'] = status_kek
@@ -678,3 +715,15 @@ def get_pasien_by_nik(nik):
             }
         })
     return jsonify({'success': False, 'message': 'Data tidak ditemukan'})
+
+
+# ─────────────────────────────────────────────
+# CLEAR FORM SESSION (untuk Ulangi Pengujian)
+# ─────────────────────────────────────────────
+
+def clear_form_session():
+    """Menghapus data terakhir dari session untuk form baru"""
+    if 'last_input' in session:
+        del session['last_input']
+        session.modified = True
+    return jsonify({'success': True})

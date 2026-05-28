@@ -39,7 +39,7 @@
                 </span>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ url_for('main_routes.input_data') }}" class="nav-item {% if request.endpoint == 'main_routes.input_data' or request.endpoint == 'main_routes.hasil' %}active{% endif %}">
+            <a href="{{ url_for('main_routes.input_data', fresh=1) }}" class="nav-item {% if request.endpoint == 'main_routes.input_data' or request.endpoint == 'main_routes.hasil' %}active{% endif %}">
                 <span class="nav-icon">
                     <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
                         <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

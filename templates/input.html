@@ -320,6 +320,89 @@
                 resetPatientFields();
             }
         });
+
+        // Isi form dengan data terakhir jika ada
+        document.addEventListener('DOMContentLoaded', function () {
+            const lastInput = {{ last_input | tojson if last_input else 'null' }};
+            if (lastInput && lastInput !== null) {
+                // Isi semua field form dengan data terakhir
+                if (lastInput.nik) document.getElementById('nik').value = lastInput.nik;
+                if (lastInput.nama) document.getElementById('nama').value = lastInput.nama;
+                if (lastInput.kecamatan) {
+                    document.getElementById('kecamatan').value = lastInput.kecamatan;
+                    document.getElementById('kecamatan_display').value = lastInput.kecamatan;
+                    updateKelurahan(lastInput.kecamatan);
+                    // Tunggu dropdown kelurahan terupdate, baru set nilainya
+                    setTimeout(function() {
+                        if (lastInput.kelurahan) {
+                            document.getElementById('kelurahan').value = lastInput.kelurahan;
+                        }
+                    }, 100);
+                }
+                if (lastInput.tanggal_lahir) document.getElementById('tanggal_lahir').value = lastInput.tanggal_lahir;
+                if (lastInput.umur) document.getElementById('umur').value = lastInput.umur;
+                if (lastInput.bb_awal) {
+                    document.getElementById('bb_awal').value = lastInput.bb_awal;
+                    hitungIMT();
+                }
+                if (lastInput.bb_sekarang) document.getElementById('bb_sekarang').value = lastInput.bb_sekarang;
+                if (lastInput.tinggi_badan) {
+                    document.getElementById('tinggi_badan').value = lastInput.tinggi_badan;
+                    hitungIMT();
+                }
+                if (lastInput.lila) document.getElementById('lila').value = lastInput.lila;
+                if (lastInput.trimester) document.getElementById('trimester').value = lastInput.trimester;
+
+                // Tampilkan notifikasi bahwa data telah dimuat
+                const notif = document.createElement('div');
+                notif.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: #10b981;
+                    color: white;
+                    padding: 12px 16px;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    z-index: 9999;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                notif.textContent = '✓ Data dari form sebelumnya telah dimuat';
+                document.body.appendChild(notif);
+
+                // Hapus notifikasi setelah 2 detik
+                setTimeout(function() {
+                    notif.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(function() {
+                        notif.remove();
+                    }, 300);
+                }, 2000);
+            }
+        });
     </script>
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
 </div>
 {% endblock %}

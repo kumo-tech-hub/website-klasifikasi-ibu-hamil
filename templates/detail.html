@@ -47,29 +47,33 @@
 
         {# ── Status Gizi ── #}
         <div class="status-box">
-            <span>Status Gizi:</span>
+            <span>Hasil Klasifikasi Status Gizi Awal Kehamilan:</span>
             <span class="badge badge-{{ data.status|lower }}">{{ data.status }}</span>
         </div>
 
         {% if data.status == 'Normal' %}
         <div class="status-message msg-normal">
-            <strong>Status Gizi Normal — {{ data.catatan_status }}</strong>
-            <p>Ibu hamil memiliki status gizi yang baik</p>
+            <strong>Status Gizi Normal </strong>
+            <p>Ibu hamil memiliki status gizi yang baik, {{ data.catatan_status }}</p>
         </div>
         {% elif data.status == 'Kurang' %}
         <div class="status-message msg-kurang">
-            <strong>Status Gizi Kurang  (Kurus) — {{ data.catatan_status }}</strong>
-            <p>Ibu hamil terindikasi beresiko KEK yang meningkatkan risiko stunting pada janin</p>
+            <strong>Status Gizi Kurang  (Kurus) </strong>
+            {% if data.imt < 18.5 and data.lila < 23.5 %}
+                <p>Ibu hamil terindikasi Kekurangan Energi Kronis (KEK), IMT <18.5 dan Lila <23.5</p>
+            {% else %}
+                <p>Ibu hamil beresiko Kekurangan Energi Kronis (KEK), {{ data.catatan_status }} </p>
+            {% endif %}
         </div>
         {% elif data.status == 'Lebih' %}
         <div class="status-message msg-lebih">
-            <strong>Status Gizi Lebih (Gemuk) — {{ data.catatan_status }}</strong>
-            <p>Ibu hamil memiliki berat badan berlebih </p>
+            <strong>Status Gizi Lebih (Gemuk)</strong>
+            <p>Ibu hamil memiliki berat badan berlebih, {{ data.catatan_status }}</p>
         </div>
         {% elif data.status == 'Obesitas' %}
         <div class="status-message msg-obesitas">
-            <strong>Status Gizi Obesitas — {{ data.catatan_status }}</strong>
-            <p>Ibu hamil mengalami obesitas yang meningkatkan risiko komplikasi kehamilan.</p>
+            <strong>Status Gizi Obesitas</strong>
+            <p>Ibu hamil mengalami obesitas {{ data.catatan_status }}, yang meningkatkan risiko komplikasi kehamilan</p>
         </div>
         {% endif %}
 
@@ -79,8 +83,9 @@
                 class="hs-kek-dot {% if data.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
             <span class="hs-kek-label">Status KEK</span>
             <span class="hs-kek-value">{{ data.status_kek }}</span>
-            <span class="hs-kek-note">LiLA {{ data.lila }} cm — batas 23.5 cm</span>
+        {#  <span class="hs-kek-note">LiLA {{ data.lila }} cm — batas 23.5 cm</span> #}
         </div>
+        
 
         {# ── Ringkasan Pengukuran ── #}
         <p class="section-title">Ringkasan Pengukuran</p>

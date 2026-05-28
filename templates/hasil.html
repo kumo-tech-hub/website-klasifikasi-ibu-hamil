@@ -23,8 +23,7 @@
                     <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
                     <div class="hs-banner__title">Status Gizi Kurang</div>
                     <div class="hs-banner__desc">
-                        Tingkatkan asupan nutrisi dan protein harian ibu untuk mencegah stunting dan mendukung tumbuh
-                        kembang janin.
+                        Tingkatkan asupan nutrisi dan protein harian ibu untuk mencegah stunting dan mendukung tumbuh kembang janin.
                     </div>
                 </div>
             </div>
@@ -32,7 +31,7 @@
                 <span class="hs-kek-dot hs-kek-dot--berisiko"></span>
                 <span class="hs-kek-label">Status KEK</span>
                 <span class="hs-kek-value">{{ hasil.status_kek }}</span>
-                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
+            {#  <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span> #}
             </div>
         </div>
 
@@ -54,12 +53,14 @@
 
                 </div>
             </div>
+
             <div class="hs-kek-strip">
                 <span class="hs-kek-dot hs-kek-dot--aman"></span>
                 <span class="hs-kek-label">Status KEK</span>
                 <span class="hs-kek-value">{{ hasil.status_kek }}</span>
-                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
+            {#  <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span> #}
             </div>
+            
         </div>
 
         {% elif hasil.status == 'Kurang' %}
@@ -86,10 +87,10 @@
                     class="hs-kek-dot {% if hasil.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
                 <span class="hs-kek-label">Status KEK</span>
                 <span class="hs-kek-value">{{ hasil.status_kek }}</span>
-                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
+            {#  <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span> #}
             </div>
         </div>
-
+        
         {% elif hasil.status == 'Lebih' %}
         <div class="hs-banner hs-banner--lebih">
             <div class="hs-banner__top">
@@ -104,8 +105,7 @@
                 <div class="hs-banner__text">
                     <div class="hs-banner__eyebrow">Hasil Klasifikasi Status Gizi Awal Kehamilan</div>
                     <div class="hs-banner__title">Status Gizi Lebih (Gemuk)</div>
-                    <div class="hs-banner__desc">{{ hasil.catatan_status }}, batasi makanan tinggi gula dan lemak jenuh,
-                        serta jaga kenaikan berat badan ideal selama kehamilan.</div>
+                    <div class="hs-banner__desc">Ibu hamil memiliki berat badan berlebih</div>
                 </div>
             </div>
             <div class="hs-kek-strip">
@@ -113,7 +113,7 @@
                     class="hs-kek-dot {% if hasil.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
                 <span class="hs-kek-label">Status KEK</span>
                 <span class="hs-kek-value">{{ hasil.status_kek }}</span>
-                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
+            {#  <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span> #}
             </div>
         </div>
 
@@ -140,7 +140,7 @@
                     class="hs-kek-dot {% if hasil.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
                 <span class="hs-kek-label">Status KEK</span>
                 <span class="hs-kek-value">{{ hasil.status_kek }}</span>
-                <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span>
+            {#  <span class="hs-kek-note">LiLA {{ hasil.lila }} cm — batas 23.5 cm</span> #}
             </div>
         </div>
         {% endif %}
@@ -249,9 +249,9 @@
 
 
         {# ── Tombol Ulangi ── #}
-        <a href="{{ url_for('main_routes.input_data') }}" class="btn hs-btn-ulangi">
+        <button onclick="ulangiPengujian()" class="btn hs-btn-ulangi">
             Ulangi Pengujian
-        </a>
+        </button>
 
         {# ── Catatan Penting ── #}
         <div class="catatan hs-catatan">
@@ -309,6 +309,25 @@
         var visible = box.style.display !== 'none';
         box.style.display = visible ? 'none' : 'block';
         btn.textContent = visible ? 'Lihat Tips Edukasi' : 'Tutup Tips Edukasi';
+    }
+
+    function ulangiPengujian() {
+        // Clear session data sebelum redirect
+        fetch('/api/clear-form-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json()).then(data => {
+            if (data.success) {
+                // Redirect ke halaman form yang kosong
+                window.location.href = "{{ url_for('main_routes.input_data') }}";
+            }
+        }).catch(err => {
+            console.error('Error:', err);
+            // Fallback: tetap redirect meski error
+            window.location.href = "{{ url_for('main_routes.input_data') }}";
+        });
     }
 </script>
 {% endblock %}
