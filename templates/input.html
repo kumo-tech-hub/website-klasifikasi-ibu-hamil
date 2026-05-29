@@ -66,7 +66,7 @@
     <div class="card">
         <h2>Data Ibu Hamil</h2>
         <p class="card-desc">Lengkapi semua informasi dibawah ini</p>
-        <div id="data-wilayah-container" data-wilayah='{{ data_wilayah | tojson }}' style="display:none;"></div>
+        <div id="data-wilayah-container" data-wilayah='{{ data_wilayah | tojson }}' data-last-input='{{ last_input | tojson if last_input else "null" }}' style="display:none;"></div>
 
         <form action="{{ url_for('main_routes.klasifikasi') }}" method="POST">
             <div class="form-row">
@@ -168,9 +168,10 @@
             <button type="submit" class="btn" style="margin-top: 15px; width:100%;">Klasifikasi Status Gizi</button>
         </form>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
 
-    {% block extra_js %}
+{% block extra_js %}
     <script>
         var bbAwal = document.getElementById('bb_awal');
         var tinggi = document.getElementById('tinggi_badan');
@@ -289,14 +290,35 @@
 
                             // update kelurahan
                             updateKelurahan(kec);
-                            document.getElementById('kelurahan').value = data.data.kelurahan;
+                            
+                            // Jika kelurahan dari DB tidak ada di option list, tambahkan sementara
+                            let kelSelect = document.getElementById('kelurahan');
+                            let kelExists = Array.from(kelSelect.options).some(opt => opt.value === data.data.kelurahan);
+                            if (!kelExists && data.data.kelurahan) {
+                                let newOption = new Option(data.data.kelurahan, data.data.kelurahan, true, true);
+                                kelSelect.add(newOption);
+                            }
+                            kelSelect.value = data.data.kelurahan || '';
 
-                            // update tanggal lahir
+                            // update tanggal lahir dan umur
                             tanggal_lahir.value = data.data.tanggal_lahir;
-                            calculateAge();
-                            document.getElementById('bb_awal').value = data.data.bb_sekarang;
-                            document.getElementById('tinggi_badan').value = data.data.tinggi_badan;
-                            document.getElementById('lila').value = data.data.lila;
+                            if (data.data.tanggal_lahir) {
+                                calculateAge();
+                            } else {
+                                // Jika di DB tidak ada tanggal lahir, pakai umur dari DB
+                                umur.value = data.data.umur || '';
+                            }
+                            
+                            document.getElementById('bb_awal').value = (data.data.bb_awal > 0) ? data.data.bb_awal : '';
+                            document.getElementById('bb_sekarang').value = (data.data.bb_sekarang > 0) ? data.data.bb_sekarang : '';
+                            document.getElementById('tinggi_badan').value = (data.data.tinggi_badan > 0) ? data.data.tinggi_badan : '';
+                            document.getElementById('lila').value = (data.data.lila > 0) ? data.data.lila : '';
+                            
+                            if (data.data.trimester) {
+                                document.getElementById('trimester').value = data.data.trimester;
+                            }
+                            
+                            hitungIMT();
 
                             isAutoFilled = true;
 
@@ -323,7 +345,7 @@
 
         // Isi form dengan data terakhir jika ada
         document.addEventListener('DOMContentLoaded', function () {
-            const lastInput = {{ last_input | tojson if last_input else 'null' }};
+            const lastInput = JSON.parse(containerWilayah.dataset.lastInput || 'null');
             if (lastInput && lastInput !== null) {
                 // Isi semua field form dengan data terakhir
                 if (lastInput.nik) document.getElementById('nik').value = lastInput.nik;
@@ -381,7 +403,9 @@
                 }, 2000);
             }
         });
+
     </script>
+
     <style>
         @keyframes slideIn {
             from {
@@ -404,5 +428,4 @@
             }
         }
     </style>
-</div>
 {% endblock %}
