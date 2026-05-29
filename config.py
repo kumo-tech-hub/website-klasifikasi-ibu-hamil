@@ -9,10 +9,10 @@ class Config:
     # secret key flask
     SECRET_KEY = os.getenv("SECRET_KEY", "secret-key")
 
-    # database postgresql
+    # database MySQL
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5432/klasifikasi_db"
+        "mysql+pymysql://root:@localhost:3306/klasifikasi_db"
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

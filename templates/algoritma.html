@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Perbandingan Algoritma{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="dash-page-header">
+    <div>
+        <h1 class="dash-title">Perbandingan Algoritma</h1>
+        <p class="dash-subtitle">Analisis performa model XGBoost vs CatBoost</p>
+    </div>
+</div>
+
+<!-- Metric Cards -->
+<div class="algo-metric-grid">
+    <!-- Accuracy -->
+    <div class="algo-metric-card">
+        <p class="algo-metric-name">Accuracy</p>
+        <div class="algo-metric-values">
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-primary">{{ perbandingan.XGBoost.accuracy }}%</span>
+                <span class="algo-metric-tag tag-xgb">XGBoost</span>
+            </div>
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-secondary">{{ perbandingan.CatBoost.accuracy }}%</span>
+                <span class="algo-metric-tag tag-cat">CatBoost</span>
+            </div>
+        </div>
+    </div>
+    <!-- Precision -->
+    <div class="algo-metric-card">
+        <p class="algo-metric-name">Precision</p>
+        <div class="algo-metric-values">
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-primary">{{ perbandingan.XGBoost.precision }}%</span>
+                <span class="algo-metric-tag tag-xgb">XGBoost</span>
+            </div>
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-secondary">{{ perbandingan.CatBoost.precision }}%</span>
+                <span class="algo-metric-tag tag-cat">CatBoost</span>
+            </div>
+        </div>
+    </div>
+    <!-- Recall -->
+    <div class="algo-metric-card">
+        <p class="algo-metric-name">Recall</p>
+        <div class="algo-metric-values">
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-primary">{{ perbandingan.XGBoost.recall }}%</span>
+                <span class="algo-metric-tag tag-xgb">XGBoost</span>
+            </div>
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-secondary">{{ perbandingan.CatBoost.recall }}%</span>
+                <span class="algo-metric-tag tag-cat">CatBoost</span>
+            </div>
+        </div>
+    </div>
+    <!-- F1-Score -->
+    <div class="algo-metric-card">
+        <p class="algo-metric-name">F1-Score</p>
+        <div class="algo-metric-values">
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-primary">{{ perbandingan.XGBoost.f1 }}%</span>
+                <span class="algo-metric-tag tag-xgb">XGBoost</span>
+            </div>
+            <div class="algo-metric-item">
+                <span class="algo-metric-val val-secondary">{{ perbandingan.CatBoost.f1 }}%</span>
+                <span class="algo-metric-tag tag-cat">CatBoost</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bar Chart -->
+<div class="card">
+    <h3 class="card-title">Perbandingan Metrik Performa</h3>
+    <p class="card-desc">Visualisasi perbandingan keempat metrik evaluasi model</p>
+    <div class="algo-chart-wrapper" style="position: relative; height: 200px;">
+        <canvas id="metricChart"></canvas>
+    </div>
+    <div class="algo-chart-legend">
+        <div class="algo-legend-item">
+            <span class="algo-legend-dot" style="background:#ec4899;"></span>
+            <span>XGBoost</span>
+        </div>
+        <div class="algo-legend-item">
+            <span class="algo-legend-dot" style="background:#a78bfa;"></span>
+            <span>CatBoost</span>
+        </div>
+    </div>
+</div>
+
+<!-- Confusion Matrices -->
+<div class="algo-cm-grid">
+    <!-- XGBoost CM -->
+    <div class="card">
+        <h3 class="card-title">XGBoost</h3>
+        <p class="card-desc">Confusion Matrix</p>
+        <div class="algo-cm-wrapper">
+            <div class="algo-cm-yaxis-label">AKTUAL</div>
+            <div class="algo-cm-body">
+                <!-- Header -->
+                <div class="algo-cm-header-row">
+                    <div class="algo-cm-corner"></div>
+                    <div class="algo-cm-pred-label">Normal</div>
+                    <div class="algo-cm-pred-label">Kurang</div>
+                    <div class="algo-cm-pred-label">Lebih</div>
+                </div>
+                <!-- Row Normal -->
+                <div class="algo-cm-row">
+                    <div class="algo-cm-act-label">Normal</div>
+                    <div class="algo-cm-cell cell-diagonal">{{ confusion.XGBoost[0][0] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.XGBoost[0][1] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.XGBoost[0][2] }}</div>
+                </div>
+                <!-- Row Kurang -->
+                <div class="algo-cm-row">
+                    <div class="algo-cm-act-label">Kurang</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.XGBoost[1][0] }}</div>
+                    <div class="algo-cm-cell cell-diagonal">{{ confusion.XGBoost[1][1] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.XGBoost[1][2] }}</div>
+                </div>
+                <!-- Row Lebih -->
+                <div class="algo-cm-row">
+                    <div class="algo-cm-act-label">Lebih</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.XGBoost[2][0] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.XGBoost[2][1] }}</div>
+                    <div class="algo-cm-cell cell-diagonal">{{ confusion.XGBoost[2][2] }}</div>
+                </div>
+                <div class="algo-cm-xaxis-label">PREDIKSI</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CatBoost CM -->
+    <div class="card">
+        <h3 class="card-title">CatBoost</h3>
+        <p class="card-desc">Confusion Matrix</p>
+        <div class="algo-cm-wrapper">
+            <div class="algo-cm-yaxis-label">AKTUAL</div>
+            <div class="algo-cm-body">
+                <!-- Header -->
+                <div class="algo-cm-header-row">
+                    <div class="algo-cm-corner"></div>
+                    <div class="algo-cm-pred-label">Normal</div>
+                    <div class="algo-cm-pred-label">Kurang</div>
+                    <div class="algo-cm-pred-label">Lebih</div>
+                </div>
+                <!-- Row Normal -->
+                <div class="algo-cm-row">
+                    <div class="algo-cm-act-label">Normal</div>
+                    <div class="algo-cm-cell cell-diagonal-cat">{{ confusion.CatBoost[0][0] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.CatBoost[0][1] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.CatBoost[0][2] }}</div>
+                </div>
+                <!-- Row Kurang -->
+                <div class="algo-cm-row">
+                    <div class="algo-cm-act-label">Kurang</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.CatBoost[1][0] }}</div>
+                    <div class="algo-cm-cell cell-diagonal-cat">{{ confusion.CatBoost[1][1] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.CatBoost[1][2] }}</div>
+                </div>
+                <!-- Row Lebih -->
+                <div class="algo-cm-row">
+                    <div class="algo-cm-act-label">Lebih</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.CatBoost[2][0] }}</div>
+                    <div class="algo-cm-cell cell-off">{{ confusion.CatBoost[2][1] }}</div>
+                    <div class="algo-cm-cell cell-diagonal-cat">{{ confusion.CatBoost[2][2] }}</div>
+                </div>
+                <div class="algo-cm-xaxis-label">PREDIKSI</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kesimpulan -->
+<div class="card algo-conclusion-card">
+    <h3 class="card-title">Kesimpulan</h3>
+    <p class="algo-conclusion-text">
+        Model <strong>XGBoost</strong> menunjukkan performa yang lebih baik secara keseluruhan dengan akurasi 
+        <strong>{{ perbandingan.XGBoost.accuracy }}%</strong> dibandingkan CatBoost dengan 
+        <strong>{{ perbandingan.CatBoost.accuracy }}%</strong>. XGBoost juga unggul pada metrik Recall 
+        (<strong>{{ perbandingan.XGBoost.recall }}%</strong>) yang sangat penting dalam konteks kesehatan 
+        untuk meminimalkan false negative pada deteksi status gizi kurang.
+    </p>
+    <div class="algo-conclusion-grid">
+        <div class="algo-conclusion-item item-xgb">
+            <div class="algo-conclusion-icon">🏆</div>
+            <div>
+                <p class="algo-conclusion-model">XGBoost + SMOTE</p>
+                <p class="algo-conclusion-desc">Unggul pada Recall & F1-Score</p>
+            </div>
+            <div class="algo-conclusion-score">F1: {{ perbandingan.XGBoost.f1 }}%</div>
+        </div>
+        <div class="algo-conclusion-item item-cat">
+            <div class="algo-conclusion-icon">🤖</div>
+            <div>
+                <p class="algo-conclusion-model">CatBoost + SMOTE</p>
+                <p class="algo-conclusion-desc">Precision lebih tinggi</p>
+            </div>
+            <div class="algo-conclusion-score">F1: {{ perbandingan.CatBoost.f1 }}%</div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const ctx = document.getElementById('metricChart').getContext('2d');
+
+const labels = ['Accuracy', 'Precision', 'Recall', 'F1-Score'];
+const xgboostData = [
+    Number("{{ perbandingan.XGBoost.accuracy }}"),
+    Number("{{ perbandingan.XGBoost.precision }}"),
+    Number("{{ perbandingan.XGBoost.recall }}"),
+    Number("{{ perbandingan.XGBoost.f1 }}")
+];
+const catboostData = [
+    Number("{{ perbandingan.CatBoost.accuracy }}"),
+    Number("{{ perbandingan.CatBoost.precision }}"),
+    Number("{{ perbandingan.CatBoost.recall }}"),
+    Number("{{ perbandingan.CatBoost.f1 }}")
+];
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: 'XGBoost',
+                data: xgboostData,
+                backgroundColor: '#ec4899',
+                borderRadius: 6,
+                barThickness: 32,
+            },
+            {
+                label: 'CatBoost',
+                data: catboostData,
+                backgroundColor: '#a78bfa',
+                borderRadius: 6,
+                barThickness: 32,
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#1f2937',
+                padding: 10,
+                bodyFont: { family: 'Inter', size: 13 },
+                titleFont: { family: 'Inter', size: 13, weight: '700' },
+                callbacks: {
+                    label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`
+                }
+            }
+        },
+        scales: {
+            x: {
+                grid: { display: false },
+                ticks: { font: { family: 'Inter', size: 12 }, color: '#6b7280' }
+            },
+            y: {
+                min: 85,
+                max: 100,
+                grid: { color: '#f3f4f6' },
+                ticks: {
+                    font: { family: 'Inter', size: 12 },
+                    color: '#6b7280',
+                    callback: v => v + '%'
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

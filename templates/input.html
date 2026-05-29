@@ -1,19 +1,118 @@
 {% extends 'base.html' %}
 
-{% block page_title %}Klasifikasi Baru{% endblock %}
+{% block extra_css %}
+<style>
+    #nik-status {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        display: none;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-sm);
+        animation: fadeInBadge 0.3s ease-out;
+        letter-spacing: 0.2px;
+    }
+
+    .nik-status-terdaftar {
+        background-color: var(--green-50) !important;
+        color: var(--green-700) !important;
+        border: 1px solid var(--green-100) !important;
+    }
+
+    .nik-status-baru {
+        background-color: var(--pink-50) !important;
+        color: var(--pink-700) !important;
+        border: 1px solid var(--pink-200) !important;
+    }
+
+    .nik-status-loading {
+        background-color: var(--gray-50) !important;
+        color: var(--gray-500) !important;
+        border: 1px solid var(--gray-200) !important;
+    }
+
+    @keyframes fadeInBadge {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_title %}Klasifikasi{% endblock %}
 
 {% block content %}
-<div class="form-page-wrapper">
+<div class="container-main">
+
+    <div class="card">
+        <h2>Data Ibu Hamil</h2>
+        <p class="card-desc">Lengkapi semua informasi dibawah ini</p>
+        <div id="data-wilayah-container" data-wilayah='{{ data_wilayah | tojson }}' style="display:none;"></div>
 
         <form action="{{ url_for('main_routes.klasifikasi') }}" method="POST">
-            <div class="form-group">
-                <label for="nama">Nama</label>
-                <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <label for="nik" style="margin-bottom: 0;">NIK</label>
+                        <span id="nik-status"></span>
+                    </div>
+                    <input type="text" id="nik" name="nik" placeholder="16 digit NIK" maxlength="16" pattern="[0-9]{16}"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nama">Nama</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama" required>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="umur">Umur (tahun)</label>
-                <input type="number" id="umur" name="umur" placeholder="contoh: 25" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="kecamatan">Kecamatan</label>
+                    <select id="kecamatan_display" required disabled>
+                        <option value="Abeli" selected>Abeli</option>
+                    </select>
+                    <input type="hidden" id="kecamatan" name="kecamatan" value="Abeli">
+                </div>
+                <div class="form-group">
+                    <label for="kelurahan">Kelurahan</label>
+                    <select id="kelurahan" name="kelurahan" required disabled>
+                        <option value="" disabled selected>Pilih Kelurahan...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" required>
+                </div>
+                <div class="form-group">
+                    <label for="umur">Umur (tahun)</label>
+                    <input type="number" id="umur" name="umur" placeholder="contoh: 25" readonly required>
+                </div>
+
+
             </div>
 
             <div class="form-row">
@@ -23,13 +122,15 @@
                 </div>
                 <div class="form-group">
                     <label for="bb_sekarang">Berat Badan Sekarang (Kg)</label>
-                    <input type="number" id="bb_sekarang" name="bb_sekarang" placeholder="contoh: 56.5" step="0.1" required>
+                    <input type="number" id="bb_sekarang" name="bb_sekarang" placeholder="contoh: 56.5" step="0.1"
+                        required>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="tinggi_badan">Tinggi Badan (Cm)</label>
-                <input type="number" id="tinggi_badan" name="tinggi_badan" placeholder="contoh: 155" step="0.1" required>
+                <input type="number" id="tinggi_badan" name="tinggi_badan" placeholder="contoh: 155" step="0.1"
+                    required>
             </div>
 
             <div class="form-row">
@@ -53,240 +154,255 @@
                 <strong id="imtValue">-</strong>
                 <span> kg/m²</span>
             </div>
-
-            <button type="submit" class="btn" style="width:100%;">Klasifikasi Status Gizi</button>
+            <div class="form-info">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5">
+                    </path>
+                    <path d="M9 18h6"></path>
+                    <path d="M10 22h4"></path>
+                </svg>
+                <p>Pastikan semua data yang dimasukkan akurat untuk hasil klasifikasi yang optimal.</p>
+            </div>
+            <button type="submit" class="btn" style="margin-top: 15px; width:100%;">Klasifikasi Status Gizi</button>
         </form>
     </div>
+    {% endblock %}
 
-    <form action="{{ url_for('klasifikasi') }}" method="POST" class="pro-form" id="klasifikasiForm">
+    {% block extra_js %}
+    <script>
+        var bbAwal = document.getElementById('bb_awal');
+        var tinggi = document.getElementById('tinggi_badan');
+        var umur = document.getElementById('umur');
+        var tanggal_lahir = document.getElementById('tanggal_lahir');
 
-        <!-- Section 1: Data Identitas -->
-        <div class="pro-form-card">
-            <div class="pro-form-section-header">
-                <div class="pro-form-section-num">01</div>
-                <div>
-                    <h3 class="pro-form-section-title">Data Identitas</h3>
-                    <p class="pro-form-section-desc">Informasi dasar ibu hamil</p>
-                </div>
-            </div>
+        function calculateAge() {
+            const today = new Date();
+            const birthday = new Date(tanggal_lahir.value);
 
-            <div class="pro-form-grid-2">
-                <div class="pro-form-field">
-                    <label for="nama">
-                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
-                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        Nama Lengkap
-                        <span class="pro-form-required">*</span>
-                    </label>
-                    <div class="pro-input-wrap">
-                        <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required autocomplete="off">
-                    </div>
-                </div>
+            let currentAge = today.getFullYear() - birthday.getFullYear()
 
-                <div class="pro-form-field">
-                    <label for="umur">
-                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
-                            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
-                            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Umur
-                        <span class="pro-form-required">*</span>
-                    </label>
-                    <div class="pro-input-wrap pro-input-suffix">
-                        <input type="number" id="umur" name="umur" placeholder="25" min="10" max="60" required>
-                        <span class="pro-suffix">Tahun</span>
-                    </div>
-                </div>
-            </div>
+            let selisihTanggal = today.getDate() - birthday.getDate()
+            let selisihBulan = today.getMonth() - birthday.getMonth()
 
-            <div class="pro-form-field">
-                <label for="trimester">
-                    <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    Usia Kehamilan
-                    <span class="pro-form-required">*</span>
-                </label>
-                <div class="pro-trimester-group">
-                    <label class="pro-radio-card">
-                        <input type="radio" name="trimester" value="1" required>
-                        <div class="pro-radio-content">
-                            <span class="pro-radio-title">Trimester 1</span>
-                            <span class="pro-radio-desc">0 – 12 minggu</span>
-                        </div>
-                    </label>
-                    <label class="pro-radio-card">
-                        <input type="radio" name="trimester" value="2" required>
-                        <div class="pro-radio-content">
-                            <span class="pro-radio-title">Trimester 2</span>
-                            <span class="pro-radio-desc">13 – 27 minggu</span>
-                        </div>
-                    </label>
-                    <label class="pro-radio-card">
-                        <input type="radio" name="trimester" value="3" required>
-                        <div class="pro-radio-content">
-                            <span class="pro-radio-title">Trimester 3</span>
-                            <span class="pro-radio-desc">28 – 40 minggu</span>
-                        </div>
-                    </label>
-                </div>
-            </div>
-        </div>
+            if (selisihBulan < 0 || (selisihBulan === 0 && selisihTanggal < 0)) {
+                currentAge--;
+            }
 
-        <!-- Section 2: Data Antropometri -->
-        <div class="pro-form-card">
-            <div class="pro-form-section-header">
-                <div class="pro-form-section-num">02</div>
-                <div>
-                    <h3 class="pro-form-section-title">Data Antropometri</h3>
-                    <p class="pro-form-section-desc">Pengukuran tubuh ibu hamil</p>
-                </div>
-            </div>
+            umur.value = currentAge
 
-            <div class="pro-form-grid-2">
-                <div class="pro-form-field">
-                    <label for="bb_awal">
-                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
-                            <path d="M3 6l3 1m0 0l-3 9a5 5 0 006.027 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5 5 0 006.027 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Berat Badan Awal (Pra-Hamil)
-                        <span class="pro-form-required">*</span>
-                    </label>
-                    <div class="pro-input-wrap pro-input-suffix">
-                        <input type="number" id="bb_awal" name="bb_awal" placeholder="50" step="0.1" min="20" required>
-                        <span class="pro-suffix">Kg</span>
-                    </div>
-                </div>
+        }
 
-                <div class="pro-form-field">
-                    <label for="bb_sekarang">
-                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
-                            <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Berat Badan Sekarang
-                        <span class="pro-form-required">*</span>
-                    </label>
-                    <div class="pro-input-wrap pro-input-suffix">
-                        <input type="number" id="bb_sekarang" name="bb_sekarang" placeholder="56" step="0.1" min="20" required>
-                        <span class="pro-suffix">Kg</span>
-                    </div>
-                </div>
 
-                <div class="pro-form-field">
-                    <label for="tinggi_badan">
-                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
-                            <path d="M12 2v20M2 12h4M18 12h4M2 7h2M20 7h2M2 17h2M20 17h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Tinggi Badan
-                        <span class="pro-form-required">*</span>
-                    </label>
-                    <div class="pro-input-wrap pro-input-suffix">
-                        <input type="number" id="tinggi_badan" name="tinggi_badan" placeholder="155" step="0.1" min="100" max="220" required>
-                        <span class="pro-suffix">Cm</span>
-                    </div>
-                </div>
+        tanggal_lahir.addEventListener('input', calculateAge)
+        function hitungIMT() {
+            var bb = parseFloat(bbAwal.value);
+            var tb = parseFloat(tinggi.value);
+            if (bb > 0 && tb > 0) {
+                var imt = bb / Math.pow(tb / 100, 2);
+                document.getElementById('imtValue').textContent = imt.toFixed(2);
+                document.getElementById('imtPreview').style.display = 'block';
+            }
+        }
 
-                <div class="pro-form-field">
-                    <label for="lila">
-                        <svg viewBox="0 0 24 24" fill="none" width="13" height="13">
-                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
-                            <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Lingkar Lengan Atas (LiLA)
-                        <span class="pro-form-required">*</span>
-                    </label>
-                    <div class="pro-input-wrap pro-input-suffix">
-                        <input type="number" id="lila" name="lila" placeholder="25.5" step="0.1" min="10" required>
-                        <span class="pro-suffix">Cm</span>
-                    </div>
-                </div>
-            </div>
 
-            <!-- IMT Live Preview -->
-            <div class="pro-imt-preview" id="imtPreview">
-                <div class="pro-imt-left">
-                    <div class="pro-imt-icon">
-                        <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-                            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="pro-imt-label">Indeks Massa Tubuh (Pra-Kehamilan)</p>
-                        <p class="pro-imt-formula">BB Awal ÷ (Tinggi Badan)²</p>
-                    </div>
-                </div>
-                <div class="pro-imt-right">
-                    <span class="pro-imt-value" id="imtValue">—</span>
-                    <span class="pro-imt-unit">kg/m²</span>
-                    <span class="pro-imt-badge" id="imtBadge"></span>
-                </div>
-            </div>
-        </div>
 
-        <!-- Submit -->
-        <div class="pro-form-actions">
-            <a href="{{ url_for('dashboard') }}" class="pro-btn-cancel">
-                <svg viewBox="0 0 24 24" fill="none" width="15" height="15">
-                    <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Kembali
-            </a>
-            <button type="submit" class="pro-btn-submit">
-                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Klasifikasikan Status Gizi
-            </button>
-        </div>
+        bbAwal.addEventListener('input', hitungIMT);
+        tinggi.addEventListener('input', hitungIMT);
+        // 1. Ambil elemen HTML yang menyimpan data
+        const containerWilayah = document.getElementById('data-wilayah-container');
+        let dataWilayah = {};
 
-    </form>
+        // 2. Parse (ubah) string JSON di HTML menjadi Objek JavaScript secara aman
+        if (containerWilayah && containerWilayah.dataset.wilayah) {
+            dataWilayah = JSON.parse(containerWilayah.dataset.wilayah);
+        }
+
+        const inputKecamatan = document.getElementById('kecamatan');
+        const selectKelurahan = document.getElementById('kelurahan');
+
+        // 3. Fungsi untuk memperbarui daftar kelurahan berdasarkan kecamatan
+        function updateKelurahan(namaKecamatan) {
+            const daftarKelurahan = dataWilayah[namaKecamatan] || [];
+            selectKelurahan.innerHTML = '<option value="" disabled selected>Pilih Kelurahan...</option>';
+
+            if (daftarKelurahan.length > 0) {
+                selectKelurahan.disabled = false;
+                daftarKelurahan.forEach(function (kelurahan) {
+                    const option = document.createElement('option');
+                    option.value = kelurahan;
+                    option.textContent = kelurahan;
+                    selectKelurahan.appendChild(option);
+                });
+            } else {
+                selectKelurahan.disabled = true;
+            }
+        }
+
+        // Panggil saat halaman pertama kali dimuat
+        document.addEventListener('DOMContentLoaded', function () {
+            if (inputKecamatan && inputKecamatan.value) {
+                updateKelurahan(inputKecamatan.value);
+            }
+        });
+
+        // Dynamic NIK checking and auto-fill
+        const inputNik = document.getElementById('nik');
+        const inputNama = document.getElementById('nama');
+        const statusBadge = document.getElementById('nik-status');
+        let isAutoFilled = false;
+
+        function resetPatientFields() {
+            if (isAutoFilled) {
+                inputNama.value = '';
+                tanggal_lahir.value = '';
+                umur.value = '';
+
+                const defaultKec = "Abeli";
+                document.getElementById('kecamatan').value = defaultKec;
+                document.getElementById('kecamatan_display').innerHTML = `<option value="${defaultKec}" selected>${defaultKec}</option>`;
+                updateKelurahan(defaultKec);
+
+                isAutoFilled = false;
+            }
+        }
+
+        inputNik.addEventListener('input', function () {
+            const nikVal = this.value.trim();
+
+            if (nikVal.length === 16) {
+                statusBadge.style.display = 'inline-flex';
+                statusBadge.className = 'nik-status-loading';
+                statusBadge.innerHTML = `<svg class="spin-icon" style="width: 12px; height: 12px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; flex-shrink: 0;"></svg> <span>Mendeteksi...</span>`;
+
+                fetch('/api/pasien/' + nikVal)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            inputNama.value = data.data.nama;
+
+                            // update kecamatan
+                            const kec = data.data.kecamatan;
+                            document.getElementById('kecamatan').value = kec;
+                            document.getElementById('kecamatan_display').innerHTML = `<option value="${kec}" selected>${kec}</option>`;
+
+                            // update kelurahan
+                            updateKelurahan(kec);
+                            document.getElementById('kelurahan').value = data.data.kelurahan;
+
+                            // update tanggal lahir
+                            tanggal_lahir.value = data.data.tanggal_lahir;
+                            calculateAge();
+                            document.getElementById('bb_awal').value = data.data.bb_sekarang;
+                            document.getElementById('tinggi_badan').value = data.data.tinggi_badan;
+                            document.getElementById('lila').value = data.data.lila;
+
+                            isAutoFilled = true;
+
+                            // Show registered badge with clean green checkcircle icon
+                            statusBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <span>Terdaftar (Data Dimuat)</span>`;
+                            statusBadge.className = 'nik-status-terdaftar';
+                        } else {
+                            resetPatientFields();
+                            // Show new patient badge with clean plus circle icon
+                            statusBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> <span>Pasien Baru</span>`;
+                            statusBadge.className = 'nik-status-baru';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        statusBadge.style.display = 'none';
+                    });
+            } else {
+                statusBadge.style.display = 'none';
+                statusBadge.className = '';
+                resetPatientFields();
+            }
+        });
+
+        // Isi form dengan data terakhir jika ada
+        document.addEventListener('DOMContentLoaded', function () {
+            const lastInput = {{ last_input | tojson if last_input else 'null' }};
+            if (lastInput && lastInput !== null) {
+                // Isi semua field form dengan data terakhir
+                if (lastInput.nik) document.getElementById('nik').value = lastInput.nik;
+                if (lastInput.nama) document.getElementById('nama').value = lastInput.nama;
+                if (lastInput.kecamatan) {
+                    document.getElementById('kecamatan').value = lastInput.kecamatan;
+                    document.getElementById('kecamatan_display').value = lastInput.kecamatan;
+                    updateKelurahan(lastInput.kecamatan);
+                    // Tunggu dropdown kelurahan terupdate, baru set nilainya
+                    setTimeout(function() {
+                        if (lastInput.kelurahan) {
+                            document.getElementById('kelurahan').value = lastInput.kelurahan;
+                        }
+                    }, 100);
+                }
+                if (lastInput.tanggal_lahir) document.getElementById('tanggal_lahir').value = lastInput.tanggal_lahir;
+                if (lastInput.umur) document.getElementById('umur').value = lastInput.umur;
+                if (lastInput.bb_awal) {
+                    document.getElementById('bb_awal').value = lastInput.bb_awal;
+                    hitungIMT();
+                }
+                if (lastInput.bb_sekarang) document.getElementById('bb_sekarang').value = lastInput.bb_sekarang;
+                if (lastInput.tinggi_badan) {
+                    document.getElementById('tinggi_badan').value = lastInput.tinggi_badan;
+                    hitungIMT();
+                }
+                if (lastInput.lila) document.getElementById('lila').value = lastInput.lila;
+                if (lastInput.trimester) document.getElementById('trimester').value = lastInput.trimester;
+
+                // Tampilkan notifikasi bahwa data telah dimuat
+                const notif = document.createElement('div');
+                notif.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: #10b981;
+                    color: white;
+                    padding: 12px 16px;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    z-index: 9999;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                notif.textContent = '✓ Data dari form sebelumnya telah dimuat';
+                document.body.appendChild(notif);
+
+                // Hapus notifikasi setelah 2 detik
+                setTimeout(function() {
+                    notif.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(function() {
+                        notif.remove();
+                    }, 300);
+                }, 2000);
+            }
+        });
+    </script>
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-var bbAwal = document.getElementById('bb_awal');
-var tinggi = document.getElementById('tinggi_badan');
-var imtVal  = document.getElementById('imtValue');
-var imtBadge = document.getElementById('imtBadge');
-var imtPreview = document.getElementById('imtPreview');
-
-function hitungIMT() {
-    var bb = parseFloat(bbAwal.value);
-    var tb = parseFloat(tinggi.value);
-    if (bb > 0 && tb > 0) {
-        var imt = bb / Math.pow(tb / 100, 2);
-        imtVal.textContent = imt.toFixed(2);
-        imtPreview.classList.add('active');
-
-        var status = '';
-        var cls = '';
-        if (imt < 18.5)       { status = 'Kurang';   cls = 'imt-badge-kurang'; }
-        else if (imt <= 24.9) { status = 'Normal';   cls = 'imt-badge-normal'; }
-        else if (imt <= 29.9) { status = 'Lebih';    cls = 'imt-badge-lebih'; }
-        else                  { status = 'Obesitas'; cls = 'imt-badge-obesitas'; }
-
-        imtBadge.textContent = status;
-        imtBadge.className = 'pro-imt-badge ' + cls;
-    } else {
-        imtPreview.classList.remove('active');
-        imtVal.textContent = '—';
-        imtBadge.textContent = '';
-        imtBadge.className = 'pro-imt-badge';
-    }
-}
-
-bbAwal.addEventListener('input', hitungIMT);
-tinggi.addEventListener('input', hitungIMT);
-
-// Radio card highlight
-document.querySelectorAll('.pro-radio-card input[type="radio"]').forEach(function(radio) {
-    radio.addEventListener('change', function() {
-        document.querySelectorAll('.pro-radio-card').forEach(function(c) { c.classList.remove('checked'); });
-        this.closest('.pro-radio-card').classList.add('checked');
-    });
-});
-</script>
 {% endblock %}
