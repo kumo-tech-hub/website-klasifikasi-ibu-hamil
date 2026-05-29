@@ -113,6 +113,173 @@
     </div>
 </div>
 
+<<<<<<< HEAD
+<!-- Perbandingan Algoritma (Global) -->
+<div class="card">
+    <div class="card-header-row" style="margin-bottom:4px;">
+        <div>
+            <h3 class="card-title">Perbandingan Model Algoritma</h3>
+            <p class="card-desc">Evaluasi performa XGBoost vs CatBoost dengan SMOTE</p>
+        </div>
+        <div class="algo-winner-badge">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"/>
+            </svg>
+            CatBoost Terbaik
+        </div>
+    </div>
+
+    <div class="algo-compare-grid">
+        <!-- Accuracy -->
+        <div class="algo-metric-card">
+            <div class="algo-metric-header">
+                <span class="algo-metric-name">Accuracy</span>
+            </div>
+            <div class="algo-bar-group">
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">XGBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill xg-fill" style="width: {{ perbandingan.XGBoost.accuracy }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.XGBoost.accuracy }}%</span>
+                </div>
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">CatBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill cb-fill" style="width: {{ perbandingan.CatBoost.accuracy }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.CatBoost.accuracy }}%</span>
+                </div>
+            </div>
+        </div>
+        <!-- Precision -->
+        <div class="algo-metric-card">
+            <div class="algo-metric-header">
+                <span class="algo-metric-name">Precision</span>
+            </div>
+            <div class="algo-bar-group">
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">XGBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill xg-fill" style="width: {{ perbandingan.XGBoost.precision }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.XGBoost.precision }}%</span>
+                </div>
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">CatBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill cb-fill" style="width: {{ perbandingan.CatBoost.precision }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.CatBoost.precision }}%</span>
+                </div>
+            </div>
+        </div>
+        <!-- Recall -->
+        <div class="algo-metric-card">
+            <div class="algo-metric-header">
+                <span class="algo-metric-name">Recall</span>
+            </div>
+            <div class="algo-bar-group">
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">XGBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill xg-fill" style="width: {{ perbandingan.XGBoost.recall }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.XGBoost.recall }}%</span>
+                </div>
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">CatBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill cb-fill" style="width: {{ perbandingan.CatBoost.recall }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.CatBoost.recall }}%</span>
+                </div>
+            </div>
+        </div>
+        <!-- F1-Score -->
+        <div class="algo-metric-card">
+            <div class="algo-metric-header">
+                <span class="algo-metric-name">F1-Score</span>
+            </div>
+            <div class="algo-bar-group">
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">XGBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill xg-fill" style="width: {{ perbandingan.XGBoost.f1 }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.XGBoost.f1 }}%</span>
+                </div>
+                <div class="algo-bar-row">
+                    <span class="algo-bar-label">CatBoost</span>
+                    <div class="algo-bar-track">
+                        <div class="algo-bar-fill cb-fill" style="width: {{ perbandingan.CatBoost.f1 }}%;"></div>
+                    </div>
+                    <span class="algo-bar-pct">{{ perbandingan.CatBoost.f1 }}%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Perbandingan Per History -->
+<div class="card">
+    <div class="card-header-row" style="margin-bottom:4px;">
+        <div>
+            <h3 class="card-title">Akurasi Model Per Riwayat Pemeriksaan</h3>
+            <p class="card-desc">Perbandingan prediksi XGBoost vs CatBoost untuk setiap pasien</p>
+        </div>
+    </div>
+
+    <div class="history-compare-list">
+        {% for r in riwayat %}
+        <div class="history-compare-item">
+            <div class="history-compare-meta">
+                <div class="history-compare-avatar">{{ r.nama[0] }}</div>
+                <div class="history-compare-info">
+                    <span class="history-compare-name">{{ r.nama }}</span>
+                    <span class="history-compare-sub">{{ r.tanggal }} &bull; Trimester {{ r.trimester }}</span>
+                </div>
+                <span class="badge badge-{{ r.status|lower }} history-badge">{{ r.status }}</span>
+                <span class="algo-tag">{{ r.algoritma }}</span>
+            </div>
+            <div class="history-compare-bars">
+                <div class="hcb-row">
+                    <span class="hcb-label">
+                        <svg viewBox="0 0 8 8" width="8" height="8"><circle cx="4" cy="4" r="4" fill="#8b5cf6"/></svg>
+                        XGBoost
+                    </span>
+                    <div class="hcb-track">
+                        <div class="hcb-fill hcb-fill-xg" style="width: {{ perbandingan.XGBoost.accuracy }}%;">
+                            <span class="hcb-pct-inline">{{ perbandingan.XGBoost.accuracy }}%</span>
+                        </div>
+                    </div>
+                    {% if r.algoritma == 'XGBoost' %}<span class="hcb-used-tag">Digunakan</span>{% endif %}
+                </div>
+                <div class="hcb-row">
+                    <span class="hcb-label">
+                        <svg viewBox="0 0 8 8" width="8" height="8"><circle cx="4" cy="4" r="4" fill="#ec4899"/></svg>
+                        CatBoost
+                    </span>
+                    <div class="hcb-track">
+                        <div class="hcb-fill hcb-fill-cb" style="width: {{ perbandingan.CatBoost.accuracy }}%;">
+                            <span class="hcb-pct-inline">{{ perbandingan.CatBoost.accuracy }}%</span>
+                        </div>
+                    </div>
+                    {% if r.algoritma == 'CatBoost' %}<span class="hcb-used-tag">Digunakan</span>{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Riwayat Pemeriksaan -->
+<div class="card">
+    <div class="card-header-row">
+        <div>
+            <h3 class="card-title">Riwayat Pemeriksaan</h3>
+            <p class="card-desc">Data pemeriksaan ibu hamil terbaru</p>
+=======
 <!-- Riwayat Pasien Table -->
 <div class="card dash-card">
     <div class="dash-table-header">
@@ -153,6 +320,7 @@
                         placeholder="Cari nama, NIK, kelurahan..." value="{{ cari }}">
                 </div>
             </form>
+>>>>>>> fc285719ba19ffba94484651f35218ffef2f17dc
         </div>
     </div>
 
@@ -279,6 +447,8 @@
     </div>
     {% endif %}
 </div>
+<<<<<<< HEAD
+=======
 
 <!-- Segmentasi Wilayah -->
 <div class="card dash-card">
@@ -505,4 +675,5 @@
     } catch (e) { }
 
 </script>
+>>>>>>> fc285719ba19ffba94484651f35218ffef2f17dc
 {% endblock %}

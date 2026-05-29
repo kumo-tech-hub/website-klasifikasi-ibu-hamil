@@ -19,6 +19,10 @@ Karena sudah tersedia file `Dockerfile` dan `docker-compose.yml`, kamu bisa lang
 3.  **Akses Aplikasi:**
     Buka browser dan ketik: `http://localhost:5000`
 
+4. **Login Aplikasi**
+    Username: `admin@gmail.com`
+    Password: `admin123`
+
 ## 🛠️ Cara Menjalankan Tanpa Docker (Local venv)
 Jika ingin menjalankan manual lewat terminal:
 
