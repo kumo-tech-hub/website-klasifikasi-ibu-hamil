@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,9 +39,10 @@
             -webkit-backdrop-filter: blur(14px);
             border-radius: 20px;
             padding: 45px 30px 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
             position: relative;
-            margin-top: 55px; /* Spasi untuk logo mengapung */
+            margin-top: 55px;
+            /* Spasi untuk logo mengapung */
         }
 
         .logo-container {
@@ -51,7 +53,7 @@
             background: white;
             border-radius: 18px;
             padding: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         .login-logo {
@@ -97,7 +99,7 @@
             background: #ffffff;
             border-radius: 16px;
             padding: 30px 32px 35px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
         }
 
         .inner-title {
@@ -138,16 +140,16 @@
             box-sizing: border-box;
             font-weight: 500;
         }
-        
+
         .input-group input:focus {
             outline: none;
             background: #ffffff;
             border-color: #ec4899;
-            box-shadow: 0 0 0 4px rgba(236,72,153,0.1);
+            box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
         }
 
-        .input-group input:focus + svg,
-        .input-group input:not(:placeholder-shown) ~ svg {
+        .input-group input:focus+svg,
+        .input-group input:not(:placeholder-shown)~svg {
             color: #ec4899;
         }
 
@@ -163,13 +165,13 @@
             cursor: pointer;
             transition: all 0.2s;
             margin-top: 8px;
-            box-shadow: 0 4px 12px rgba(244,114,182,0.3);
+            box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3);
         }
 
         .btn-login:hover {
             background: #ec4899;
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(236,72,153,0.35);
+            box-shadow: 0 6px 16px rgba(236, 72, 153, 0.35);
         }
 
         .footer-desc {
@@ -181,7 +183,7 @@
             line-height: 1.6;
             padding: 0 20px;
             font-weight: 500;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.7);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
         }
 
         .alert-error {
@@ -195,23 +197,25 @@
             border: 1px solid #fecaca;
             text-align: center;
         }
-        
+
         ::placeholder {
             color: #94a3b8;
             font-weight: 400;
         }
     </style>
 </head>
+
 <body>
 
     <div class="login-container">
         <div class="outer-card">
-            
+
             <!-- Logo Floating -->
             <div class="logo-container">
                 <div class="login-logo">
                     <svg viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                     </svg>
                 </div>
             </div>
@@ -235,21 +239,24 @@
                 <form action="{{ url_for('main_routes.login') }}" method="POST">
                     <div class="input-group">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
                         <input type="text" name="username" placeholder="Masukkan username" value="Admin" required>
                     </div>
-                    
+
                     <div class="input-group">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        <input type="password" name="password" id="password" placeholder="Masukkan password" value="AdminAbeli123" required>
+                        <input type="password" name="password" id="password" placeholder="Masukkan password"
+                            value="AdminAbeli123" required>
 
                         <button type="button" id="togglePassword" class="toggle-password">
-                            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
@@ -288,15 +295,18 @@
 
     <!-- Deskripsi Footer -->
     <div class="footer-desc">
-        Sistem ini membantu tenaga kesehatan dalam melakukan klasifikasi status gizi pada ibu hamil secara cepat dan akurat. Hasil klasifikasi dapat digunakan sebagai dasar untuk memberikan edukasi dan rekomendasi penanganan yang tepat.
+        Sistem ini membantu tenaga kesehatan dalam melakukan klasifikasi status gizi pada ibu hamil secara cepat dan
+        akurat. Hasil klasifikasi dapat digunakan sebagai dasar untuk memberikan edukasi dan rekomendasi penanganan yang
+        tepat.
     </div>
 
 </body>
+
 </html>
 
 <!-- yiyiiy 
  ioy8ot8iti
- oit8oto8t8i
+
  tuytututuititititti\
  yuryururj-->
-{% comment %} login {% endcomment %}
+{# login #}

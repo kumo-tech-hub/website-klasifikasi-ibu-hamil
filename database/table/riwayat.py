@@ -29,6 +29,7 @@ class Riwayat(db.Model):
             'nik':          self.nik,
             'kecamatan':    self.kecamatan,
             'kelurahan':    self.kelurahan,
+            'tanggal_lahir': self.tanggal_lahir.strftime('%Y-%m-%d') if self.tanggal_lahir else '',
             'umur':         self.umur,
             'bb_awal':      self.bb_awal,
             'bb_sekarang':  self.bb_sekarang,

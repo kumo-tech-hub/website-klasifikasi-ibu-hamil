@@ -1379,9 +1379,13 @@ a {
 }
 
 .msg-obesitas {
-    background: var(--ungu-800);
-    border-color: #961589;
-    color: var(--ungu-900);
+    background: var(--ungu-100);
+    border-color: var(--ungu-600);
+    color: var(--ungu-700);
+}
+
+.msg-obesitas strong {
+    color: var(--ungu-800);
 }
 
 /* ============================================================
@@ -3455,9 +3459,9 @@ a {
 }
 
 .hs-banner--obesitas {
-    background: var(--ungu-800);
-    border-color: #961589;
-    color: var(--ungu-900);
+    background: #f5f3ff;
+    border-color: #c4b5fd;
+    color: #3b0764;
 }
 
 .hs-banner--kritis {

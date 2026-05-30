@@ -16,7 +16,7 @@ def seed_riwayat(db, Riwayat):
 
     # Path file Excel (relatif dari root project)
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    excel_path = os.path.join(base_dir, "ml", "Data ANC Bumil - NEWW fb - Copy - Copy.xlsx")
+    excel_path = os.path.join(base_dir, "ml", "Data ANC Ibu Hamil Abeli.xlsx")
 
     if not os.path.exists(excel_path):
         print(f"Seeder Riwayat: File Excel tidak ditemukan di {excel_path}")
@@ -79,29 +79,26 @@ def seed_riwayat(db, Riwayat):
                 skipped += 1
                 continue
 
-            # Ambil nilai — gunakan default aman jika kolom kosong
             nama          = str(row['Nama']).strip()
             nik           = bersihkan_nik(row.get('NIK'))
             umur          = int(row['Umur']) if not pd.isna(row.get('Umur')) else 0
             bb_awal       = float(row['Berat Badan Awal'])     if not pd.isna(row.get('Berat Badan Awal'))     else 0.0
             bb_sekarang   = float(row['Berat Badan Sekarang']) if not pd.isna(row.get('Berat Badan Sekarang')) else bb_awal
-            tinggi_badan  = float(row['Tinggi'])               if not pd.isna(row.get('Tinggi'))               else 0.0
+            tinggi_badan  = float(row['Tinggi Badan'])         if not pd.isna(row.get('Tinggi Badan'))         else 0.0
             lila          = float(row['LiLA'])                 if not pd.isna(row.get('LiLA'))                 else 0.0
             imt           = float(row['IMT Sebelum Hamil'])    if not pd.isna(row.get('IMT Sebelum Hamil'))    else 0.0
             trimester     = minggu_ke_trimester(row.get('Usia Kehamilan'))
             tanggal       = parse_tanggal(row.get('Tanggal ANC'))
-
-            # Kecamatan & kelurahan dari kolom "Desa/Kel Domisili"
-            # Data hanya punya 1 kolom wilayah, kita pakai sebagai kelurahan
-            # dan isi kecamatan dengan "Kendari" sebagai default
-            kelurahan  = str(row['Desa/Kel Domisili']).strip() if not pd.isna(row.get('Desa/Kel Domisili')) else 'Tidak Diketahui'
-            kecamatan  = 'Abeli'   # default kota karena data tidak mencantumkan kecamatan
+            tanggal_lahir = parse_tanggal(row.get('Tanggal Lahir')) if not pd.isna(row.get('Tanggal Lahir')) else None
+            kelurahan     = str(row['Kelurahan']).strip()      if not pd.isna(row.get('Kelurahan')) else 'Tidak Diketahui'
+            kecamatan     = 'Abeli'   # default kota karena data tidak mencantumkan kecamatan
 
             riwayat = Riwayat(
                 nama         = nama,
                 nik          = nik,
                 kecamatan    = kecamatan,
                 kelurahan    = kelurahan,
+                tanggal_lahir = tanggal_lahir,
                 umur         = umur,
                 bb_awal      = bb_awal,
                 bb_sekarang  = bb_sekarang,

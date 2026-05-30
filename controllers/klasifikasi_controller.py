@@ -276,11 +276,11 @@ def klasifikasi():
 
     input_df = pd.DataFrame(
         [[umur, bb_awal, tinggi_badan, imt, lila]],
-        columns=['umur', 'berat_badan_awal', 'tinggi', 'imt_sebelum_hamil', 'lila']
+        columns=['Umur', 'Berat Badan Awal', 'Tinggi Badan', 'IMT Sebelum Hamil', 'LiLA']
     )
 
     predictions = {}
-    mapping_status = {0: 'Kurang', 1: 'Lebih', 2: 'Normal', 3: 'Obesitas'}
+    mapping_status = {0: 'Kurang', 1: 'Normal', 2: 'Lebih', 3: 'Obesitas'}
     nama_algoritma = None 
     status = 'Normal'
     peringatan_kritis = False
@@ -307,13 +307,12 @@ def klasifikasi():
                 
                 model = joblib.load(abs_path)
                 
-                # Gunakan values untuk menghindari masalah nama kolom pada XGBoost
-                pred = model.predict(input_df.values)
+                pred = model.predict(input_df)
                 
                 prob = None
                 prob_kurang = 0.0
                 try:
-                    proba = model.predict_proba(input_df.values)
+                    proba = model.predict_proba(input_df)
                     if proba is not None and len(proba) > 0:
                         prob = round(float(np.max(proba[0])) * 100, 2)
                         
@@ -405,7 +404,7 @@ def klasifikasi():
             status_sebelum_hamil = "Kurang"
             catatan_status = "IMT < 18.5"
         elif imt >= 30.0:
-            pytstatus_sebelum_hamil = "Obesitas"
+            status_sebelum_hamil = "Obesitas"
             catatan_status = "IMT >= 30.0"  
         elif imt >= 25.0:
             status_sebelum_hamil = "Lebih"
@@ -555,10 +554,6 @@ def detail_riwayat(id):
     return render_template('detail.html', data=detail)
 
 
-# ─────────────────────────────────────────────
-# EDIT RIWAYAT
-# ─────────────────────────────────────────────
-
 def edit_riwayat(id):
     data = Riwayat.query.get(id)
 
@@ -567,6 +562,13 @@ def edit_riwayat(id):
 
     if request.method == 'POST':
         # Update fields
+        if request.form.get('nik'):
+            data.nik = request.form.get('nik')
+        if request.form.get('kecamatan'):
+            data.kecamatan = request.form.get('kecamatan')
+        if request.form.get('kelurahan'):
+            data.kelurahan = request.form.get('kelurahan')
+            
         data.nama = request.form.get('nama')
         data.tanggal_lahir = request.form.get('tanggal_lahir')
         data.umur = float(request.form.get('umur'))
@@ -595,7 +597,12 @@ def edit_riwayat(id):
         db.session.commit()
         return redirect(url_for('main_routes.detail_riwayat', id=data.id))
 
-    return render_template('edit.html', data=data.to_dict())
+    kecamatans = Kecamatan.query.all()
+    data_wilayah = {}
+    for kec in kecamatans:
+        data_wilayah[kec.nama] = [kel.nama for kel in kec.kelurahan_list]
+
+    return render_template('edit.html', data=data.to_dict(), data_wilayah=data_wilayah)
 
 
 # ─────────────────────────────────────────────
@@ -708,10 +715,12 @@ def get_pasien_by_nik(nik):
                 'kecamatan': data.kecamatan,
                 'kelurahan': data.kelurahan,
                 'tanggal_lahir': data.tanggal_lahir.strftime('%Y-%m-%d') if data.tanggal_lahir else '',
+                'umur': data.umur,
                 'bb_awal': data.bb_awal,
                 'bb_sekarang': data.bb_sekarang,
                 'tinggi_badan': data.tinggi_badan,
                 'lila': data.lila,
+                'trimester': data.trimester,
             }
         })
     return jsonify({'success': False, 'message': 'Data tidak ditemukan'})
