@@ -56,9 +56,9 @@ PERBANDINGAN = {
 # Detail tiap variant (untuk referensi / pengembangan)
 PERBANDINGAN_DETAIL = {
     # 'XGBoost Baseline': {'accuracy': 94.2, 'precision': 93.8, 'recall': 93.5, 'f1': 93.6},
-    'XGBoost SMOTE':    {'accuracy': 91.8, 'precision': 92.1, 'recall': 94.7, 'f1': 93.4},
+    'XGBoost':    {'accuracy': 91.8, 'precision': 92.1, 'recall': 94.7, 'f1': 93.4},
     # 'CatBoost Baseline':{'accuracy': 95.1, 'precision': 94.6, 'recall': 94.2, 'f1': 94.4},
-    'CatBoost SMOTE':   {'accuracy': 93.0, 'precision': 93.5, 'recall': 96.1, 'f1': 94.8},
+    'CatBoost':   {'accuracy': 93.0, 'precision': 93.5, 'recall': 96.1, 'f1': 94.8},
 }
 
 TIPS = {
@@ -292,8 +292,8 @@ def klasifikasi():
         import os
 
         model_paths = {
-            'XGBoost (SMOTE)': 'ml/model_xgb_smote (1).pkl',
-            'CatBoost (SMOTE)': 'ml/model_cat_smote (1).pkl',
+            'XGBoost': 'ml/model_xgb_smote (1).pkl',
+            'CatBoost': 'ml/model_cat_smote (1).pkl',
         }
 
         for m_name, rel_path in model_paths.items():
@@ -388,8 +388,8 @@ def klasifikasi():
             status_kek = "Tidak KEK"
 
         # 2. Mengambil Status Gizi Langsung dari Model XGBoost
-        if 'XGBoost (SMOTE)' in predictions and predictions['XGBoost (SMOTE)'].get('status') != 'Error':
-            status = predictions['XGBoost (SMOTE)']['status']
+        if 'XGBoost' in predictions and predictions['XGBoost'].get('status') != 'Error':
+            status = predictions['XGBoost']['status']
         else:
             status = predictions.get(nama_algoritma, {}).get('status', 'Normal')
 
