@@ -293,9 +293,7 @@ def klasifikasi():
 
         model_paths = {
             'XGBoost (SMOTE)': 'ml/model_xgb_smote (1).pkl',
-            # 'XGBoost (Baseline)': 'ml/model_xgb_baseline.pkl',
             'CatBoost (SMOTE)': 'ml/model_cat_smote (1).pkl',
-            # 'CatBoost (Baseline)': 'ml/model_cat_baseline.pkl'
         }
 
         for m_name, rel_path in model_paths.items():
@@ -379,41 +377,33 @@ def klasifikasi():
         if nama_algoritma is None:
             nama_algoritma = 'Tidak Diketahui'
 
-        # ── RULE-BASED CLASSIFICATION (OVERRIDE) ───────────────────
-        # Sesuai instruksi:
-        # 1. LiLA < 23.5 -> Kurang (Kurus/KEK)
-        # 2. IMT < 18.5 -> Kurang (Kurus)
-        # 3. IMT >= 30.0 -> Obesitas
-        # 4. IMT >= 25.0 -> Lebih (Gemuk)
-        # 5. Lainnya -> Normal (IMT 18.5 - 24.9 DAN LiLA >= 23.5)
+     
         
-       # 1. Aturan Penentuan Status KEK 
+        # 1. Aturan Penentuan Status KEK 
         if lila < 23.5 and imt < 18.5:
             status_kek = "KEK"
         elif lila < 23.5 or imt < 18.5:
             status_kek = "Risiko KEK"
         else:
             status_kek = "Tidak KEK"
-        status_sebelum_hamil = "Normal"
-        catatan_status = ""
 
-        if lila < 23.5:
-            status_sebelum_hamil = "Kurang"
-            catatan_status = "LiLA < 23.5 cm"
-        elif imt < 18.5:
-            status_sebelum_hamil = "Kurang"
-            catatan_status = "IMT < 18.5"
-        elif imt >= 30.0:
-            status_sebelum_hamil = "Obesitas"
+        # 2. Mengambil Status Gizi Langsung dari Model XGBoost
+        if 'XGBoost (SMOTE)' in predictions and predictions['XGBoost (SMOTE)'].get('status') != 'Error':
+            status = predictions['XGBoost (SMOTE)']['status']
+        else:
+            status = predictions.get(nama_algoritma, {}).get('status', 'Normal')
+
+        # Kembalikan teks keterangan/catatan status berdasarkan IMT & LiLA
+        if imt >= 30.0:
             catatan_status = "IMT >= 30.0"  
         elif imt >= 25.0:
-            status_sebelum_hamil = "Lebih"
             catatan_status = "IMT >= 25.0"    
+        elif imt < 18.5:
+            catatan_status = "IMT < 18.5"
+        elif lila < 23.5:
+            catatan_status = "LiLA < 23.5 cm"
         else:
-            status_sebelum_hamil = "Normal"
             catatan_status = "IMT & LiLA dalam batas normal"
-
-        status = status_sebelum_hamil
         # ──────────────────────────────────────────────────────────
 
         print(f"DEBUG: Semua predictions: {list(predictions.keys())}")
@@ -582,16 +572,35 @@ def edit_riwayat(id):
         tinggi_m = data.tinggi_badan / 100
         data.imt = round(data.bb_awal / (tinggi_m ** 2), 2)
 
-        # Recalculate Rule-based classification
-        if data.lila < 23.5:
-            data.status = "Kurang"
-        elif data.imt < 18.5:
-            data.status = "Kurang"
-        elif data.imt >= 30.0:
-            data.status = "Obesitas"
-        elif data.imt >= 25.0:
-            data.status = "Lebih"
-        else:
+        # Use XGBoost model directly for status instead of rule-based
+        import pandas as pd
+        import joblib
+        import os
+        import numpy as np
+
+        input_df = pd.DataFrame(
+            [[data.umur, data.bb_awal, data.tinggi_badan, data.imt, data.lila]],
+            columns=['Umur', 'Berat Badan Awal', 'Tinggi Badan', 'IMT Sebelum Hamil', 'LiLA']
+        )
+        try:
+            abs_path = os.path.join(current_app.root_path, 'ml/model_xgb_smote (1).pkl')
+            model = joblib.load(abs_path)
+            pred = model.predict(input_df)
+            
+            temp_pred = pred
+            if isinstance(temp_pred, (list, tuple, np.ndarray)):
+                if isinstance(temp_pred, np.ndarray):
+                    temp_pred = temp_pred.flatten()[0]
+                else:
+                    temp_pred = temp_pred[0]
+            
+            if str(temp_pred).isdigit() or isinstance(temp_pred, (int, float, np.integer)):
+                mapping_status = {0: 'Kurang', 1: 'Normal', 2: 'Lebih', 3: 'Obesitas'}
+                data.status = mapping_status.get(int(temp_pred), 'Normal')
+            else:
+                data.status = str(temp_pred).strip("[]'\" ")
+        except Exception as e:
+            print("Gagal prediksi XGBoost saat edit:", e)
             data.status = "Normal"
 
         db.session.commit()
