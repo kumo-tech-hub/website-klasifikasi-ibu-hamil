@@ -51,3 +51,12 @@ Jika ingin menjalankan manual lewat terminal:
 * **ML Libraries:** `xgboost`, `catboost`, `scikit-learn`, `imbalanced-learn`
 * **Data:** `pandas`, `numpy`
 * **Container:** Docker & Docker Compose
+
+(venv) kumo@vmi3335119:~/kumo-project/website-klasifikasi$ ps aux | grep -i 'gunicorn\|flask'
+kumo      239987  0.0  0.3 110704 26416 ?        Ssl  Jun19   1:20 /home/kumo/kumo-project/website-klasifikasi/venv/bin/python3 /home/kumo/kumo-project/website-klasifikasi/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:5000 -m 007 app:app
+kumo      239990  0.0  3.2 2586300 261732 ?      Sl   Jun19   0:14 /home/kumo/kumo-project/website-klasifikasi/venv/bin/python3 /home/kumo/kumo-project/website-klasifikasi/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:5000 -m 007 app:app
+kumo      239991  0.0  3.2 2587360 262584 ?      Sl   Jun19   0:14 /home/kumo/kumo-project/website-klasifikasi/venv/bin/python3 /home/kumo/kumo-project/website-klasifikasi/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:5000 -m 007 app:app
+kumo      239992  0.0  3.1 2585240 260204 ?      Sl   Jun19   0:14 /home/kumo/kumo-project/website-klasifikasi/venv/bin/python3 /home/kumo/kumo-project/website-klasifikasi/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:5000 -m 007 app:app
+kumo      290232  0.0  0.0   7084  2260 pts/0    S+   10:20   0:00 grep --color=auto -i gunicorn\|flask
+(venv) kumo@vmi3335119:~/kumo-project/website-klasifikasi$ 
+
