@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, url_for, session,current_app, jsonify
 from database.db import db
 from database.table.riwayat import Riwayat
+from database.table.ibu_hamil import IbuHamil
 from database.table.user import User
 from collections import Counter
 from datetime import datetime
@@ -141,7 +142,15 @@ def dashboard():
     page  = request.args.get('page', 1, type=int)
     per_page = 8
 
-    query = Riwayat.query
+    subq = db.session.query(
+        Riwayat.id_ibu_hamil,
+        db.func.max(Riwayat.id).label('max_id')
+    ).group_by(Riwayat.id_ibu_hamil).subquery()
+
+    query = Riwayat.query.join(
+        subq,
+        Riwayat.id == subq.c.max_id
+    )
 
     if tahun:
         query = query.filter(db.extract('year', Riwayat.tanggal) == int(tahun))
@@ -149,10 +158,10 @@ def dashboard():
         query = query.filter(db.extract('month', Riwayat.tanggal) == int(bulan))
     if cari:
         like = f'%{cari}%'
-        query = query.filter(
+        query = query.join(IbuHamil).filter(
             db.or_(
-                Riwayat.nama.ilike(like),
-                Riwayat.nik.ilike(like),
+                IbuHamil.nama.ilike(like),
+                IbuHamil.nik.ilike(like),
                 Riwayat.kelurahan.ilike(like),
             )
         )
@@ -260,6 +269,8 @@ def klasifikasi():
     kecamatan    = request.form.get('kecamatan', '')
     kelurahan    = request.form.get('kelurahan', '')
     tanggal_lahir= request.form.get('tanggal_lahir', '')
+    if not tanggal_lahir:
+        tanggal_lahir = None
     umur         = float(request.form.get('umur'))
     bb_awal      = float(request.form.get('bb_awal'))
     bb_sekarang  = float(request.form.get('bb_sekarang'))
@@ -422,43 +433,34 @@ def klasifikasi():
         catatan_status = "Terjadi kesalahan pada sistem prediksi"
 
     # ── Simpan/Update ke database ──────────────────────
-    existing = Riwayat.query.filter_by(nik=nik).first()
-    if existing:
-        existing.nama = nama
-        existing.kecamatan = kecamatan
-        existing.kelurahan = kelurahan
-        existing.tanggal_lahir = tanggal_lahir
-        existing.umur = int(umur)
-        existing.bb_awal = bb_awal
-        existing.bb_sekarang = bb_sekarang
-        existing.tinggi_badan = tinggi_badan
-        existing.lila = lila
-        existing.trimester = trimester
-        existing.imt = imt
-        existing.status = status
-        existing.algoritma = nama_algoritma
-        existing.tanggal = datetime.now()
-        db.session.commit()
+    ibu = IbuHamil.query.filter_by(nik=nik).first()
+    if not ibu:
+        ibu = IbuHamil(nik=nik, nama=nama, tanggal_lahir=tanggal_lahir)
+        db.session.add(ibu)
+        db.session.flush() # Supaya dapat ibu.id
     else:
-        baru = Riwayat(
-            nama=nama,
-            nik=nik,
-            kecamatan=kecamatan,
-            kelurahan=kelurahan,
-            tanggal_lahir=tanggal_lahir,
-            umur=int(umur),
-            bb_awal=bb_awal,
-            bb_sekarang=bb_sekarang,
-            tinggi_badan=tinggi_badan,
-            lila=lila,
-            trimester=trimester,
-            imt=imt,
-            status=status,
-            algoritma=nama_algoritma,
-            tanggal=datetime.now(),
-        )
-        db.session.add(baru)
-        db.session.commit()
+        ibu.nama = nama
+        ibu.tanggal_lahir = tanggal_lahir
+        db.session.add(ibu)
+        db.session.flush()
+
+    baru = Riwayat(
+        id_ibu_hamil=ibu.id,
+        kecamatan=kecamatan,
+        kelurahan=kelurahan,
+        umur=int(umur),
+        bb_awal=bb_awal,
+        bb_sekarang=bb_sekarang,
+        tinggi_badan=tinggi_badan,
+        lila=lila,
+        trimester=trimester,
+        imt=imt,
+        status=status,
+        algoritma=nama_algoritma,
+        tanggal=datetime.now(),
+    )
+    db.session.add(baru)
+    db.session.commit()
     # ────────────────────────────────────────────
 
     hasil = {
@@ -502,7 +504,18 @@ def klasifikasi():
         'trimester': str(trimester),
     }
 
-    return render_template('hasil.html', hasil=hasil)
+    riwayat_lain_query = Riwayat.query.filter(
+        Riwayat.id_ibu_hamil == ibu.id,
+        Riwayat.id != baru.id
+    ).order_by(Riwayat.tanggal.desc()).all()
+    
+    riwayat_lain = []
+    for r in riwayat_lain_query:
+        r_dict = r.to_dict()
+        r_dict['kenaikan_bb'] = round(r.bb_sekarang - r.bb_awal, 2)
+        riwayat_lain.append(r_dict)
+
+    return render_template('hasil.html', hasil=hasil, riwayat_lain=riwayat_lain)
 
 
 # ─────────────────────────────────────────────
@@ -541,7 +554,19 @@ def detail_riwayat(id):
     detail['tips'] = TIPS.get(detail['status'], [])
     detail['rekomendasi_bb'] = REKOMENDASI_BB.get(detail['status'], {})
 
-    return render_template('detail.html', data=detail)
+    # Ambil riwayat lainnya untuk pasien yang sama
+    riwayat_lain_query = Riwayat.query.filter(
+        Riwayat.id_ibu_hamil == data.id_ibu_hamil,
+        Riwayat.id != data.id
+    ).order_by(Riwayat.tanggal.desc()).all()
+    
+    riwayat_lain = []
+    for r in riwayat_lain_query:
+        r_dict = r.to_dict()
+        r_dict['kenaikan_bb'] = round(r.bb_sekarang - r.bb_awal, 2)
+        riwayat_lain.append(r_dict)
+
+    return render_template('detail.html', data=detail, riwayat_lain=riwayat_lain)
 
 
 def edit_riwayat(id):
@@ -553,14 +578,15 @@ def edit_riwayat(id):
     if request.method == 'POST':
         # Update fields
         if request.form.get('nik'):
-            data.nik = request.form.get('nik')
+            data.ibu_hamil.nik = request.form.get('nik')
         if request.form.get('kecamatan'):
             data.kecamatan = request.form.get('kecamatan')
         if request.form.get('kelurahan'):
             data.kelurahan = request.form.get('kelurahan')
             
-        data.nama = request.form.get('nama')
-        data.tanggal_lahir = request.form.get('tanggal_lahir')
+        data.ibu_hamil.nama = request.form.get('nama')
+        tgl_lahir_form = request.form.get('tanggal_lahir')
+        data.ibu_hamil.tanggal_lahir = tgl_lahir_form if tgl_lahir_form else None
         data.umur = float(request.form.get('umur'))
         data.bb_awal = float(request.form.get('bb_awal'))
         data.bb_sekarang = float(request.form.get('bb_sekarang'))
@@ -715,23 +741,41 @@ def pesan_gizi():
     return render_template('pesan_gizi.html')
 
 def get_pasien_by_nik(nik):
-    data = Riwayat.query.filter_by(nik=nik).first()
-    if data:
-        return jsonify({
-            'success': True,
-            'data': {
-                'nama': data.nama,
-                'kecamatan': data.kecamatan,
-                'kelurahan': data.kelurahan,
-                'tanggal_lahir': data.tanggal_lahir.strftime('%Y-%m-%d') if data.tanggal_lahir else '',
-                'umur': data.umur,
-                'bb_awal': data.bb_awal,
-                'bb_sekarang': data.bb_sekarang,
-                'tinggi_badan': data.tinggi_badan,
-                'lila': data.lila,
-                'trimester': data.trimester,
-            }
-        })
+    ibu = IbuHamil.query.filter_by(nik=nik).first()
+    if ibu:
+        riwayat_terakhir = Riwayat.query.filter_by(id_ibu_hamil=ibu.id).order_by(Riwayat.tanggal.desc()).first()
+        if riwayat_terakhir:
+            return jsonify({
+                'success': True,
+                'data': {
+                    'nama': ibu.nama,
+                    'kecamatan': riwayat_terakhir.kecamatan,
+                    'kelurahan': riwayat_terakhir.kelurahan,
+                    'tanggal_lahir': ibu.tanggal_lahir.strftime('%Y-%m-%d') if ibu.tanggal_lahir else '',
+                    'umur': riwayat_terakhir.umur,
+                    'bb_awal': riwayat_terakhir.bb_awal,
+                    'bb_sekarang': riwayat_terakhir.bb_sekarang,
+                    'tinggi_badan': riwayat_terakhir.tinggi_badan,
+                    'lila': riwayat_terakhir.lila,
+                    'trimester': riwayat_terakhir.trimester,
+                }
+            })
+        else:
+            return jsonify({
+                'success': True,
+                'data': {
+                    'nama': ibu.nama,
+                    'kecamatan': '',
+                    'kelurahan': '',
+                    'tanggal_lahir': ibu.tanggal_lahir.strftime('%Y-%m-%d') if ibu.tanggal_lahir else '',
+                    'umur': '',
+                    'bb_awal': '',
+                    'bb_sekarang': '',
+                    'tinggi_badan': '',
+                    'lila': '',
+                    'trimester': '',
+                }
+            })
     return jsonify({'success': False, 'message': 'Data tidak ditemukan'})
 
 

@@ -6,6 +6,7 @@ from database.table.user import User
 from database.table.riwayat import Riwayat
 from database.table.kecamatan import Kecamatan
 from database.table.kelurahan import Kelurahan
+from database.table.ibu_hamil import IbuHamil
 from database.seeder.kelurahan_seeder import seed_wilayah_kendari
 from database.seeder.riwayat_seeder import seed_riwayat
 from flask_migrate import Migrate

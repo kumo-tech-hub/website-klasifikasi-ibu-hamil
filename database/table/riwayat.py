@@ -6,11 +6,9 @@ class Riwayat(db.Model):
     __tablename__ = "riwayat"
 
     id             = db.Column(db.Integer, primary_key=True)
-    nama           = db.Column(db.String(100), nullable=False)
-    nik            = db.Column(db.String(16),  nullable=False, unique=True)
+    id_ibu_hamil   = db.Column(db.Integer, db.ForeignKey('ibu_hamil.id'), nullable=False)
     kecamatan      = db.Column(db.String(100), nullable=False)
     kelurahan      = db.Column(db.String(100), nullable=False)
-    tanggal_lahir  = db.Column(db.Date)
     umur           = db.Column(db.Integer,     nullable=False)
     bb_awal        = db.Column(db.Float,       nullable=False)
     bb_sekarang    = db.Column(db.Float,       nullable=False)
@@ -25,11 +23,11 @@ class Riwayat(db.Model):
     def to_dict(self):
         return {
             'id':           self.id,
-            'nama':         self.nama,
-            'nik':          self.nik,
+            'nama':         self.ibu_hamil.nama if self.ibu_hamil else '',
+            'nik':          self.ibu_hamil.nik if self.ibu_hamil else '',
             'kecamatan':    self.kecamatan,
             'kelurahan':    self.kelurahan,
-            'tanggal_lahir': self.tanggal_lahir.strftime('%Y-%m-%d') if self.tanggal_lahir else '',
+            'tanggal_lahir': self.ibu_hamil.tanggal_lahir.strftime('%Y-%m-%d') if (self.ibu_hamil and self.ibu_hamil.tanggal_lahir) else '',
             'umur':         self.umur,
             'bb_awal':      self.bb_awal,
             'bb_sekarang':  self.bb_sekarang,
@@ -43,4 +41,5 @@ class Riwayat(db.Model):
         }
 
     def __repr__(self):
-        return f"<Riwayat {self.nama} - {self.status}>"
+        nama = self.ibu_hamil.nama if self.ibu_hamil else 'Unknown'
+        return f"<Riwayat {nama} - {self.status}>"

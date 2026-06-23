@@ -93,12 +93,17 @@ def seed_riwayat(db, Riwayat):
             kelurahan     = str(row['Kelurahan']).strip()      if not pd.isna(row.get('Kelurahan')) else 'Tidak Diketahui'
             kecamatan     = 'Abeli'   # default kota karena data tidak mencantumkan kecamatan
 
+            from database.table.ibu_hamil import IbuHamil
+            ibu = IbuHamil.query.filter_by(nik=nik).first()
+            if not ibu:
+                ibu = IbuHamil(nik=nik, nama=nama, tanggal_lahir=tanggal_lahir)
+                db.session.add(ibu)
+                db.session.flush()
+
             riwayat = Riwayat(
-                nama         = nama,
-                nik          = nik,
+                id_ibu_hamil = ibu.id,
                 kecamatan    = kecamatan,
                 kelurahan    = kelurahan,
-                tanggal_lahir = tanggal_lahir,
                 umur         = umur,
                 bb_awal      = bb_awal,
                 bb_sekarang  = bb_sekarang,

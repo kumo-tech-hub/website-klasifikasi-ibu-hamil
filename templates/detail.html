@@ -58,12 +58,12 @@
         </div>
         {% elif data.status == 'Kurang' %}
         <div class="status-message msg-kurang">
-            <strong>Status Gizi Kurang  (Kurus) </strong>
-            {% if data.imt < 18.5 and data.lila < 23.5 %}
-                <p>Ibu hamil terindikasi Kekurangan Energi Kronis (KEK), IMT <18.5 dan Lila <23.5</p>
-            {% else %}
-                <p>Ibu hamil beresiko Kekurangan Energi Kronis (KEK), {{ data.catatan_status }} </p>
-            {% endif %}
+            <strong>Status Gizi Kurang (Kurus) </strong>
+            {% if data.imt < 18.5 and data.lila < 23.5 %} <p>Ibu hamil terindikasi Kekurangan Energi Kronis (KEK), IMT
+                <18.5 dan Lila <23.5</p>
+                    {% else %}
+                    <p>Ibu hamil beresiko Kekurangan Energi Kronis (KEK), {{ data.catatan_status }} </p>
+                    {% endif %}
         </div>
         {% elif data.status == 'Lebih' %}
         <div class="status-message msg-lebih">
@@ -83,9 +83,9 @@
                 class="hs-kek-dot {% if data.status_kek == 'KEK' %}hs-kek-dot--berisiko{% else %}hs-kek-dot--aman{% endif %}"></span>
             <span class="hs-kek-label">Status KEK</span>
             <span class="hs-kek-value">{{ data.status_kek }}</span>
-        {#  <span class="hs-kek-note">LiLA {{ data.lila }} cm — batas 23.5 cm</span> #}
+            {# <span class="hs-kek-note">LiLA {{ data.lila }} cm — batas 23.5 cm</span> #}
         </div>
-        
+
 
         {# ── Ringkasan Pengukuran ── #}
         <p class="section-title">Ringkasan Pengukuran</p>
@@ -161,6 +161,61 @@
                 {% endfor %}
             </ol>
         </div>
+
+        {# ── Riwayat Sebelumnya ── #}
+        {% if riwayat_lain and riwayat_lain|length > 0 %}
+        <div class="hs-card" style="margin-top: 20px;">
+            <div class="hs-card__header">
+                <p class="hs-section-label">Riwayat Pemeriksaan Sebelumnya</p>
+            </div>
+            <div class="table-wrapper">
+                <table class="dash-pasien-table" style="margin: 0; box-shadow: none; border-radius: 0;">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Tinggi Badan</th>
+                            <th>BB AWAL(kg)</th>
+                            <th>BB SEKARANG(kg)</th>
+                            <th>LiLA(cm)</th>
+                            <th>IMT</th>
+                            <th>Status Gizi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in riwayat_lain %}
+                        <tr>
+                            <td>{{ r.tanggal }}</td>
+                            <td>{{ r.tinggi_badan }}</td>
+                            <td>{{ r.bb_awal }}</td>
+                            <td>{{ r.bb_sekarang }}</td>
+                            <td>{{ r.lila }}</td>
+                            <td>{{ r.imt }}</td>
+                            <td>
+                                <span class="dash-status-badge dash-badge-{{ r.status|lower }}">{{ r.status }}</span>
+                            </td>
+                            <td class="dash-aksi-cell">
+                                <a href="{{ url_for('main_routes.detail_riwayat', id=r.id) }}"
+                                    class="btn btn-sm btn-outline" style="padding: 4px 8px; font-size: 11px;">Lihat</a>
+                                <a href="{{ url_for('main_routes.edit_riwayat', id=r.id) }}"
+                                    class="dash-btn-icon dash-btn-edit" title="Edit">
+                                    <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
 
     </div>
 </div>
