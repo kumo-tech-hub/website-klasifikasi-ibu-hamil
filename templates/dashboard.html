@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block page_title %}Dashboard{% endblock %}
@@ -166,7 +165,7 @@
                     <th>Umur</th>
                     <th>BB Awal (kg)</th>
                     <th>BB Sekarang (kg)</th>
-                    <th>Tinggi (cm)</th>
+                    <th>Tinggi Badan(cm)</th>
                     <th>LILA (cm)</th>
                     <th>IMT Sebelum Hamil</th>
                     <th>Kelurahan</th>
@@ -435,7 +434,7 @@
                                         color: '#333',
                                         fillOpacity: 0.8
                                     });
-                                    layer.bringToFront(); 
+                                    layer.bringToFront();
                                 },
                                 mouseout: function (e) {
                                     L.geoJSON(data, {
@@ -463,7 +462,7 @@
 
             daftarFile.forEach(function (namaFile) {
                 let pathLengkap = '/static/kelurahan_geojson/' + namaFile;
-                loadKelurahan(pathLengkap); 
+                loadKelurahan(pathLengkap);
             });
         }
 
