@@ -11,7 +11,8 @@ from controllers.klasifikasi_controller import (
     login,
     logout,
     get_pasien_by_nik,
-    clear_form_session
+    clear_form_session,
+    unduh_laporan
 )
 
 from flask import request, redirect, url_for, session
@@ -46,3 +47,5 @@ main_routes.route('/pesan-gizi')(pesan_gizi)
 main_routes.route('/api/pasien/<string:nik>')(get_pasien_by_nik)
 
 main_routes.route('/api/clear-form-session', methods=['POST'])(clear_form_session)
+
+main_routes.route('/laporan/unduh', methods=['GET', 'POST'])(unduh_laporan)

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Pemeriksaan Ibu Hamil</title>
+    <style>
+        /* Base Styles for Screen */
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            color: #000;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .document {
+            background-color: white;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            min-height: 297mm;
+        }
+
+        /* Kop Surat Styles */
+        .kop-surat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 4px solid black;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .kop-surat img {
+            width: 80px;
+            height: auto;
+        }
+
+        .kop-surat .teks-kop {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .kop-surat h2, .kop-surat h1, .kop-surat h3 {
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .kop-surat h2 {
+            font-size: 20px;
+            font-weight: normal;
+        }
+
+        .kop-surat h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .kop-surat h3 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .kop-surat p {
+            margin: 5px 0 0;
+            font-size: 14px;
+        }
+
+        /* Repeated Header for Print */
+        table.report-container {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead.report-header {
+            display: table-header-group; /* Repeats on every page */
+        }
+
+        tfoot.report-footer {
+            display: table-footer-group;
+        }
+
+        /* Content Styles */
+        h4.report-title {
+            text-align: center;
+            text-decoration: underline;
+            margin: 0 0 20px 0;
+            font-size: 16px;
+        }
+
+        .filter-info {
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .patient-section {
+            margin-bottom: 30px;
+        }
+
+        .patient-info {
+            margin-bottom: 10px;
+        }
+
+        .patient-info p {
+            margin: 2px 0;
+            font-size: 14px;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        table.data-table th, table.data-table td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+        }
+
+        table.data-table th {
+            background-color: #f2f2f2;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Signature block */
+        .signature-block {
+            float: right;
+            text-align: center;
+            width: 250px;
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+
+        .signature-block p {
+            margin: 2px 0;
+            font-size: 14px;
+        }
+
+        .signature-space {
+            height: 80px;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /* Print Media Queries */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0; /* Menghilangkan header/footer browser (URL & Judul) */
+            }
+
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0 15mm; /* Hanya padding kiri dan kanan, top & bottom dihandle oleh thead/tfoot */
+                box-sizing: border-box;
+            }
+
+            .document {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                max-width: none;
+                min-height: auto;
+            }
+            
+            /* Menggunakan thead td dan tfoot td untuk memberikan margin atas & bawah berulang di setiap lembar cetak */
+            thead.report-header > tr > td {
+                padding-top: 15mm; 
+            }
+            tfoot.report-footer > tr > td {
+                padding-bottom: 15mm;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            /* Ensure table rows do not break in the middle */
+            table.data-table tr {
+                page-break-inside: avoid;
+            }
+
+            /* Ensure patient section header does not detach from its table */
+            .patient-info {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="text-align: center; margin-bottom: 20px;">
+        <button onclick="printManual()" style="padding: 10px 20px; background-color: #0d9488; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+            Cetak Laporan
+        </button>
+    </div>
+
+    <div class="document">
+        <table class="report-container">
+            <thead class="report-header">
+                <tr>
+                    <td>
+                        <!-- Kop Surat -->
+                        <div class="kop-surat">
+                            <img src="{{ url_for('static', filename='img/kotakendari-logo.png') }}" alt="Logo Kota Kendari">
+                            <div class="teks-kop">
+                                <h2>PEMERINTAH KOTA KENDARI</h2>
+                                <h1>DINAS KESEHATAN</h1>
+                                <h3>BLUD UPTD PUSKESMAS ABELI</h3>
+                                <p>Jl. Konawe No.2 Kel.Abeli Telp. 082271262316, Kode Pos: 93234 - Kota Kendari<br>
+                                E-mail: <span style="color: blue; text-decoration: underline;">puskesmasabeli01@gmail.com</span></p>
+                            </div>
+                            <img src="{{ url_for('static', filename='img/puskesmas-logo.png') }}" alt="Logo Puskesmas">
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <!-- Report Content -->
+                        <h4 class="report-title">LAPORAN RIWAYAT PEMERIKSAAN IBU HAMIL</h4>
+                        
+                        {% if tanggal_mulai or tanggal_selesai %}
+                        <div class="filter-info">
+                            Periode: {{ tanggal_mulai if tanggal_mulai else 'Awal' }} s/d {{ tanggal_selesai if tanggal_selesai else 'Sekarang' }}
+                        </div>
+                        {% endif %}
+
+                        {% if grouped_data %}
+                            {% for ibu_id, data in grouped_data.items() %}
+                            <div class="patient-section">
+                                <div class="patient-info">
+                                    <p><strong>Nama:</strong> {{ data.ibu.nama }}</p>
+                                    <p><strong>NIK:</strong> {{ data.ibu.nik }}</p>
+                                </div>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tanggal</th>
+                                            <th>Trimester</th>
+                                            <th>Umur (th)</th>
+                                            <th>BB Awal (kg)</th>
+                                            <th>BB Skrng (kg)</th>
+                                            <th>TB (cm)</th>
+                                            <th>LiLA (cm)</th>
+                                            <th>IMT</th>
+                                            <th>Kelurahan</th>
+                                            <th>Status Gizi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for riwayat in data.riwayat_list %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ riwayat.tanggal.strftime('%d-%m-%Y') if riwayat.tanggal else '-' }}</td>
+                                            <td>{{ riwayat.trimester }}</td>
+                                            <td>{{ riwayat.umur }}</td>
+                                            <td>{{ riwayat.bb_awal }}</td>
+                                            <td>{{ riwayat.bb_sekarang }}</td>
+                                            <td>{{ riwayat.tinggi_badan }}</td>
+                                            <td>{{ riwayat.lila }}</td>
+                                            <td>{{ "%.1f"|format(riwayat.imt) }}</td>
+                                            <td>{{ riwayat.kelurahan }}</td>
+                                            <td>{{ riwayat.status }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="text-align: center; padding: 40px; border: 1px dashed #ccc; margin: 20px 0;">
+                                <p style="color: #666;">Tidak ada data riwayat pemeriksaan pada periode atau kriteria yang dipilih.</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Signature Block -->
+                        <div style="clear: both;"></div>
+                        <div class="signature-block">
+                            {% set current_year = now().year if now else '2026' %}
+                            <p>Kendari,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2026</p>
+                            <p>BIDAN KOORDINATOR</p>
+                            <p>BLUD UPTD PUSKESMAS ABELI</p>
+                            
+                            <div class="signature-space"></div>
+                            
+                            <p class="signature-name">Bdn.Iyan Megawati Adiwijaya, S.Tr.Keb.</p>
+                            <p>NIP: 198712202017052006</p>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </td>
+                </tr>
+            </tbody>
+            <!-- Tfoot untuk memberikan ruang / margin di bagian bawah setiap halaman -->
+            <tfoot class="report-footer">
+                <tr>
+                    <td>
+                        <div style="height: 5mm;"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <script>
+        // Automatically open print dialog when page loads
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+
+        // Optional: close the tab after printing is done or canceled
+        window.onafterprint = function() {
+            window.close();
+        };
+        
+        function printManual() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

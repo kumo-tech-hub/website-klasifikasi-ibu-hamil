@@ -218,6 +218,8 @@ def dashboard():
     if os.path.exists(folder_path):
         daftar_file_geojson = [f for f in os.listdir(folder_path) if f.endswith('.geojson')] 
 
+    ibu_hamil_list = IbuHamil.query.order_by(IbuHamil.nama.asc()).all()
+
     return render_template(
         'dashboard.html',
         riwayat=riwayat_page,
@@ -229,6 +231,7 @@ def dashboard():
         bulan=bulan,
         tahun=tahun,
         cari=cari,
+        ibu_hamil_list=ibu_hamil_list,
     )
 
 
@@ -789,3 +792,49 @@ def clear_form_session():
         del session['last_input']
         session.modified = True
     return jsonify({'success': True})
+
+# ─────────────────────────────────────────────
+# UNDUH LAPORAN
+# ─────────────────────────────────────────────
+
+def unduh_laporan():
+    id_ibu_hamil = request.args.get('id_ibu_hamil', 'all')
+    tanggal_mulai = request.args.get('tanggal_mulai', '')
+    tanggal_selesai = request.args.get('tanggal_selesai', '')
+
+    query = db.session.query(IbuHamil, Riwayat).join(Riwayat, IbuHamil.id == Riwayat.id_ibu_hamil)
+
+    if id_ibu_hamil != 'all':
+        query = query.filter(IbuHamil.id == int(id_ibu_hamil))
+    
+    if tanggal_mulai:
+        try:
+            start_date = datetime.strptime(tanggal_mulai, '%Y-%m-%d')
+            query = query.filter(Riwayat.tanggal >= start_date)
+        except ValueError:
+            pass
+            
+    if tanggal_selesai:
+        try:
+            # Include the entire end date by adding 1 day or using date comparison
+            end_date = datetime.strptime(tanggal_selesai, '%Y-%m-%d')
+            # To include until end of the day:
+            from datetime import timedelta
+            end_date = end_date + timedelta(days=1)
+            query = query.filter(Riwayat.tanggal < end_date)
+        except ValueError:
+            pass
+
+    results = query.order_by(IbuHamil.nama.asc(), Riwayat.tanggal.asc()).all()
+
+    # Group by IbuHamil
+    grouped_data = {}
+    for ibu, riwayat in results:
+        if ibu.id not in grouped_data:
+            grouped_data[ibu.id] = {
+                'ibu': ibu,
+                'riwayat_list': []
+            }
+        grouped_data[ibu.id]['riwayat_list'].append(riwayat)
+
+    return render_template('laporan_pdf.html', grouped_data=grouped_data, tanggal_mulai=tanggal_mulai, tanggal_selesai=tanggal_selesai)
