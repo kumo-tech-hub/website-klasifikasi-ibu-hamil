@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session,current_app, jsonify
+from flask import render_template, request, redirect, url_for, session,current_app, jsonify, make_response
 from database.db import db
 from database.table.riwayat import Riwayat
 from database.table.ibu_hamil import IbuHamil
@@ -838,3 +838,41 @@ def unduh_laporan():
         grouped_data[ibu.id]['riwayat_list'].append(riwayat)
 
     return render_template('laporan_pdf.html', grouped_data=grouped_data, tanggal_mulai=tanggal_mulai, tanggal_selesai=tanggal_selesai)
+
+# ─────────────────────────────────────────────
+# UNDUH EXCEL
+# ─────────────────────────────────────────────
+
+def unduh_excel():
+    id_ibu_hamil = request.args.get('id_ibu_hamil', 'all')
+    tanggal_mulai = request.args.get('tanggal_mulai', '')
+    tanggal_selesai = request.args.get('tanggal_selesai', '')
+
+    query = db.session.query(IbuHamil, Riwayat).join(Riwayat, IbuHamil.id == Riwayat.id_ibu_hamil)
+
+    if id_ibu_hamil != 'all':
+        query = query.filter(IbuHamil.id == int(id_ibu_hamil))
+    
+    if tanggal_mulai:
+        try:
+            start_date = datetime.strptime(tanggal_mulai, '%Y-%m-%d')
+            query = query.filter(Riwayat.tanggal >= start_date)
+        except ValueError:
+            pass
+            
+    if tanggal_selesai:
+        try:
+            end_date = datetime.strptime(tanggal_selesai, '%Y-%m-%d')
+            from datetime import timedelta
+            end_date = end_date + timedelta(days=1)
+            query = query.filter(Riwayat.tanggal < end_date)
+        except ValueError:
+            pass
+
+    results = query.order_by(IbuHamil.nama.asc(), Riwayat.tanggal.asc()).all()
+
+    html = render_template('laporan_excel.html', results=results)
+    response = make_response(html)
+    response.headers["Content-Disposition"] = "attachment; filename=Laporan_Pemeriksaan_Ibu_Hamil.xls"
+    response.headers["Content-Type"] = "application/vnd.ms-excel; charset=utf-8"
+    return response

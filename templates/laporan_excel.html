@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Excel</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>NIK</th>
+                <th>Nama</th>
+                <th>Kelurahan</th>
+                <th>Tanggal Lahir</th>
+                <th>Umur (th)</th>
+                <th>Tanggal Pemeriksaan</th>
+                <th>Trimester</th>
+                <th>BB Awal (kg)</th>
+                <th>BB Skrg (kg)</th>
+                <th>TB (cm)</th>
+                <th>IMT Sebelum Hamil</th>
+                <th>LiLA (cm)</th>
+                <th>Status Gizi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ibu, riwayat in results %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td style="mso-number-format:'\@';">{{ ibu.nik }}</td>
+                <td>{{ ibu.nama }}</td>
+                <td>{{ riwayat.kelurahan }}</td>
+                <td>{{ ibu.tanggal_lahir.strftime('%d-%m-%Y') if ibu.tanggal_lahir else '-' }}</td>
+                <td>{{ riwayat.umur }}</td>
+                <td>{{ riwayat.tanggal.strftime('%d-%m-%Y') if riwayat.tanggal else '-' }}</td>
+                <td>{{ riwayat.trimester }}</td>
+                <td>{{ riwayat.bb_awal }}</td>
+                <td>{{ riwayat.bb_sekarang }}</td>
+                <td>{{ riwayat.tinggi_badan }}</td>
+                <td>{{ "%.1f"|format(riwayat.imt) }}</td>
+                <td>{{ riwayat.lila }}</td>
+                <td>{{ riwayat.status }}</td>
+            </tr>
+            {% endfor %}
+            {% if not results %}
+            <tr>
+                <td colspan="14">Tidak ada data riwayat pemeriksaan</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</body>
+
+</html>
