@@ -16,12 +16,22 @@
 
         .document {
             background-color: white;
-            max-width: 210mm;
+            max-width: 297mm; /* Set to A4 Landscape width */
             margin: 0 auto;
-            padding: 20mm;
+            /* Padding dipindah ke dalam elemen anak agar margin html2pdf bekerja optimal */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
-            min-height: 297mm;
+            min-height: 210mm; /* Set to A4 Landscape height */
+        }
+
+        #header-to-repeat {
+            padding: 10mm 15mm 0 15mm;
+            background-color: white;
+        }
+
+        #content-to-render {
+            padding: 0 15mm 10mm 15mm;
+            background-color: white;
         }
 
         /* Kop Surat Styles */
@@ -156,7 +166,7 @@
         /* Print Media Queries */
         @media print {
             @page {
-                size: A4 portrait;
+                size: A4 landscape;
                 margin: 0; /* Menghilangkan header/footer browser (URL & Judul) */
             }
 
@@ -208,64 +218,60 @@
     </div>
 
     <div class="document">
-        <table class="report-container">
-            <thead class="report-header">
-                <tr>
-                    <td>
-                        <!-- Kop Surat -->
-                        <div class="kop-surat">
-                            <img src="{{ url_for('static', filename='img/kotakendari-logo.png') }}" alt="Logo Kota Kendari">
-                            <div class="teks-kop">
-                                <h2>PEMERINTAH KOTA KENDARI</h2>
-                                <h1>DINAS KESEHATAN</h1>
-                                <h3>BLUD UPTD PUSKESMAS ABELI</h3>
-                                <p>Jl. Konawe No.2 Kel.Abeli Telp. 082271262316, Kode Pos: 93234 - Kota Kendari<br>
-                                E-mail: <span style="color: blue; text-decoration: underline;">puskesmasabeli01@gmail.com</span></p>
-                            </div>
-                            <img src="{{ url_for('static', filename='img/puskesmas-logo.png') }}" alt="Logo Puskesmas">
-                        </div>
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <!-- Report Content -->
-                        <h4 class="report-title">LAPORAN RIWAYAT PEMERIKSAAN IBU HAMIL</h4>
-                        
-                        {% if tanggal_mulai or tanggal_selesai %}
-                        <div class="filter-info">
-                            Periode: {{ tanggal_mulai if tanggal_mulai else 'Awal' }} s/d {{ tanggal_selesai if tanggal_selesai else 'Sekarang' }}
-                        </div>
-                        {% endif %}
+        <div id="header-to-repeat">
+            <!-- Kop Surat -->
+            <div class="kop-surat">
+                <img src="{{ url_for('static', filename='img/kotakendari-logo.png') }}" alt="Logo Kota Kendari">
+                <div class="teks-kop">
+                    <h2>PEMERINTAH KOTA KENDARI</h2>
+                    <h1>DINAS KESEHATAN</h1>
+                    <h3>BLUD UPTD PUSKESMAS ABELI</h3>
+                    <p>Jl. Konawe No.2 Kel.Abeli Telp. 082271262316, Kode Pos: 93234 - Kota Kendari<br>
+                    E-mail: <span style="color: blue; text-decoration: underline;">puskesmasabeli01@gmail.com</span></p>
+                </div>
+                <img src="{{ url_for('static', filename='img/puskesmas-logo.png') }}" alt="Logo Puskesmas">
+            </div>
+        </div>
 
-                        {% if grouped_data %}
-                            {% for ibu_id, data in grouped_data.items() %}
-                            <div class="patient-section">
-                                <div class="patient-info">
-                                    <p><strong>Nama:</strong> {{ data.ibu.nama }}</p>
-                                    <p><strong>NIK:</strong> {{ data.ibu.nik }}</p>
-                                </div>
+        <div id="content-to-render">
+            <!-- Report Content -->
+            <h4 class="report-title">LAPORAN RIWAYAT PEMERIKSAAN IBU HAMIL</h4>
+                            
+            {% if tanggal_mulai or tanggal_selesai %}
+            <div class="filter-info">
+                Periode: {{ tanggal_mulai if tanggal_mulai else 'Awal' }} s/d {{ tanggal_selesai if tanggal_selesai else 'Sekarang' }}
+            </div>
+            {% endif %}
+
+
                                 <table class="data-table">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Tanggal</th>
-                                            <th>Trimester</th>
+                                            <th>NIK</th>
+                                            <th>Nama</th>
+                                            <th>Kelurahan</th>
+                                            <th>Tanggal Lahir</th>
                                             <th>Umur (th)</th>
+                                            <th>Tanggal Periksa</th>
+                                            <th>Trimester</th>
                                             <th>BB Awal (kg)</th>
                                             <th>BB Skrng (kg)</th>
                                             <th>TB (cm)</th>
-                                            <th>LiLA (cm)</th>
                                             <th>IMT</th>
-                                            <th>Kelurahan</th>
+                                            <th>LiLA (cm)</th>
                                             <th>Status Gizi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for riwayat in data.riwayat_list %}
+                                        {% if grouped_data %}
+                                        {% for ibu, riwayat in grouped_data %}
                                         <tr>
                                             <td>{{ loop.index }}</td>
+                                            <td>{{ ibu.nik }}</td>
+                                            <td>{{ ibu.nama }}</td>
+                                            <td>{{ riwayat.kelurahan }}</td>
+                                            <td>{{ ibu.tanggal_lahir }}</td>
                                             <td>{{ riwayat.tanggal.strftime('%d-%m-%Y') if riwayat.tanggal else '-' }}</td>
                                             <td>{{ riwayat.trimester }}</td>
                                             <td>{{ riwayat.umur }}</td>
@@ -274,19 +280,17 @@
                                             <td>{{ riwayat.tinggi_badan }}</td>
                                             <td>{{ riwayat.lila }}</td>
                                             <td>{{ "%.1f"|format(riwayat.imt) }}</td>
-                                            <td>{{ riwayat.kelurahan }}</td>
                                             <td>{{ riwayat.status }}</td>
                                         </tr>
                                         {% endfor %}
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="14">Tidak ada data riwayat pemeriksaan pada periode atau kriteria yang dipilih.</td>
+                                        </tr>
+                                        {% endif %}
                                     </tbody>
                                 </table>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div style="text-align: center; padding: 40px; border: 1px dashed #ccc; margin: 20px 0;">
-                                <p style="color: #666;">Tidak ada data riwayat pemeriksaan pada periode atau kriteria yang dipilih.</p>
-                            </div>
-                        {% endif %}
+
 
                         <!-- Signature Block -->
                         <div style="clear: both;"></div>
@@ -302,35 +306,73 @@
                             <p>NIP: 198712202017052006</p>
                         </div>
                         <div style="clear: both;"></div>
-                    </td>
-                </tr>
-            </tbody>
-            <!-- Tfoot untuk memberikan ruang / margin di bagian bawah setiap halaman -->
-            <tfoot class="report-footer">
-                <tr>
-                    <td>
-                        <div style="height: 5mm;"></div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        </div>
     </div>
 
+    <!-- Library html2canvas dan html2pdf.js untuk mengonversi HTML ke PDF dan mengunduhnya langsung tanpa dialog print -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
-        // Automatically open print dialog when page loads
+        async function generatePDF() {
+            // Scroll to top to avoid html2canvas cutoff bug
+            window.scrollTo(0, 0);
+            
+            // Sembunyikan tombol sebelum generate PDF agar tidak ikut ter-render di dokumen
+            var btnPrint = document.querySelector('.no-print');
+            if (btnPrint) btnPrint.style.display = 'none';
+
+            // 1. Ambil elemen header yang akan diulang
+            var headerEl = document.getElementById('header-to-repeat');
+            // Render header menjadi canvas/gambar terlebih dahulu
+            var headerCanvas = await html2canvas(headerEl, { scale: 2, useCORS: true, scrollY: 0 });
+            var headerData = headerCanvas.toDataURL('image/jpeg', 1.0);
+
+            // A4 landscape width is 11.69 inches
+            var pdfWidth = 11.69;
+            // Hitung proporsi tinggi header dalam inci
+            var headerHeightInches = (headerCanvas.height * pdfWidth) / headerCanvas.width;
+
+            // Sembunyikan header asli agar tidak terender di dalam konten normal (karena akan kita tempel manual di tiap halaman)
+            headerEl.style.display = 'none';
+            
+            var element = document.querySelector('.document');
+            var opt = {
+                margin:       [headerHeightInches, 0, 0.4, 0], // Top margin = tinggi header, Bottom margin = 0.4 inch
+                filename:     'Laporan_Pemeriksaan_Ibu_Hamil.pdf',
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            // Buat PDF, tempelkan header di setiap halaman, lalu download
+            html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
+                var totalPages = pdf.internal.getNumberOfPages();
+                for (var i = 1; i <= totalPages; i++) {
+                    pdf.setPage(i);
+                    // Tambahkan gambar header di X=0, Y=0 (menutupi margin atas yang kosong)
+                    pdf.addImage(headerData, 'JPEG', 0, 0, pdfWidth, headerHeightInches);
+                }
+            }).save().then(function() {
+                // Tampilkan kembali elemen
+                headerEl.style.display = 'block';
+                if (btnPrint) btnPrint.style.display = 'block';
+                // Tutup tab otomatis setelah berhasil mendownload
+                setTimeout(function() {
+                    window.close();
+                }, 1500);
+            });
+        }
+
+        // Jalankan otomatis saat halaman dimuat
         window.onload = function() {
             setTimeout(function() {
-                window.print();
+                generatePDF();
             }, 500);
         };
 
-        // Optional: close the tab after printing is done or canceled
-        window.onafterprint = function() {
-            window.close();
-        };
-        
         function printManual() {
-            window.print();
+            generatePDF();
         }
     </script>
 </body>

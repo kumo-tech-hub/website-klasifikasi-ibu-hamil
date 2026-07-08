@@ -9,6 +9,7 @@ from database.table.kecamatan import Kecamatan
 from database.table.kelurahan import Kelurahan
 import os
 import warnings
+# from weasyprint import HTML
 warnings.filterwarnings('ignore', category=UserWarning)
 
 # ─────────────────────────────────────────────
@@ -828,16 +829,22 @@ def unduh_laporan():
     results = query.order_by(IbuHamil.nama.asc(), Riwayat.tanggal.asc()).all()
 
     # Group by IbuHamil
-    grouped_data = {}
-    for ibu, riwayat in results:
-        if ibu.id not in grouped_data:
-            grouped_data[ibu.id] = {
-                'ibu': ibu,
-                'riwayat_list': []
-            }
-        grouped_data[ibu.id]['riwayat_list'].append(riwayat)
+    # grouped_data = {}
+    # for ibu, riwayat in results:
+    #     if ibu.id not in grouped_data:
+    #         grouped_data[ibu.id] = {
+    #             'ibu': ibu,
+    #             'riwayat_list': []
+    #         }
+    #     grouped_data[ibu.id]['riwayat_list'].append(riwayat)
+    html = render_template('laporan_pdf.html', grouped_data=results, tanggal_mulai=tanggal_mulai, tanggal_selesai=tanggal_selesai)
 
-    return render_template('laporan_pdf.html', grouped_data=grouped_data, tanggal_mulai=tanggal_mulai, tanggal_selesai=tanggal_selesai)
+    # Mengirim respons sebagai HTML biasa agar dirender di browser
+    response = make_response(html)
+    # Hapus modifikasi header application/pdf. 
+    # Frontend (Javascript html2pdf) akan secara otomatis mengunduh PDF.
+    
+    return response
 
 # ─────────────────────────────────────────────
 # UNDUH EXCEL

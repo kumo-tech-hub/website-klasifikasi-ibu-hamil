@@ -14,3 +14,4 @@ flask-sqlalchemy
 python-dotenv
 alembic
 cryptography
+weasyprint
