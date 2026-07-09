@@ -244,7 +244,7 @@
             {% endif %}
 
             {% if grouped_data %}
-                {% set rows_per_page = 14 %}
+                {% set rows_per_page = 10 %}
                 {% set chunks = grouped_data | batch(rows_per_page) %}
                 {% set global_idx = namespace(value=0) %}
                 
