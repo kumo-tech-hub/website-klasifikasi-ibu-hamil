@@ -16,12 +16,12 @@
 
         .document {
             background-color: white;
-            max-width: 297mm; /* Set to A4 Landscape width */
+            max-width: 356mm; /* Set to Legal Landscape width */
             margin: 0 auto;
             /* Padding dipindah ke dalam elemen anak agar margin html2pdf bekerja optimal */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
-            min-height: 210mm; /* Set to A4 Landscape height */
+            min-height: 216mm; /* Set to Legal Landscape height */
         }
 
         #header-to-repeat {
@@ -98,7 +98,7 @@
         h4.report-title {
             text-align: center;
             text-decoration: underline;
-            margin: 0 0 20px 0;
+            margin: 40px 0 20px 0;
             font-size: 16px;
         }
 
@@ -166,7 +166,7 @@
         /* Print Media Queries */
         @media print {
             @page {
-                size: A4 landscape;
+                size: legal landscape;
                 margin: 0; /* Menghilangkan header/footer browser (URL & Judul) */
             }
 
@@ -258,7 +258,7 @@
                                             <th>BB Awal (kg)</th>
                                             <th>BB Skrng (kg)</th>
                                             <th>TB (cm)</th>
-                                            <th>IMT</th>
+                                            <th>IMT sebelum Hamil (kg/m²)</th>
                                             <th>LiLA (cm)</th>
                                             <th>Status Gizi</th>
                                         </tr>
@@ -272,9 +272,9 @@
                                             <td>{{ ibu.nama }}</td>
                                             <td>{{ riwayat.kelurahan }}</td>
                                             <td>{{ ibu.tanggal_lahir }}</td>
+                                            <td>{{ riwayat.umur }}</td>
                                             <td>{{ riwayat.tanggal.strftime('%d-%m-%Y') if riwayat.tanggal else '-' }}</td>
                                             <td>{{ riwayat.trimester }}</td>
-                                            <td>{{ riwayat.umur }}</td>
                                             <td>{{ riwayat.bb_awal }}</td>
                                             <td>{{ riwayat.bb_sekarang }}</td>
                                             <td>{{ riwayat.tinggi_badan }}</td>
@@ -327,8 +327,8 @@
             var headerCanvas = await html2canvas(headerEl, { scale: 2, useCORS: true, scrollY: 0 });
             var headerData = headerCanvas.toDataURL('image/jpeg', 1.0);
 
-            // A4 landscape width is 11.69 inches
-            var pdfWidth = 11.69;
+            // Legal landscape width is 14 inches
+            var pdfWidth = 14;
             // Hitung proporsi tinggi header dalam inci
             var headerHeightInches = (headerCanvas.height * pdfWidth) / headerCanvas.width;
 
@@ -341,7 +341,7 @@
                 filename:     'Laporan_Pemeriksaan_Ibu_Hamil.pdf',
                 image:        { type: 'jpeg', quality: 1.0 },
                 html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                jsPDF:        { unit: 'in', format: 'legal', orientation: 'landscape' },
                 pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
