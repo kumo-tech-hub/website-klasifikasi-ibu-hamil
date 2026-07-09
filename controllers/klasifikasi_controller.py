@@ -220,6 +220,7 @@ def dashboard():
         daftar_file_geojson = [f for f in os.listdir(folder_path) if f.endswith('.geojson')] 
 
     ibu_hamil_list = IbuHamil.query.order_by(IbuHamil.nama.asc()).all()
+    kelurahan_list = Kelurahan.query.order_by(Kelurahan.nama.asc()).all()
 
     return render_template(
         'dashboard.html',
@@ -233,6 +234,7 @@ def dashboard():
         tahun=tahun,
         cari=cari,
         ibu_hamil_list=ibu_hamil_list,
+        kelurahan_list=kelurahan_list,
     )
 
 
@@ -800,6 +802,7 @@ def clear_form_session():
 
 def unduh_laporan():
     id_ibu_hamil = request.args.get('id_ibu_hamil', 'all')
+    kelurahan = request.args.get('kelurahan', 'all')
     tanggal_mulai = request.args.get('tanggal_mulai', '')
     tanggal_selesai = request.args.get('tanggal_selesai', '')
 
@@ -807,6 +810,9 @@ def unduh_laporan():
 
     if id_ibu_hamil != 'all':
         query = query.filter(IbuHamil.id == int(id_ibu_hamil))
+    
+    if kelurahan != 'all':
+        query = query.filter(Riwayat.kelurahan == kelurahan)
     
     if tanggal_mulai:
         try:
@@ -852,6 +858,7 @@ def unduh_laporan():
 
 def unduh_excel():
     id_ibu_hamil = request.args.get('id_ibu_hamil', 'all')
+    kelurahan = request.args.get('kelurahan', 'all')
     tanggal_mulai = request.args.get('tanggal_mulai', '')
     tanggal_selesai = request.args.get('tanggal_selesai', '')
 
@@ -859,6 +866,9 @@ def unduh_excel():
 
     if id_ibu_hamil != 'all':
         query = query.filter(IbuHamil.id == int(id_ibu_hamil))
+    
+    if kelurahan != 'all':
+        query = query.filter(Riwayat.kelurahan == kelurahan)
     
     if tanggal_mulai:
         try:

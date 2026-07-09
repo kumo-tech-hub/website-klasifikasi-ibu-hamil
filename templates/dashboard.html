@@ -345,6 +345,16 @@
                 </select>
             </div>
             
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Pilih Kelurahan</label>
+                <select id="selectKelurahan" name="kelurahan" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #d1d5db; font-size: 14px; outline: none;">
+                    <option value="all">-- Semua Kelurahan --</option>
+                    {% for kel in kelurahan_list %}
+                    <option value="{{ kel.nama }}">{{ kel.nama }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
                 <div>
                     <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Tanggal Mulai (Opsional)</label>
@@ -410,6 +420,12 @@
         document.getElementById('laporanModal').style.display = 'flex';
         $('#selectIbuHamil').select2({
             placeholder: "-- Keseluruhan --",
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('#laporanModal')
+        });
+        $('#selectKelurahan').select2({
+            placeholder: "-- Semua Kelurahan --",
             allowClear: true,
             width: '100%',
             dropdownParent: $('#laporanModal')
