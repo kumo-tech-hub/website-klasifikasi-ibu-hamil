@@ -243,55 +243,61 @@
             </div>
             {% endif %}
 
+            {% if grouped_data %}
+                {% set rows_per_page = 14 %}
+                {% set chunks = grouped_data | batch(rows_per_page) %}
+                {% set global_idx = namespace(value=0) %}
+                
+                {% for chunk in chunks %}
+                    
+                    {% if not loop.first %}
+                        <div class="html2pdf__page-break"></div>
+                        <div style="height: 20px;"></div> <!-- Spasi tambahan setelah page break -->
+                    {% endif %}
+                    
+                    <table class="data-table" style="margin-bottom: 20px;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>NIK</th>
+                                <th>Nama</th>
+                                <th>Kelurahan</th>
+                                <th>Tanggal Lahir</th>
+                                <th>Umur (th)</th>
+                                <th>Tanggal Periksa</th>
+                                <th>Trimester</th>
+                                <th>BB Awal (kg)</th>
+                                <th>BB Skrng (kg)</th>
+                                <th>TB (cm)</th>
+                                <th>IMT sebelum Hamil (kg/m²)</th>
+                                <th>LiLA (cm)</th>
+                                <th>Status Gizi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ibu, riwayat in chunk %}
+                            {% set global_idx.value = global_idx.value + 1 %}
+                            <tr>
+                                <td>{{ global_idx.value }}</td>
+                                <td>{{ ibu.nik }}</td>
+                                <td>{{ ibu.nama }}</td>
+                                <td>{{ riwayat.kelurahan }}</td>
+                                <td>{{ ibu.tanggal_lahir }}</td>
+                                <td>{{ riwayat.umur }}</td>
+                                <td>{{ riwayat.tanggal.strftime('%d-%m-%Y') if riwayat.tanggal else '-' }}</td>
+                                <td>{{ riwayat.trimester }}</td>
+                                <td>{{ riwayat.bb_awal }}</td>
+                                <td>{{ riwayat.bb_sekarang }}</td>
+                                <td>{{ riwayat.tinggi_badan }}</td>
+                                <td>{{ riwayat.lila }}</td>
+                                <td>{{ "%.1f"|format(riwayat.imt) }}</td>
+                                <td>{{ riwayat.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>NIK</th>
-                                            <th>Nama</th>
-                                            <th>Kelurahan</th>
-                                            <th>Tanggal Lahir</th>
-                                            <th>Umur (th)</th>
-                                            <th>Tanggal Periksa</th>
-                                            <th>Trimester</th>
-                                            <th>BB Awal (kg)</th>
-                                            <th>BB Skrng (kg)</th>
-                                            <th>TB (cm)</th>
-                                            <th>IMT sebelum Hamil (kg/m²)</th>
-                                            <th>LiLA (cm)</th>
-                                            <th>Status Gizi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% if grouped_data %}
-                                        {% for ibu, riwayat in grouped_data %}
-                                        <tr>
-                                            <td>{{ loop.index }}</td>
-                                            <td>{{ ibu.nik }}</td>
-                                            <td>{{ ibu.nama }}</td>
-                                            <td>{{ riwayat.kelurahan }}</td>
-                                            <td>{{ ibu.tanggal_lahir }}</td>
-                                            <td>{{ riwayat.umur }}</td>
-                                            <td>{{ riwayat.tanggal.strftime('%d-%m-%Y') if riwayat.tanggal else '-' }}</td>
-                                            <td>{{ riwayat.trimester }}</td>
-                                            <td>{{ riwayat.bb_awal }}</td>
-                                            <td>{{ riwayat.bb_sekarang }}</td>
-                                            <td>{{ riwayat.tinggi_badan }}</td>
-                                            <td>{{ riwayat.lila }}</td>
-                                            <td>{{ "%.1f"|format(riwayat.imt) }}</td>
-                                            <td>{{ riwayat.status }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                        {% else %}
-                                        <tr>
-                                            <td colspan="14">Tidak ada data riwayat pemeriksaan pada periode atau kriteria yang dipilih.</td>
-                                        </tr>
-                                        {% endif %}
-                                    </tbody>
-                                </table>
-
-
+                    {% if loop.last %}
                         <!-- Signature Block -->
                         <div style="clear: both;"></div>
                         <div class="signature-block">
@@ -306,6 +312,35 @@
                             <p>NIP: 198712202017052006</p>
                         </div>
                         <div style="clear: both;"></div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIK</th>
+                            <th>Nama</th>
+                            <th>Kelurahan</th>
+                            <th>Tanggal Lahir</th>
+                            <th>Umur (th)</th>
+                            <th>Tanggal Periksa</th>
+                            <th>Trimester</th>
+                            <th>BB Awal (kg)</th>
+                            <th>BB Skrng (kg)</th>
+                            <th>TB (cm)</th>
+                            <th>IMT sebelum Hamil (kg/m²)</th>
+                            <th>LiLA (cm)</th>
+                            <th>Status Gizi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="14">Tidak ada data riwayat pemeriksaan pada periode atau kriteria yang dipilih.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
     </div>
 
